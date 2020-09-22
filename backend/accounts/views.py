@@ -32,7 +32,7 @@ def user_email(request):
 @permission_classes([IsAuthenticated])
 def user_detail(request):
     serializer = UserDetailSerializer(data=request.data, instance=request.user)
-    # print(request.data.get('address'))
+    print(request.data.get('address'))
     if serializer.is_valid(raise_exception=True):
         serializer.save()
     return Response(serializer.data)

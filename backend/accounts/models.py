@@ -23,7 +23,8 @@ class User(AbstractUser):
     # 사업자번호,상호명 , 사업 카테고리, 사업등록증 사본, 사업장 주소
     biznumber = models.IntegerField(unique=True, null=True)
     bizname = models.CharField(max_length=50, null=True)
-    # bizimage = models.ImageField(null=True, blank=True, upload_to='biz')
+    bizcategory = models.CharField(max_length=20, null=True)
+    bizimage = models.ImageField(default='media/bonobono.png', null=True, blank=True, upload_to='biz')
     bizaddress = models.CharField(max_length=200, null=True)
     # email = models.EmailField(_('email address'), unique=True)
 
