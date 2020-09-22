@@ -1,28 +1,20 @@
 <template>
-  <div class="header">
-    <h1>헤더 영역</h1>
-    <div class="flexbox">
-      <div class="leftSide">
-        <router-link style="text-decoration: none; color: black;" to="/">
-          Home
-        </router-link>
-      </div>
-      <div class="center">
-        <select>
-          <option disabled value="">주소를 선택해 주세요.</option>
-          <option v-for="(addr, index) in userAddress" :key="index">
-            {{ addr }}
-          </option>
-        </select>
-        <button @click="showAddrModal = true">추가하기</button>
-      </div>
-      <div class="rightSide">
-        <router-link style="text-decoration: none; color: black;" to="/Login">
-          Login
-        </router-link>
-      </div>
-    </div>
-  </div>
+  <v-app-bar app color="indigo" dark>
+    <v-toolbar-title>
+      <router-link style="text-decoration: none; color: white" to="/">
+        Home
+      </router-link>
+    </v-toolbar-title>
+    <v-col cols="12" sm="4" justify="center" align="center">
+      <v-select :items="userAddress" label="주소를 선택해주세요" dense solo />
+    </v-col>
+    <button @click="showAddrModal = true">추가하기</button>
+    <v-toolbar-title>
+      <router-link style="text-decoration: none; color: white" to="/Login">
+        Login
+      </router-link>
+    </v-toolbar-title>
+  </v-app-bar>
 </template>
 
 <script>
@@ -35,21 +27,7 @@ export default {
 };
 </script>
 <style>
-.header {
-  border: 1px solid black;
-  background-color: #e9691e;
-}
-.flexbox {
-  display: flex;
-}
-
-.leftSide {
-  justify-content: flex-start;
-}
-.center {
-  justify-content: center;
-}
-.rightSide {
-  justify-content: flex-end;
+.address {
+  margin-top: 25px;
 }
 </style>

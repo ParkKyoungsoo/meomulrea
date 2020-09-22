@@ -1,8 +1,6 @@
 <template>
   <div class="content">
-    <div>
-      우리동네 날씨와 시간대를 분석하여 추천하는 메뉴는 입니다.
-    </div>
+    <div>우리동네 날씨와 시간대를 분석하여 추천하는 메뉴는 입니다.</div>
     <carousel
       :per-page="1"
       :navigate-to="someLocalProperty"
