@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     
     'accounts',
     'reviews',
+    'stores',
 
     'django_extensions',
 
