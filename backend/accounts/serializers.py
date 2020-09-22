@@ -14,8 +14,7 @@ class UserSerializer(serializers.ModelSerializer):
 
 
 class UserDetailSerializer(UserSerializer):
-    # bizimage = serializers.ImageField(use_url=True)
     class Meta:
         model = User
         # fields = ['id', 'username', 'email', 'usertype', 'gender', 'address', 'date_of_birth', 'biznumber', 'bizname', 'bizimage', 'bizaddress']
-        fields = ['id', 'username', 'email', 'usertype', 'gender', 'address', 'birth_year', 'biznumber', 'bizname', 'bizaddress']
+        fields = ['id', 'username', 'email', 'usertype', 'gender', 'address', 'birth_year', 'biznumber', 'bizname', 'bizcategory', 'bizimage', 'bizaddress']
