@@ -1,7 +1,7 @@
 <template>
   <v-app-bar app color="indigo" dark>
     <v-toolbar-title>
-      <router-link style="text-decoration: none; color: white" to="/">
+      <router-link style="text-decoration: none; color: white;" to="/">
         Home
       </router-link>
     </v-toolbar-title>
@@ -10,7 +10,7 @@
     </v-col>
     <button @click="showAddrModal = true">추가하기</button>
     <v-toolbar-title>
-      <router-link style="text-decoration: none; color: white" to="/Login">
+      <router-link style="text-decoration: none; color: white;" to="/Login">
         Login
       </router-link>
     </v-toolbar-title>

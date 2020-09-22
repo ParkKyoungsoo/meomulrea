@@ -3,27 +3,33 @@
     <v-container>
       <h2>본문영역</h2>
       <v-layout class="weather">
-        날씨 영역
-        <button @click="axiosTest">날씨 테스트</button>
-        <div class="weatherInfo">
-          <div>지역 : {{ locationData.name }}</div>
-          <div>기온 : {{ locationData.main.temp - 273.15 }} &deg;C</div>
-          <div>습도 : {{ locationData.main.humidity }} %</div>
-          <div>기압 : {{ locationData.main.pressure }}</div>
-          <div>날씨 : {{ locationData.weather[0].main }}</div>
-          <div>풍향 : {{ locationData.wind.deg }} &deg;</div>
-          <div>풍속 : {{ locationData.wind.speed }} m/s</div>
-          <div>구름 : {{ locationData.clouds.all + "%" }}</div>
-        </div>
+        <v-col>
+          <v-row>
+            날씨 영역
+            <v-btn icon color="green" @click="axiosTest">
+              <v-icon>mdi-cached</v-icon>
+            </v-btn>
+          </v-row>
+          <v-row>
+            <v-flex>지역 : {{ locationData.name }} </v-flex>
+            <v-flex>기온 : {{ locationData.main.temp - 273.15 }} &deg;C</v-flex>
+            <v-flex>습도 : {{ locationData.main.humidity }} %</v-flex>
+            <v-flex>기압 : {{ locationData.main.pressure }}</v-flex>
+            <v-flex>날씨 : {{ locationData.weather[0].main }}</v-flex>
+            <v-flex>풍향 : {{ locationData.wind.deg }} &deg;</v-flex>
+            <v-flex>풍속 : {{ locationData.wind.speed }} m/s</v-flex>
+            <v-flex>구름 : {{ locationData.clouds.all + "%" }}</v-flex>
+          </v-row>
+        </v-col>
       </v-layout>
       <div class="advertise">
         광고영역
         <Carousel :storeData="tmpData" />
       </div>
       <v-layout>
-        <v-flex> 현재 [위치]에서 인기있는 음식은? </v-flex>
+        <v-flex> 현재 {{ locationData.name }}에서 인기있는 음식은? </v-flex>
       </v-layout>
-      <div style="display: flex">
+      <div style="display: flex;">
         <div v-for="(item, index) in tmpData" :key="index">
           <ShowList :storeData="item" />
         </div>
@@ -64,7 +70,7 @@ export default {
   },
 
   methods: {
-    axiosTest: function () {
+    axiosTest: function() {
       axios({
         method: "GET",
         url: `http://api.openweathermap.org/data/2.5/weather?lat=${this.lat}&lon=${this.lng}&appid=5da983044710640f1d38176a055c7f66`,
@@ -89,7 +95,7 @@ export default {
       }, 60000);
     },
 
-    getLocation: function () {
+    getLocation: function() {
       if (navigator.geolocation) {
         // GPS를 지원하면
         navigator.geolocation.getCurrentPosition(
