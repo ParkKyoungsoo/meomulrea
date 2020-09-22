@@ -3,10 +3,10 @@ import Router from "vue-router";
 
 Vue.use(Router);
 
-import Login from "./components/LogIn.vue";
-import Content from "./components/Content.vue";
-import StoreList from "./components/StoreList.vue";
-import StoreDetail from "./components/StoreDetail.vue";
+import Login from "./pages/LogIn.vue";
+import Content from "./pages/Content.vue";
+import StoreList from "./pages/StoreList.vue";
+import StoreDetail from "./pages/StoreDetail.vue";
 
 export default new Router({
   mode: "history",

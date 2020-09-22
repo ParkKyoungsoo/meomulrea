@@ -39,10 +39,10 @@
 </template>
 
 <script>
-import Carousel from "./Carousel";
+import Carousel from "../components/Carousel";
 import axios from "axios";
 import tmpData from "../assets/datas/store.json";
-import ShowList from "./ShowList";
+import ShowList from "../components/ShowList";
 
 export default {
   components: {
