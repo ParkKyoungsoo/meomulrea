@@ -5,7 +5,8 @@ Vue.use(Router);
 
 import Login from "./components/Login.vue";
 import Content from "./components/Content.vue";
-import ShowList from "./components/ShowList.vue";
+import StoreList from "./components/StoreList.vue";
+import StoreDetail from "./components/StoreDetail.vue";
 
 export default new Router({
   mode: "history",
@@ -21,9 +22,14 @@ export default new Router({
       component: Content,
     },
     {
-      path: "/showlist/:foodid",
-      name: "showlist",
-      component: ShowList,
+      path: "/storelist/:category",
+      name: "storelist",
+      component: StoreList,
+    },
+    {
+      path: "/storedetail/:storeid",
+      name: "storedetail",
+      component: StoreDetail,
     },
   ],
 });

@@ -1,55 +1,53 @@
 <template>
-  <div id="tmp" class="content">
-    <h2>본문영역</h2>
-    <div class="weather">
-      날씨 영역
-      <button @click="axiosTest">날씨 테스트</button>
-      <div class="weatherInfo">
-        <div>지역 : {{ locationData.name }}</div>
-        <div>기온 : {{ locationData.main.temp - 273.15 }} &deg;C</div>
-        <div>습도 : {{ locationData.main.humidity }} %</div>
-        <div>기압 : {{ locationData.main.pressure }}</div>
-        <div>날씨 : {{ locationData.weather[0].main }}</div>
-        <div>풍향 : {{ locationData.wind.deg }} &deg;</div>
-        <div>풍속 : {{ locationData.wind.speed }} m/s</div>
-        <div>구름 : {{ locationData.clouds.all + "%" }}</div>
+  <v-main class="content">
+    <v-container>
+      <h2>본문영역</h2>
+      <v-layout class="weather">
+        <v-col>
+          <v-row>
+            날씨 영역
+            <v-btn icon color="green" @click="axiosTest">
+              <v-icon>mdi-cached</v-icon>
+            </v-btn>
+          </v-row>
+          <v-row>
+            <v-flex>지역 : {{ locationData.name }} </v-flex>
+            <v-flex>기온 : {{ locationData.main.temp - 273.15 }} &deg;C</v-flex>
+            <v-flex>습도 : {{ locationData.main.humidity }} %</v-flex>
+            <v-flex>기압 : {{ locationData.main.pressure }}</v-flex>
+            <v-flex>날씨 : {{ locationData.weather[0].main }}</v-flex>
+            <v-flex>풍향 : {{ locationData.wind.deg }} &deg;</v-flex>
+            <v-flex>풍속 : {{ locationData.wind.speed }} m/s</v-flex>
+            <v-flex>구름 : {{ locationData.clouds.all + "%" }}</v-flex>
+          </v-row>
+        </v-col>
+      </v-layout>
+      <div class="advertise">
+        광고영역
+        <Carousel :storeData="tmpData" />
       </div>
-    </div>
-    <div class="advertise">
-      광고영역
-      <Carousel :storeData="tmpData" />
-    </div>
-    <div class="recommandFood">
-      추천음식 구역
-      <CarouselStore :storeData="tmpData" />
+      <v-layout>
+        <v-flex> 현재 {{ locationData.name }}에서 인기있는 음식은? </v-flex>
+      </v-layout>
       <div style="display: flex;">
-        <router-link tag="button" to="/">우리동네 매장 보러가기</router-link>
-        <button>배달파티 보러가기</button>
-      </div>
-    </div>
-    <div class="recommandFood">
-      추천음식 구역2
-      <div class="recommnadTopFood">
-        <div class="foodThumbnail">추천음식 썸네일</div>
-        <div style="display: flex;">
-          <router-link tag="button" to="/"> 우리동네 매장 보러가기</router-link>
-          <button>배달파티 보러가기</button>
+        <div v-for="(item, index) in tmpData" :key="index">
+          <ShowList :storeData="item" />
         </div>
       </div>
-    </div>
-  </div>
+    </v-container>
+  </v-main>
 </template>
 
 <script>
 import Carousel from "./Carousel";
-import CarouselStore from "./CarouselStore";
 import axios from "axios";
 import tmpData from "../assets/datas/store.json";
+import ShowList from "./ShowList";
 
 export default {
   components: {
     Carousel,
-    CarouselStore,
+    ShowList,
   },
 
   data() {
