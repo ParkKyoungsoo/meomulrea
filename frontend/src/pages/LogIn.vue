@@ -19,18 +19,10 @@
                 </button>
                 <h2>일반회원</h2>
               </div>
-              <v-text-field v-model="nm_email" label="이메일"></v-text-field>
-              <v-text-field
-                v-model="nm_password"
-                label="비밀번호"
-                :messages="[err]"
-              ></v-text-field>
-              <v-btn rounded color="rgb(233, 105, 30)" dark @click="nm_login()"
-                >로그인</v-btn
-              >
-              <v-btn rounded color="primary" dark @click="mvpage(true)"
-                >회원등록</v-btn
-              >
+              <v-text-field v-model="nm_email" label="이메일" :messages="[error.email]"></v-text-field>
+              <v-text-field v-model="nm_password" label="비밀번호" :messages="[error.pwd]" type="password"></v-text-field>
+              <v-btn rounded color="rgb(233, 105, 30)" dark @click="nm_login()">로그인</v-btn>
+              <v-btn rounded color="primary" dark @click="mvpage(true)">회원등록</v-btn>
             </div>
           </div>
           <div v-if="nm_page === 2" class="start">
@@ -41,16 +33,11 @@
                 </button>
                 <h2>일반회원</h2>
               </div>
-              <v-text-field v-model="nm_email" label="이메일"></v-text-field>
+              <v-text-field v-model="nm_email" :messages="[error.email]" label="이메일" ref="nm_email"></v-text-field>
               <v-text-field v-model="nm_name" label="이름"></v-text-field>
               <v-text-field v-model="nm_nickname" label="닉네임"></v-text-field>
-              <v-text-field
-                v-model="nm_password"
-                label="비밀번호"
-              ></v-text-field>
-              <v-text-field
-                v-model="nm_password_confirm"
-                label="비밀번호"
+              <v-text-field v-model="nm_password" :messages="[error.pwd]" label="비밀번호" ref="nm_password"></v-text-field>
+              <v-text-field v-model="nm_password_confirm" :messages="[error.pwdconfirm]" label="비밀번호" ref="nm_password_confirm"
               ></v-text-field>
               <v-text-field
                 v-model="nm_address"
@@ -73,7 +60,7 @@
                   </v-radio-group>
                 </v-layout>
               </v-container>
-              <v-btn rounded color="primary" dark @click="nm_signup()"
+              <v-btn rounded color="primary" dark @click="checkHandler()"
                 >회원가입</v-btn
               >
             </div>
@@ -174,15 +161,62 @@ export default {
       biz_password_confirm: "",
       biz_address: "",
 
-      err: "",
+      error:{
+        email: "",
+        pwd:"",
+        pwdconfirm:""
+      },
+
+      rules: [
+        { message: '이메일을 확인해주세요', regex:/[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$/},
+				{ message:'영어소문자, 숫자 포함 8자 이상의 비밀번호.', regex:/(?=.*\d)(?=.*[a-z]).{8,}/},
+      ],
+      
     };
   },
   watch: {
-    nm_email: function() {
+    nm_email: function(){
+      if(this.nm_email.length>0){
+        if(!this.rules[0].regex.test(this.nm_email)){
+          this.error.email=this.rules[0].message;
+          return;
+        }
+        this.error.email='';
+      }
       this.nm_nickname = this.nm_email;
     },
+    nm_password: function(){
+      if(this.nm_password.length>0){
+          if (!this.rules[1].regex.test(this.nm_password)) {
+            this.error.pwd=this.rules[1].message;
+            return;
+          }
+          this.error.pwd='';
+			}
+    },
+    nm_password_confirm: function(){
+       if(this.nm_password_confirm.length>0){
+          if (this.nm_password_confirm!==this.nm_password) {
+            this.error.pwdconfirm='비밀번호가 틀렸습니다';
+            return;
+          }
+          this.error.pwdconfirm='';
+			}
+    }
   },
   methods: {
+    checkHandler(){
+      let err = true;
+      let msg = "";
+      !this.nm_email && ((msg = "이메일을 입력해주세요!"),(err = false),this.$refs.nm_email.focus());
+      err && !this.nm_password && ((msg = "비밀번호를 입력해주세요!"),(err = false),this.$refs.nm_password.focus());
+      err && !this.nm_password_confirm && ((msg = "비밀번호 확인을 입력해주세요!"),(err = false),this.$refs.nm_password_confirm.focus());
+      if (!err) {
+        alert(msg);
+      } else if (!this.error.email && !this.error.password && !this.error.passwordConfirm) {
+        this.nm_signup();
+      }
+    },
     findAddress() {
       console.log("findADDRESS");
     },
@@ -204,15 +238,20 @@ export default {
     nm_signup() {
       axios
         .post(baseURL + "account/signup/", {
-          username: this.nm_name,
+          username: this.nm_nickname,
           email: this.nm_email,
           password1: this.nm_password,
           password2: this.nm_password_confirm,
         })
         .then(() => {
           console.log("then");
+          this.nm_page=1;
         })
         .catch(() => {
+          console.log(this.nm_nickname)
+          console.log(this.nm_email)
+          console.log(this.nm_password)
+          console.log(this.nm_password_confirm)
           console.log("catch");
         });
     },
