@@ -1,178 +1,171 @@
 <template>
-<div id="app">
-	<v-app id="inspire">
-		<v-container class="grey lighten-5">
-			<v-row no-gutters>
-				<v-col cols="3">
-					<v-card max-width="500" class="mx-auto">
-						<v-toolbar color="deep-purple accent-4" dark>
-							<v-app-bar-nav-icon></v-app-bar-nav-icon>
-							<v-toolbar-title>New Chat</v-toolbar-title>
-							<v-spacer></v-spacer>
-							<v-btn icon>
-								<v-icon>mdi-magnify</v-icon>
-							</v-btn>
-						</v-toolbar>
-						<v-list subheader>
-							<v-subheader>Recent chat</v-subheader>
-							<v-list-item v-for="item in items" :key="item.title" @click="test()">
-								<v-list-item-avatar>
-									<v-img :src="item.avatar"></v-img>
-								</v-list-item-avatar>
-								<v-list-item-content>
-									<v-list-item-title v-text="item.title"></v-list-item-title>
-								</v-list-item-content>
-								<v-list-item-icon>
-									<v-icon :color="item.active ? 'deep-purple accent-4' : 'grey'">chat_bubble</v-icon>
-								</v-list-item-icon>
-							</v-list-item>
-						</v-list>
-						<v-divider></v-divider>
-						<v-list subheader>
-							<v-subheader>Previous chats</v-subheader>
-							<v-list-item v-for="item in items2" :key="item.title" @click="test()">
-								<v-list-item-avatar>
-									<v-img :src="item.avatar"></v-img>
-								</v-list-item-avatar>
-								<v-list-item-content>
-									<v-list-item-title v-text="item.title"></v-list-item-title>
-								</v-list-item-content>
-							</v-list-item>
-						</v-list>
-					</v-card>
-				</v-col> 
-
-				<v-col cols="6">
-					<v-card class="mx-auto">
-						<v-list rounded>
-							<v-subheader>REPORTS</v-subheader>
-							<v-list-item-group color="primary">
-								<v-list-item v-for="(item, i) in messages" :key="i" :class="(item.sent ? 'text-right' : '')" >
-										<v-chip pill v-if="item.sent">
-										{{ item.msg }}
-										<v-avatar right>
-											<v-img src="https://cdn.vuetifyjs.com/images/john.png"></v-img>
-										</v-avatar>
-										</v-chip>
-										<v-chip pill v-else>
-										<v-avatar left>
-											<v-img src="https://cdn.vuetifyjs.com/images/john.png"></v-img>
-										</v-avatar>
-										{{ item.msg }}
-										</v-chip>
-								</v-list-item>
-								<v-list-item>
-									<v-textarea append-outer-icon="send"
-												@click:append-outer="sendMessage"
-												v-model=messageNew.text
-												class="mx-2" 
-												label="Message to send" 
-												rows="2"></v-textarea>
-								</v-list-item>
-							</v-list-item-group>
-						</v-list>
-					</v-card>
-				</v-col>
-				<v-col col="3">
-					<v-card
-    class="mx-auto"
-    width="256"
-    tile
-  >
-    <v-navigation-drawer permanent>
-      <v-list>
-        <v-list-item>
-          <v-list-item-avatar>
-            <v-img src="https://cdn.vuetifyjs.com/images/john.png"></v-img>
-          </v-list-item-avatar>
-        </v-list-item>
-
-        <v-list-item link>
-          <v-list-item-content>
-            <v-list-item-title class="title">John Leider</v-list-item-title>
-            <v-list-item-subtitle>john@vuetifyjs.com</v-list-item-subtitle>
-          </v-list-item-content>
-
-          <v-list-item-action>
-            <v-icon>mdi-menu-down</v-icon>
-          </v-list-item-action>
-        </v-list-item>
-      </v-list>
-      <v-divider></v-divider>
-      <v-list
-        nav
-        dense
-      >
-        <v-list-item-group v-model="user_item" color="primary">
-          <v-list-item
-            v-for="(item, i) in user_items"
-            :key="i"
-          >
-            <v-list-item-icon>
-              <v-icon v-text="item.icon"></v-icon>
-            </v-list-item-icon>
-
-            <v-list-item-content>
-              <v-list-item-title v-text="item.text"></v-list-item-title>
-            </v-list-item-content>
-          </v-list-item>
-        </v-list-item-group>
-      </v-list>
-    </v-navigation-drawer>
-  </v-card>
-				</v-col>
-			</v-row>
-		</v-container>
-	</v-app>
-</div>
+  <v-container fluid style="padding: 0;">
+    <v-row no-gutters>
+      <v-col sm="2" class="scrollable">
+        <chats></chats>
+      </v-col>
+      <v-col sm="10" style="position: relative;">
+        <div class="chat-container" v-on:scroll="onScroll" ref="chatContainer" >
+          <message :messages="messages" @imageLoad="scrollToEnd"></message>
+        </div>
+        <!-- <emoji-picker :show="emojiPanel" @close="toggleEmojiPanel" @click="addEmojiToMessage"></emoji-picker> -->
+        <div class="typer">
+          <input type="text" placeholder="Type here..." v-on:keyup.enter="sendMessage" v-model="content">
+          <v-btn icon class="blue--text emoji-panel" @click="toggleEmojiPanel">
+            <v-icon>mdi-emoticon-outline</v-icon>
+          </v-btn>
+        </div>
+      </v-col>
+    </v-row>
+  </v-container>
 </template>
 
 <script>
-export default {
-  name: "Chat",
-  data: () => ({
-    items: [
-      { active: true, title: 'Jason Oner', avatar: 'https://cdn.vuetifyjs.com/images/lists/1.jpg' },
-      { active: true, title: 'Ranee Carlson', avatar: 'https://cdn.vuetifyjs.com/images/lists/2.jpg' },
-      { title: 'Cindy Baker', avatar: 'https://cdn.vuetifyjs.com/images/lists/3.jpg' },
-      { title: 'Ali Connors', avatar: 'https://cdn.vuetifyjs.com/images/lists/4.jpg' },
-    ],
-    items2: [
-      { title: 'Travis Howard', avatar: 'https://cdn.vuetifyjs.com/images/lists/5.jpg' },
-    ],
-    messageNew: {
-        text: null
+  import Message from '../components/Message.vue'
+//   import EmojiPicker from './parts/EmojiPicker.vue'
+  import Chats from '../components/Chats.vue'
+  import * as firebase from 'firebase'
+
+  export default {
+    data () {
+      return {
+        content: '',
+        chatMessages: [],
+        emojiPanel: false,
+        currentRef: {},
+        loading: false,
+        totalChatHeight: 0
+      }
     },
-    messages: [
-        { msg: 'Real-Time', avatar: 'https://cdn.vuetifyjs.com/images/john.png', sent: false },
-        { msg: 'Audience', avatar: 'https://cdn.vuetifyjs.com/images/john.png', sent: true },
-        { msg: 'Conversions', avatar: 'https://cdn.vuetifyjs.com/images/john.png', sent: false },
-        { msg: 'reaas', avatar: 'https://cdn.vuetifyjs.com/images/john.png', sent: false },
+    props: [
+      'id'
     ],
-    
-    user_item: 0,
-    user_items: [
-        { text: 'My Files', icon: 'mdi-folder' },
-        { text: 'Shared with me', icon: 'mdi-account-multiple' },
-        { text: 'Starred', icon: 'mdi-star' },
-        { text: 'Recent', icon: 'mdi-history' },
-        { text: 'Offline', icon: 'mdi-check-circle' },
-        { text: 'Uploads', icon: 'mdi-upload' },
-        { text: 'Backups', icon: 'mdi-cloud-upload' },
-    ],
-  }),
-	methods:{
-		sendMessage(){
-			this.messages.push({
-				msg: this.messageNew.text,
-				avatar: 'https://cdn.vuetifyjs.com/images/john.png', 
-				sent: true
-			})
-			this.messageNew.text = null;
-        },
-        test(){
-            return;
+    mounted () {
+      this.loadChat()
+      this.$store.dispatch('loadOnlineUsers')
+    },
+    components: {
+      'message': Message,
+    //   'emoji-picker': EmojiPicker,
+      'chats': Chats
+    },
+    computed: {
+      messages () {
+        return this.chatMessages
+      },
+      username () {
+        return this.$store.getters.user.username
+      },
+      onNewMessageAdded () {
+        const that = this
+        let onNewMessageAdded = function (snapshot, newMessage = true) {
+          let message = snapshot.val()
+          message.key = snapshot.key
+          /*eslint-disable */
+          var urlPattern = /(\b(https?|ftp|file):\/\/[-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|])/ig
+          /*eslint-enable */
+          message.content = message.content
+            .replace(/&/g, '&amp;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;')
+            .replace(/"/g, '&quot;')
+            .replace(/'/g, '&#039;')
+          message.content = message.content.replace(urlPattern, "<a href='$1'>$1</a>")
+          if (!newMessage) {
+            that.chatMessages.unshift(that.processMessage(message))
+            that.scrollTo()
+          } else {
+            that.chatMessages.push(that.processMessage(message))
+            that.scrollToEnd()
+          }
         }
-	}
-}
+        return onNewMessageAdded
+      }
+    },
+    watch: {
+      '$route.params.id' (newId, oldId) {
+		console.log(newId + ' ' + oldId)
+        this.currentRef.off('child_added', this.onNewMessageAdded)
+        this.loadChat()
+      }
+    },
+    methods: {
+      loadChat () {
+        this.totalChatHeight = this.$refs.chatContainer.scrollHeight
+        this.loading = false
+        if (this.id !== undefined) {
+          this.chatMessages = []
+          let chatID = this.id
+          this.currentRef = firebase.database().ref('messages').child(chatID).child('messages').limitToLast(20)
+          this.currentRef.on('child_added', this.onNewMessageAdded)
+        }
+      },
+      onScroll () {
+        let scrollValue = this.$refs.chatContainer.scrollTop
+        const that = this
+        if (scrollValue < 100 && !this.loading) {
+          this.totalChatHeight = this.$refs.chatContainer.scrollHeight
+          this.loading = true
+          let chatID = this.id
+          let currentTopMessage = this.chatMessages[0]
+          if (currentTopMessage === undefined) {
+            this.loading = false
+            return
+          }
+          firebase.database().ref('messages').child(chatID).child('messages').orderByKey().endAt(currentTopMessage.key).limitToLast(20).once('value').then(
+            function (snapshot) {
+              let tempArray = []
+              snapshot.forEach(function (item) {
+                tempArray.push(item)
+              })
+              if (tempArray[0].key === tempArray[1].key) return
+              tempArray.reverse()
+              tempArray.forEach(function (child) { that.onNewMessageAdded(child, false) })
+              that.loading = false
+            }
+          )
+        }
+      },
+      processMessage (message) {
+        /*eslint-disable */
+        var imageRegex = /([^\s\']+).(?:jpg|jpeg|gif|png)/i
+        /*eslint-enable */
+        if (imageRegex.test(message.content)) {
+          message.image = imageRegex.exec(message.content)[0]
+        }
+        var emojiRegex = /([\u{1f300}-\u{1f5ff}\u{1f900}-\u{1f9ff}\u{1f600}-\u{1f64f}\u{1f680}-\u{1f6ff}\u{2600}-\u{26ff}\u{2700}-\u{27bf}\u{1f1e6}-\u{1f1ff}\u{1f191}-\u{1f251}\u{2934}-\u{1f18e}])/gu
+        if (emojiRegex.test(message.content)) {
+          message.content = message.content.replace(emojiRegex, '<span class="emoji">$1</span>')
+        }
+        return message
+      },
+      sendMessage () {
+        if (this.content !== '') {
+          this.$store.dispatch('sendMessage', { username: this.username, content: this.content, date: new Date().toString(), chatID: this.id })
+          this.content = ''
+        }
+      },
+      scrollToEnd () {
+        this.$nextTick(() => {
+          var container = this.$el.querySelector('.chat-container')
+          container.scrollTop = container.scrollHeight
+        })
+      },
+      scrollTo () {
+        this.$nextTick(() => {
+          let currentHeight = this.$refs.chatContainer.scrollHeight
+          let difference = currentHeight - this.totalChatHeight
+          var container = this.$el.querySelector('.chat-container')
+          container.scrollTop = difference
+        })
+      },
+      addEmojiToMessage (emoji) {
+        this.content += emoji.value
+      },
+      toggleEmojiPanel () {
+        this.emojiPanel = !this.emojiPanel
+      }
+    }
+  }
 </script>
+<style scoped src="../assets/chat.css"></style>
