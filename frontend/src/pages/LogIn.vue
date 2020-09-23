@@ -6,7 +6,7 @@
           <div v-if="nm_page === 0" class="start">
             <div>
               <h2>일반회원</h2>
-              <v-btn rounded color="primary" dark @click="mvpage(true)"
+              <v-btn rounded color="rgb(0,0,0)" dark @click="mvpage(true)"
                 >시작하기</v-btn
               >
             </div>
@@ -20,9 +20,10 @@
                 <h2>일반회원</h2>
               </div>
               <v-text-field v-model="nm_email" label="이메일" :messages="[error.email]"></v-text-field>
-              <v-text-field v-model="nm_password" label="비밀번호" :messages="[error.pwd]" type="password"></v-text-field>
+              <v-text-field v-model="nm_password" label="비밀번호" :type="password"></v-text-field>
+              <button @click="look()">보기</button>
               <v-btn rounded color="rgb(233, 105, 30)" dark @click="nm_login()">로그인</v-btn>
-              <v-btn rounded color="primary" dark @click="mvpage(true)">회원등록</v-btn>
+              <v-btn rounded color="rgb(0,0,0)" dark @click="mvpage(true)">회원등록</v-btn>
             </div>
           </div>
           <div v-if="nm_page === 2" class="start">
@@ -37,8 +38,7 @@
               <v-text-field v-model="nm_name" label="이름"></v-text-field>
               <v-text-field v-model="nm_nickname" label="닉네임"></v-text-field>
               <v-text-field v-model="nm_password" :messages="[error.pwd]" label="비밀번호" ref="nm_password"></v-text-field>
-              <v-text-field v-model="nm_password_confirm" :messages="[error.pwdconfirm]" label="비밀번호" ref="nm_password_confirm"
-              ></v-text-field>
+              <v-text-field v-model="nm_password_confirm" :messages="[error.pwdconfirm]" label="비밀번호" ref="nm_password_confirm"></v-text-field>
               <v-text-field
                 v-model="nm_address"
                 label="주소"
@@ -60,7 +60,7 @@
                   </v-radio-group>
                 </v-layout>
               </v-container>
-              <v-btn rounded color="primary" dark @click="checkHandler()"
+              <v-btn rounded color="rgb(0,0,0)" dark @click="checkHandler()"
                 >회원가입</v-btn
               >
             </div>
@@ -70,7 +70,7 @@
           <div v-if="biz_page === 0" class="start">
             <div>
               <h2>사업자회원</h2>
-              <v-btn rounded color="primary" dark @click="mvpage(false)"
+              <v-btn rounded color="rgb(0,0,0)" dark @click="mvpage(false)"
                 >시작하기</v-btn
               >
             </div>
@@ -94,7 +94,7 @@
               <v-btn rounded color="rgb(233, 105, 30)" dark @click="biz_login()"
                 >로그인</v-btn
               >
-              <v-btn rounded color="primary" dark @click="mvpage(false)"
+              <v-btn rounded color="rgb(0,0,0)" dark @click="mvpage(false)"
                 >사업자등록</v-btn
               >
             </div>
@@ -127,7 +127,7 @@
                 readonly="readonly"
                 @click="findAddress()"
               ></v-text-field>
-              <v-btn rounded color="primary" dark @click="biz_signup()"
+              <v-btn rounded color="rgb(0,0,0)" dark @click="biz_signup()"
                 >회원가입</v-btn
               >
             </div>
@@ -166,10 +166,11 @@ export default {
         pwd:"",
         pwdconfirm:""
       },
+      password: "password",
 
       rules: [
         { message: '이메일을 확인해주세요', regex:/[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$/},
-				{ message:'영어소문자, 숫자 포함 8자 이상의 비밀번호.', regex:/(?=.*\d)(?=.*[a-z]).{8,}/},
+				{ message:'사용불가능한 비밀번호입니다', regex:/(?=.*\d)(?=.*[a-z]).{8,}/},
       ],
       
     };
@@ -186,13 +187,23 @@ export default {
       this.nm_nickname = this.nm_email;
     },
     nm_password: function(){
+      var temp = ['qwert', 'asdfg', 'zxcvb'];
+      var nm_password = this.nm_password;
       if(this.nm_password.length>0){
-          if (!this.rules[1].regex.test(this.nm_password)) {
-            this.error.pwd=this.rules[1].message;
-            return;
+          for(var t in temp){
+            if(this.nm_password.includes(temp[t])){
+              this.error.pwd = this.rules[1].message;
+              return;
+            }
           }
-          this.error.pwd='';
-			}
+          this.error.pwd=this.rules[1].message;
+        if (!this.rules[1].regex.test(nm_password)) {
+          this.error.pwd=this.rules[1].message;
+          return;
+        }
+        this.error.pwd='';
+        return;
+      }
     },
     nm_password_confirm: function(){
        if(this.nm_password_confirm.length>0){
@@ -243,16 +254,12 @@ export default {
           password1: this.nm_password,
           password2: this.nm_password_confirm,
         })
-        .then(() => {
-          console.log("then");
+        .then((res) => {
+          console.log(res);
           this.nm_page=1;
         })
-        .catch(() => {
-          console.log(this.nm_nickname)
-          console.log(this.nm_email)
-          console.log(this.nm_password)
-          console.log(this.nm_password_confirm)
-          console.log("catch");
+        .catch((err) => {
+          console.log(err);
         });
     },
     reset(nm) {
@@ -291,6 +298,13 @@ export default {
         this.biz_password = "";
         this.biz_password_confirm = "";
         this.biz_address = "";
+      }
+    },
+    look(){
+      if(this.password==='password'){
+        this.password = 'text';
+      } else {
+        this.password = 'password';
       }
     },
   },
