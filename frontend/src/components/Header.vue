@@ -22,9 +22,11 @@
 </template>
 
 <script>
+import user from "../assets/datas/user.json";
+
 export default {
   data: () => ({
-    userAddress: [1, 2, 3, 4, 5],
+    userAddress: user.nm_address,
     showAddrModal: false,
   }),
   components: {},

@@ -16,7 +16,7 @@ def user_username(request):
         return Response({'message': '사용가능한 닉네임입니다.'})
 
 # 이메일 중복 여부 체크
-@api_view(['GET'])
+@api_view(['POST'])
 def user_email(request):
     User = get_user_model()
     try:

@@ -186,7 +186,7 @@ export default {
         this.error.email='';
       }
       this.nm_nickname = this.nm_email;
-      axios.get(baseURL + "accounts/user_email/", {
+      axios.post(baseURL + "accounts/user_email/", {
           "email": this.nm_email
       })
       .then((res)=>{

@@ -7,7 +7,7 @@ import ChatModule from './ChatModule'
 
 Vue.use(Vuex)
 
-export const store = new Vuex.Store({
+export const index = new Vuex.Store({
   modules: {
     auth: AuthModule,
     chat: ChatModule
