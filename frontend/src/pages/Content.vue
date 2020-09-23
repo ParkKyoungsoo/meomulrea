@@ -81,16 +81,17 @@ export default {
       })
         .then((response) => {
           this.locationData = response.data;
-          console.log(this.locationData);
+          // console.log(this.locationData);
         })
-        .catch((ex) => {
-          console.log("ERR!!!!! : ", ex);
+        .catch(() => {
+        // .catch((ex) => {
+          // console.log("ERR!!!!! : ", ex);
         });
     },
 
     pollData() {
       this.polling = setInterval(() => {
-        console.log("hihi");
+        // console.log("hihi");
         this.axiosTest();
       }, 60000);
     },
@@ -102,11 +103,11 @@ export default {
           (position) => {
             this.lat = position.coords.latitude;
             this.lng = position.coords.longitude;
-            console.log(this.lat + " " + this.lng);
+            // console.log(this.lat + " " + this.lng);
           },
-          (error) => {
-            console.error(error);
-          },
+          // (error) => {
+            // console.error(error);
+          // },
           {
             enableHighAccuracy: false,
             maximumAge: 0,

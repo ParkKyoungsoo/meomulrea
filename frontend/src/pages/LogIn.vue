@@ -22,7 +22,7 @@
               <v-text-field v-model="nm_email" label="이메일" :messages="[error.email]"></v-text-field>
               <v-text-field v-model="nm_password" label="비밀번호" :type="password"></v-text-field>
               <button @click="look()">보기</button>
-              <v-btn rounded color="rgb(233, 105, 30)" dark @click="nm_login()">로그인</v-btn>
+              <v-btn rounded color="rgb(233, 105, 30)" dark @click="nm_login()" :loading="loading">로그인</v-btn>
               <v-btn rounded color="rgb(0,0,0)" dark @click="mvpage(true)">회원등록</v-btn>
             </div>
           </div>
@@ -52,10 +52,10 @@
                       <label for="nm_gender">성별</label>
                     </v-flex>
                     <v-flex xs4>
-                      <v-radio label="FEMALE" value="F"></v-radio>
+                      <v-radio label="FEMALE" value="1"></v-radio>
                     </v-flex>
                     <v-flex xs4>
-                      <v-radio label="MALE" value="M"></v-radio>
+                      <v-radio label="MALE" value="0"></v-radio>
                     </v-flex>
                   </v-radio-group>
                 </v-layout>
@@ -153,6 +153,7 @@ export default {
       nm_password_confirm: "",
       nm_address: "",
       nm_gender: "",
+      nm_birthyear:0,
 
       biz_page: 0,
       biz_email: "",
@@ -185,6 +186,12 @@ export default {
         this.error.email='';
       }
       this.nm_nickname = this.nm_email;
+      axios.get(baseURL + "accounts/user_email/", {
+          "email": this.nm_email
+      })
+      .then((res)=>{
+        console.log(res.data.message)
+      })
     },
     nm_password: function(){
       var temp = ['qwert', 'asdfg', 'zxcvb'];
@@ -215,6 +222,17 @@ export default {
 			}
     }
   },
+  computed:{
+    // comparePasswords () {
+    //     return this.password !== this.confirmPassword ? 'Passwords do not match.' : true
+    //   },
+      user () {
+        return this.$store.getters.user
+      },
+      loading () {
+        return this.$store.getters.loading
+      }
+  },
   methods: {
     checkHandler(){
       let err = true;
@@ -237,9 +255,13 @@ export default {
           email: this.nm_email,
           password: this.nm_password,
         })
-        .then((res) => {
-          console.log(res);
+        .then(() => {
+          this.$store.dispatch('signUserIn', {email: this.nm_email, password: this.nm_password})
+          console.log(this.$store.dispatch)
+          console.log(this.$store.getters.user)
+          this.nm_page=0;
           this.err = "";
+          console.log(this.nm_page)
         })
         .catch(() => {
           console.log("err");
@@ -255,11 +277,39 @@ export default {
           password2: this.nm_password_confirm,
         })
         .then((res) => {
-          console.log(res);
-          this.nm_page=1;
+          let token = res.data.key;
+          console.log('Token '+token)
+          console.log(this.nm_address)
+          console.log(this.nm_gender)
+          console.log(this.birth_year)
+          axios.post(baseURL + "accounts/user_detail/",
+            {
+              username: this.nm_nickname,
+              email: this.nm_email,
+              usertype: 1,
+              gender: this.nm_gender,
+              address: this.nm_address,
+              birth_year: this.nm_birthyear
+            },
+            {
+              headers: {
+                "Authorization" : "Token "+token
+              }
+            }
+          )
+          .then((res)=>{
+            console.log('res : ' + res)
+            this.$store.dispatch('signUserUp', {email: this.nm_email, password: this.nm_password, username: this.nm_nickname})
+            console.log('user : '+this.$store.getters.user)
+            this.$router.push('/')
+          })
+          .catch((err)=>{
+            console.log('err : '+err)
+          })
         })
         .catch((err) => {
           console.log(err);
+          console.log('이 에러라고')
         });
     },
     reset(nm) {
