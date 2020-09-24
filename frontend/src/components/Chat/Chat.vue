@@ -1,32 +1,42 @@
 <template>
-  <v-container fluid style="padding: 0;">
-    <v-row no-gutters>
-      <v-col sm="2" class="scrollable">
-        <chats></chats>
-      </v-col>
-      <v-col sm="10" style="position: relative;">
-        <div class="chat-container" v-on:scroll="onScroll" ref="chatContainer">
-          <message :messages="messages" @imageLoad="scrollToEnd"></message>
-        </div>
-        <emoji-picker
-          :show="emojiPanel"
-          @close="toggleEmojiPanel"
-          @click="addEmojiToMessage"
-        ></emoji-picker>
-        <div class="typer">
-          <input
-            type="text"
-            placeholder="Type here..."
-            v-on:keyup.enter="sendMessage"
-            v-model="content"
-          />
-          <v-btn icon class="blue--text emoji-panel" @click="toggleEmojiPanel">
-            <v-icon>mdi-emoticon-outline</v-icon>
-          </v-btn>
-        </div>
-      </v-col>
-    </v-row>
-  </v-container>
+  <v-main>
+    <v-container fluid style="padding: 0;">
+      <v-row no-gutters>
+        <v-col sm="2" class="scrollable">
+          <chats></chats>
+        </v-col>
+        <v-col sm="10" style="position: relative;">
+          <div
+            class="chat-container"
+            v-on:scroll="onScroll"
+            ref="chatContainer"
+          >
+            <message :messages="messages" @imageLoad="scrollToEnd"></message>
+          </div>
+          <emoji-picker
+            :show="emojiPanel"
+            @close="toggleEmojiPanel"
+            @click="addEmojiToMessage"
+          ></emoji-picker>
+          <div class="typer">
+            <input
+              type="text"
+              placeholder="Type here..."
+              v-on:keyup.enter="sendMessage"
+              v-model="content"
+            />
+            <v-btn
+              icon
+              class="blue--text emoji-panel"
+              @click="toggleEmojiPanel"
+            >
+              <v-icon>mdi-emoticon-outline</v-icon>
+            </v-btn>
+          </div>
+        </v-col>
+      </v-row>
+    </v-container>
+  </v-main>
 </template>
 
 <script>
@@ -61,7 +71,8 @@ export default {
       return this.chatMessages;
     },
     username() {
-      return this.$store.getters.user.username;
+      // return this.$store.getters.user.username;
+      return "pks313527";
     },
     onNewMessageAdded() {
       const that = this;
