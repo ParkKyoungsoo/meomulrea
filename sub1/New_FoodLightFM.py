@@ -16,7 +16,7 @@ DATA_FILE = os.path.join(DATA_DIR, "data.json")
 DINING_DATA_FILE = os.path.join(DATA_DIR, "dining_data.json")
 DUMP_FILE = os.path.join(DATA_DIR, "dump.pkl")
 
-# 데이터 불러들이는 함수
+# 데이터 불러들이는 함수1
 def import_diningdata(data_path=DINING_DATA_FILE):
     
     try:
@@ -31,7 +31,7 @@ def import_diningdata(data_path=DINING_DATA_FILE):
     
 
     for d in data:
-
+        
         stores.append(
             [
                 d["store_id"],
@@ -53,22 +53,24 @@ def import_data(data_path=DATA_FILE):
         print(f"`{data_path}` 가 존재하지 않습니다.")
         exit(1)
 
-    stores = []  # 음식점 테이블
+    all_stores = [] # 모든 가게 테이블
     reviews = []  # 리뷰 테이블
-
     for d in data:
+        
+        
         for c in d["category_list"]:
-            category = c["category"]
+            category = c["category"] # 대분류 카테고리만 사용하겠음. 
             break
             
-        stores.append(
+        all_stores.append(
             [
                 d["id"],
                 d["name"],
                 category,
             ]
         )
-
+            
+        
         for review in d["review_list"]:
             r = review["review_info"]
             u = review["writer_info"]
@@ -76,22 +78,16 @@ def import_data(data_path=DATA_FILE):
             reviews.append(
                 [d["id"], u["id"], r["score"]]
             )
-            # 식당 ID, 작성자 ID, 평점
-
-    store_frame = pd.DataFrame(data=stores, columns=("store_id", "store_name","category"))
+    
+    # 식당ID, 식당명, category
+    store_frame = pd.DataFrame(data=all_stores, columns=("store_id", "store_name","category"))
+    
+    # 식당 ID, 작성자 ID, 평점
     review_frame = pd.DataFrame(data=reviews, columns=("store_id", "user_id", "score"))
 
-    store_review= pd.merge(store_frame, review_frame, left_on="store_id", right_on="store_id")
-    store_review['score'] = store_review['score'].replace('', np.nan)
-    store_review['score'].fillna(0)
-    
-    store_review['average_rating'] = store_review['score'].groupby(store_review["store_id"]).transform('mean')
-    global new_store_frame
-    new_store_frame = pd.DataFrame(data=store_review, columns=("store_id", "store_name", "category", "average_rating"))
-    new_store_frame = new_store_frame.drop_duplicates() # 중복제거 
-    print("평균평점 컬럼 추가 ")
-    print(new_store_frame.iloc[0:20, :]) 
-    return {"stores": new_store_frame, "reviews": review_frame}
+
+    return {"reviews": review_frame, "stores": store_frame}
+
 
 def dump_dataframes(dataframes):
     pd.to_pickle(dataframes, DUMP_FILE)
@@ -103,6 +99,12 @@ data = import_data()
 dump_dataframes(data)
 data = load_dataframes()
 dining_data = import_diningdata()
+
+# 모든 가게 정보
+global all_stores_data
+all_stores_data = data["stores"]
+print("--모든 가게 정보--")
+print(all_stores_data.head())
 
 # 평점 데이터 
 ratings = data["reviews"]
@@ -169,8 +171,6 @@ def objective(params):
 
     return output
 
-best_params = fmin(fn=objective, space=space, algo=tpe.suggest, max_evals=10, trials=trials)
-
 
 # Find Similar Items
 def make_best_items_report(item_embeddings, store_id, num_search_items=10):
@@ -189,22 +189,21 @@ def make_best_items_report(item_embeddings, store_id, num_search_items=10):
 
     # Report를 작성할 pandas dataframe
     best_items = pd.DataFrame(columns=['store_id','category','score'])
-    global item_meta
+    global all_stores_data
     for similar_item_id, score in similar_item_id_and_scores:
         store_id = similar_item_id + 1
         
-        print('카테고리')
-        print(item_meta[item_meta['store_id']==store_id].values[0][1])
-        
-        # store_name = item_meta[item_meta['store_id'] == store_id].values[0][1]
-        # category = item_meta[item_meta['store_id'] == store_id].values[0][2]
+        print(store_id)
+        print(all_stores_data[all_stores_data['store_id']==store_id].values)
+        category = all_stores_data[all_stores_data['store_id']==store_id].values[0][2]
         
         # row = pd.Series([store_id, store_name, category,score], index=best_items.columns)
-        row = pd.Series([store_id, '일단음식',score], index=best_items.columns)
+        row = pd.Series([store_id, category ,score], index=best_items.columns)
         best_items = best_items.append(row, ignore_index=True)
 
     return best_items
 
+best_params = fmin(fn=objective, space=space, algo=tpe.suggest, max_evals=10, trials=trials)
 item_biases, item_embeddings = model.get_item_representations(features=item_features)
 report01 = make_best_items_report(item_embeddings, 2, 10)
 report02 = make_best_items_report(item_embeddings, 1, 10)
