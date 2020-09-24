@@ -1,6 +1,6 @@
 <template>
-  <v-container>
     <v-main>
+  <v-container>
       <div class="cont">
         <div class="cont_center_left">
           <div v-if="nm_page === 0" class="start">
@@ -39,7 +39,7 @@
               <v-text-field v-model="nm_nickname" label="닉네임"></v-text-field>
               <v-text-field v-model="nm_password" :messages="[error.pwd]" label="비밀번호" ref="nm_password"></v-text-field>
               <v-text-field v-model="nm_password_confirm" :messages="[error.pwdconfirm]" label="비밀번호" ref="nm_password_confirm"></v-text-field>
-              <v-text-field label="주소" @click="findAddress()" v-model="nm_address"></v-text-field>
+              <v-text-field label="주소" @click="findAddress()" readonly="readonly" v-model="nm_address"></v-text-field>
               <v-container fluid style="height:fit-content;">
                 <v-layout style="height:fit-content;" row>
                   <v-radio-group v-model="nm_gender" row>
@@ -47,14 +47,15 @@
                       <label for="nm_gender">성별</label>
                     </v-flex>
                     <v-flex xs4>
-                      <v-radio label="FEMALE" value="1"></v-radio>
+                      <v-radio label="FEMALE" value=1></v-radio>
                     </v-flex>
                     <v-flex xs4>
-                      <v-radio label="MALE" value="0"></v-radio>
+                      <v-radio label="MALE" value=0></v-radio>
                     </v-flex>
                   </v-radio-group>
                 </v-layout>
               </v-container>
+              <v-text-field label="출생년도" type="number" v-model="nm_birthyear"></v-text-field>
               <v-btn rounded color="rgb(0,0,0)" dark @click="checkHandler()"
                 >회원가입</v-btn
               >
@@ -129,8 +130,8 @@
           </div>
         </div>
       </div>
-    </v-main>
   </v-container>
+    </v-main>
 </template>
 
 <script src="http://dmaps.daum.net/map_js_init/postcode.v2.js"></script>
@@ -149,7 +150,7 @@ export default {
       nm_nickname: "",
       nm_password: "",
       nm_password_confirm: "",
-      nm_address: "주소 어디ㅜ",
+      nm_address: "",
       nm_gender: "",
       nm_birthyear:0,
 
@@ -272,9 +273,7 @@ export default {
         .then((res) => {
           console.log('res : ' + res.data.key)
           this.$store.dispatch('signUserIn', {email: this.nm_email, password: this.nm_password})
-          console.log(this.$store.dispatch)
           console.log(this.$store.getters.user)
-          // this.nm_page=0;
           this.$router.push("/chat")
           this.err = "";
           // console.log(this.nm_page)
@@ -292,20 +291,34 @@ export default {
           password1: this.nm_password,
           password2: this.nm_password_confirm,
         })
-        .then((res) => {
-          // let token = res.data.key;
-          console.log('res : ' + res.data.key)
-          this.$store.dispatch('signUserUp', {email: this.nm_email, password: this.nm_password, username: this.nm_nickname})
-          console.log('user : '+this.$store.getters.user)
-          this.$router.push('/chat')
+        .then(res => {
+          axios.post(baseURL + "accounts/user_detail/",
+            {
+                username: this.nm_nickname,
+                email: this.nm_email,
+                usertype: 1,
+                gender: this.nm_gender,
+                address: this.nm_address,
+                birth_year: this.nm_birthyear
+            },
+              {
+                headers : {
+                  Authorization : `Token ${res.data.key}`
+                  }
+              }
+            )
+            .then(res => {
+              console.log(res.data)
+              this.$store.dispatch('signUserUp', {email: this.nm_email, password: this.nm_password, username: this.nm_nickname})
+              this.$router.push('/')
+            })
+            .catch(err => {
+              console.log(err.response)
+              console.log(err)
+            })
         })
-        //   .catch((err)=>{
-        //     console.log('err : '+err)
-        //   })
-        // })
-        .catch((err) => {
+        .catch(err => {
           console.log(err);
-          console.log('이 에러라고')
         });
     },
     reset(nm) {
@@ -316,7 +329,7 @@ export default {
         this.nm_nickname = "";
         this.nm_password = "";
         this.nm_password_confirm = "";
-        this.nm_address = "주소는 어디";
+        this.nm_address = "";
         this.nm_gender = "";
       } else {
         this.biz_page -= 1;
@@ -335,7 +348,7 @@ export default {
         this.nm_nickname = "";
         this.nm_password = "";
         this.nm_password_confirm = "";
-        this.nm_address = "주소는 어디";
+        this.nm_address = "";
         this.nm_gender = "";
       } else {
         this.biz_page += 1;

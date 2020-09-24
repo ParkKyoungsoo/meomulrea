@@ -31,12 +31,7 @@
         <v-flex> 현재 {{ locationData.name }}에서 인기있는 음식은? </v-flex>
       </v-layout>
       <div class="shopList">
-        <div
-          v-for="(item, index) in tmpData"
-          :key="index"
-          s
-          style="margin: 10px;"
-        >
+        <div v-for="(item, index) in tmpData" :key="index" style="margin: 10px;">
           <ShowList :storeData="item" />
         </div>
       </div>

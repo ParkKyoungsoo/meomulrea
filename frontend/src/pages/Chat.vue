@@ -1,5 +1,5 @@
 <template>
-<v-main>
+  <v-container fluid style="padding: 0;">
   <v-app>
     <v-app-bar app class="light-blue darken-1">
       <v-app-bar-nav-icon @click.native.stop="drawerToggle = !drawerToggle"></v-app-bar-nav-icon>
@@ -15,8 +15,6 @@
       </v-toolbar-items>
     </v-app-bar>
   </v-app>
-  
-  <v-container fluid style="padding: 0;">
     <v-row no-gutters>
       <v-col sm="2" class="scrollable">
         <chats></chats>
@@ -35,7 +33,6 @@
       </v-col>
     </v-row>
   </v-container>
-</v-main>
 </template>
 
 <script>

@@ -33,7 +33,6 @@ const AuthModule = {
     signUserUp ({commit}, payload) {
       commit('setLoading', true)
       commit('clearError')
-      console.log('error 해제')
       firebase.auth().createUserWithEmailAndPassword(payload.email, payload.password)
         .then(
           auth => {
@@ -55,7 +54,7 @@ const AuthModule = {
                 error => {
                   commit('setLoading', false)
                   commit('setError', error)
-                  console.log('무슨 에러')
+                  console.log('AuthModule.js signUserUp 에러')
                 }
               )
           }
@@ -77,6 +76,7 @@ const AuthModule = {
           auth => {
             firebase.database().ref('users').child(auth.user.uid).once('value', function (data) {
                 console.log(data)
+                console.log('auth.user : '+auth.user.username)
               commit('setLoading', false)
               const newUser = {
                 id: auth.user.uid,
@@ -90,7 +90,7 @@ const AuthModule = {
           error => {
             commit('setLoading', false)
             commit('setError', error)
-            console.log('슬픈 에러')
+            console.log('AuthModule.js signUserIn 에러')
           }
         )
     }

@@ -30,5 +30,6 @@ urlpatterns = [
     # path('account/bizsignup/', include('rest_auth.registration.urls')),
 
     path('reviews/', include('reviews.urls')),
+    path('stores/', include('stores.urls')),
 
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
