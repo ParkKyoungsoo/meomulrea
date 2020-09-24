@@ -1,5 +1,5 @@
 <template>
-  <v-app-bar app color="indigo" dark>
+  <v-app-bar app color="rgb(233, 105, 30)" dark>
     <v-toolbar-title>
       <router-link style="text-decoration: none; color: white;" to="/">
         Home
