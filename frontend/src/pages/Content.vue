@@ -7,7 +7,7 @@
         <v-col>
           <v-row>
             날씨 영역
-            <v-btn icon color="green" @click="axiosTest">
+            <v-btn icon color="green" @click="getWeather">
               <v-icon>mdi-cached</v-icon>
             </v-btn>
           </v-row>
@@ -28,7 +28,7 @@
         <Carousel :storeData="tmpData" />
       </div>
       <v-layout>
-        <v-flex> 현재 {{ locationData.name }}에서 인기있는 음식은? </v-flex>
+        <v-flex> 현재 {{ this.getLocation.dong }}에서 인기있는 음식은? </v-flex>
       </v-layout>
       <div class="shopList">
         <div
@@ -51,6 +51,7 @@ import tmpData from "../assets/datas/store.json";
 import ShowList from "../components/ShowList";
 import { mapMutations, mapGetters } from "vuex";
 import test from "../components/Addr2Code.vue";
+import { EventBus } from "../utils/EventBus.js";
 
 export default {
   components: {
@@ -72,17 +73,19 @@ export default {
   created() {
     this.pollData();
     // this.getLocation();
+    EventBus.$on("addressChange", () => {
+      this.getWeather();
+    });
   },
   computed: {
     ...mapGetters("location", ["getLocation"]),
   },
   beforeMount() {
-    this.axiosTest();
+    this.getWeather();
   },
-
   methods: {
     ...mapMutations(("location", ["setLocation"])),
-    axiosTest: function() {
+    getWeather: function() {
       axios({
         method: "GET",
         url: `http://api.openweathermap.org/data/2.5/weather?lat=${this.getLocation.lat}&lon=${this.getLocation.lng}&appid=5da983044710640f1d38176a055c7f66`,
@@ -103,7 +106,7 @@ export default {
     pollData() {
       this.polling = setInterval(() => {
         console.log("hihi");
-        this.axiosTest();
+        this.getWeather();
       }, 60000);
     },
 

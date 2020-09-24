@@ -8,7 +8,14 @@
     <v-spacer />
     <v-toolbar-title>
       <v-col>
-        <v-select :items="userAddress" label="주소를 선택해주세요" dense solo />
+        <v-select
+          v-model="seletedAddress"
+          @change="changeAddress"
+          :items="userAddress"
+          return-object
+          dense
+          solo
+        />
       </v-col>
     </v-toolbar-title>
     <button @click="showAddrModal = true">추가하기</button>
@@ -23,13 +30,26 @@
 
 <script>
 import user from "../assets/datas/user.json";
+import { EventBus } from "../utils/EventBus.js";
 
 export default {
   data: () => ({
-    userAddress: user.nm_address,
+    userAddress: user[0].nm_address,
     showAddrModal: false,
+    seletedAddress: "",
   }),
   components: {},
+  computed: {
+    options: () => user[0].nm_address,
+  },
+  created() {
+    console.log("userAddress", user[0]);
+  },
+  methods: {
+    changeAddress: function() {
+      EventBus.$emit("addressChange", this.seletedAddress);
+    },
+  },
 };
 </script>
 <style>
