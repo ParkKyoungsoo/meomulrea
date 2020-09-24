@@ -1,24 +1,26 @@
 <template>
-  <v-container fluid>
-    <v-row no-gutters>
-      <v-col sm="6" xs="12" offset-sm="3">
-        <form @submit.prevent="createChat">
-          <v-col xs="12">
-            <v-text-field
-              name="chatname"
-              label="Chat Name"
-              id="chatname"
-              v-model="chatName"
-              type="text"
-              required
-            >
-            </v-text-field>
-            <v-btn type="submit">Create</v-btn>
-          </v-col>
-        </form>
-      </v-col>
-    </v-row>
-  </v-container>
+  <v-main>
+    <v-container>
+      <v-row no-gutters>
+        <v-col sm="6" xs="12" offset-sm="3">
+          <form @submit.prevent="createChat">
+            <v-col xs="12">
+              <v-text-field
+                name="chatname"
+                label="Chat Name"
+                id="chatname"
+                v-model="chatName"
+                type="text"
+                required
+              >
+              </v-text-field>
+              <v-btn type="submit">Create</v-btn>
+            </v-col>
+          </form>
+        </v-col>
+      </v-row>
+    </v-container>
+  </v-main>
 </template>
 
 <script>
@@ -29,13 +31,16 @@ export default {
     return {
       chatName: "",
       loading: false,
+      user: {
+        id: "pks313527",
+      },
     };
   },
-  computed: {
-    user() {
-      return this.$store.getters.user;
-    },
-  },
+  // computed: {
+  //   user() {
+  //     return this.$store.getters.user;
+  //   },
+  // },
   methods: {
     createChat() {
       if (this.chatName == "" || this.loading) {

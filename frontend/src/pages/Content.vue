@@ -85,6 +85,7 @@ export default {
   methods: {
     ...mapMutations(("location", ["setLocation"])),
     getWeather: function() {
+      console.log("weather function called!!");
       axios({
         method: "GET",
         url: `http://api.openweathermap.org/data/2.5/weather?lat=${this.getLocation.lat}&lon=${this.getLocation.lng}&appid=5da983044710640f1d38176a055c7f66`,
