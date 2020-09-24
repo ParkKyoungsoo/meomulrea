@@ -6,7 +6,7 @@ from rest_framework.permissions import IsAuthenticated
 from .serializers import UserSerializer, UserDetailSerializer
 
 # 닉네임 중복 여부 체크
-@api_view(['GET'])
+@api_view(['POST'])
 def user_username(request):
     User = get_user_model()
     try:
