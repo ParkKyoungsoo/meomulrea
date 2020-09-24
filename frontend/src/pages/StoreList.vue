@@ -3,18 +3,37 @@
     <v-container>
       카테고리에 해당하는 가게 목록들
       <div>{{ $route.params.category }}</div>
-      <!-- <div>{{ this.$store.getters["location/getLocation"] }}</div> -->
+      <div>{{ this.getLocation.dong }}</div>
       <v-row>
-        <v-col>
-          <v-row>
-            1-1
-          </v-row>
-          <v-row>
-            1-2
-          </v-row>
+        <v-col class="shopList">
+          <v-card
+            class="mx-auto"
+            max-width="320"
+            outlined
+            v-for="(item, index) in this.getShopList.shopList"
+            :key="index"
+          >
+            <v-col>
+              <v-row justify="center">
+                <div>{{ item.store_name }}</div>
+              </v-row>
+              <v-row justify="center">
+                <v-list-item-avatar tile size="200" color="grey" />
+              </v-row>
+            </v-col>
+
+            <v-card-actions>
+              <v-btn
+                depressed
+                color="primary"
+                @click="goToShopDetail(item.store_id)"
+                >가게 보러가기</v-btn
+              >
+            </v-card-actions>
+          </v-card>
         </v-col>
         <v-col>
-          <kakaoMap :storeData="loc" />
+          <kakaoMap :storeData="loc" :category="category" />
         </v-col>
       </v-row>
     </v-container>
@@ -29,7 +48,11 @@ import { mapGetters } from "vuex";
 export default {
   data() {
     return {
-      loc: 0,
+      data: {
+        loc: 0,
+        category: "",
+        shopList: "",
+      },
     };
   },
   components: {
@@ -38,13 +61,20 @@ export default {
 
   computed: {
     ...mapGetters("location", ["getLocation"]),
+    ...mapGetters("shopList", ["getShopList"]),
   },
 
   created: function() {
     this.loc = this.getLocation;
+    this.category = this.$route.params.category;
+    this.shopList = this.getShopList;
+    console.log("shopList : ", this.shopList);
   },
 
   methods: {
+    goToShopDetail: function(shopId) {
+      this.$router.push("/storedetail/" + shopId);
+    },
     test: function() {
       console.log("loc", this.loc);
     },
@@ -68,3 +98,10 @@ export default {
   },
 };
 </script>
+<style>
+.shopList {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+</style>

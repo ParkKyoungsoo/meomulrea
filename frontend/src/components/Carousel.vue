@@ -10,7 +10,7 @@
       :loop="true"
     >
       <slide v-for="(item, index) in storeData" :key="index">
-        <img :src="item.image" alt="item.name" />
+        <img :src="item.store_id" alt="item.store_id" />
       </slide>
     </carousel>
   </div>

@@ -1,13 +1,13 @@
 <template>
-  <v-main class="content">
-    <v-container style="width: 80%;">
+  <v-main>
+    <v-container class="content" style="width: 80%; ">
       <h2>본문영역</h2>
       <test />
       <v-layout class="weather">
         <v-col>
           <v-row>
             날씨 영역
-            <v-btn icon color="green" @click="axiosTest">
+            <v-btn icon color="green" @click="getWeather">
               <v-icon>mdi-cached</v-icon>
             </v-btn>
           </v-row>
@@ -25,13 +25,17 @@
       </v-layout>
       <div class="advertise" align="center" justify="center">
         광고영역
-        <Carousel :storeData="tmpData" />
+        <Carousel :storeData="recommendedDate" />
       </div>
       <v-layout>
-        <v-flex> 현재 {{ locationData.name }}에서 인기있는 음식은? </v-flex>
+        <v-flex> 오늘은 뭐먹지? </v-flex>
       </v-layout>
       <div class="shopList">
-        <div v-for="(item, index) in tmpData" :key="index" style="margin: 10px;">
+        <div
+          v-for="(item, index) in recommendedDate"
+          :key="index"
+          style="margin: 10px;"
+        >
           <ShowList :storeData="item" />
         </div>
       </div>
@@ -42,10 +46,11 @@
 <script>
 import Carousel from "../components/Carousel";
 import axios from "axios";
-import tmpData from "../assets/datas/store.json";
+import recommendedDate from "../assets/datas/recommend_result_1.json";
 import ShowList from "../components/ShowList";
 import { mapMutations, mapGetters } from "vuex";
 import test from "../components/Addr2Code.vue";
+import { EventBus } from "../utils/EventBus.js";
 
 export default {
   components: {
@@ -60,24 +65,26 @@ export default {
       lat: 0,
       lng: 0,
       locationData: "",
-      tmpData: tmpData,
+      recommendedDate: recommendedDate.data,
     };
   },
 
   created() {
     this.pollData();
     // this.getLocation();
+    EventBus.$on("addressChange", () => {
+      this.getWeather();
+    });
   },
   computed: {
     ...mapGetters("location", ["getLocation"]),
   },
   beforeMount() {
-    this.axiosTest();
+    this.getWeather();
   },
-
   methods: {
     ...mapMutations(("location", ["setLocation"])),
-    axiosTest: function() {
+    getWeather: function() {
       axios({
         method: "GET",
         url: `http://api.openweathermap.org/data/2.5/weather?lat=${this.getLocation.lat}&lon=${this.getLocation.lng}&appid=5da983044710640f1d38176a055c7f66`,
@@ -98,8 +105,8 @@ export default {
 
     pollData() {
       this.polling = setInterval(() => {
-        // console.log("hihi");
-        this.axiosTest();
+        console.log("hihi");
+        this.getWeather();
       }, 60000);
     },
 
@@ -158,5 +165,6 @@ export default {
 .shopList {
   display: flex;
   justify-content: center;
+  flex-wrap: wrap;
 }
 </style>

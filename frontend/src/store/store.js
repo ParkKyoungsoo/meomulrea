@@ -1,6 +1,7 @@
 import Vue from "vue";
 import Vuex from "vuex";
 import Location from "./Location";
+import ShopList from "./ShopList";
 import createPersistedState from "vuex-persistedstate";
 import AuthModule from './AuthModule'
 import ChatModule from './ChatModule'
@@ -14,7 +15,8 @@ export const store = new Vuex.Store({
   modules: {
     location: Location,
     auth: AuthModule,
-    chat: ChatModule
+    chat: ChatModule,
+    shopList: ShopList
   },
   state: {
     loading: false,
@@ -57,11 +59,11 @@ export const store = new Vuex.Store({
     },
     onlineUsers (state) {
       return state.onlineUsers
-    }
+    },
   },
   plugins: [
     createPersistedState({
-      paths: ["Location.state"],
+      paths: ["Location.state", "ShopList"],
     }),
   ],
 });

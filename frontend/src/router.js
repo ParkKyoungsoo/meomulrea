@@ -8,6 +8,7 @@ import Content from "./pages/Content.vue";
 import StoreList from "./pages/StoreList.vue";
 import StoreDetail from "./pages/StoreDetail.vue";
 import Chat from "./pages/Chat.vue";
+import Create from "./components/Create.vue";
 
 export default new Router({
   mode: "history",
@@ -36,6 +37,11 @@ export default new Router({
       path: "/chat",
       name: "chat",
       component: Chat,
-    }
+    },
+    {
+      path: "/create",
+      name: "CreateChat",
+      component: Create,
+    },
   ],
 });
