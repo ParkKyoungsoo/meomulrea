@@ -259,9 +259,10 @@ export default {
           this.$store.dispatch('signUserIn', {email: this.nm_email, password: this.nm_password})
           console.log(this.$store.dispatch)
           console.log(this.$store.getters.user)
-          this.nm_page=0;
+          // this.nm_page=0;
+          this.$router.push("/chat")
           this.err = "";
-          console.log(this.nm_page)
+          // console.log(this.nm_page)
         })
         .catch(() => {
           console.log("err");
@@ -277,36 +278,16 @@ export default {
           password2: this.nm_password_confirm,
         })
         .then((res) => {
-          let token = res.data.key;
-          console.log('Token '+token)
-          console.log(this.nm_address)
-          console.log(this.nm_gender)
-          console.log(this.birth_year)
-          axios.post(baseURL + "accounts/user_detail/",
-            {
-              username: this.nm_nickname,
-              email: this.nm_email,
-              usertype: 1,
-              gender: this.nm_gender,
-              address: this.nm_address,
-              birth_year: this.nm_birthyear
-            },
-            {
-              headers: {
-                "Authorization" : "Token "+token
-              }
-            }
-          )
-          .then((res)=>{
-            console.log('res : ' + res)
-            this.$store.dispatch('signUserUp', {email: this.nm_email, password: this.nm_password, username: this.nm_nickname})
-            console.log('user : '+this.$store.getters.user)
-            this.$router.push('/')
-          })
-          .catch((err)=>{
-            console.log('err : '+err)
-          })
+          // let token = res.data.key;
+          console.log('res : ' + res.data)
+          this.$store.dispatch('signUserUp', {email: this.nm_email, password: this.nm_password, username: this.nm_nickname})
+          console.log('user : '+this.$store.getters.user)
+          this.$router.push('/chat')
         })
+        //   .catch((err)=>{
+        //     console.log('err : '+err)
+        //   })
+        // })
         .catch((err) => {
           console.log(err);
           console.log('이 에러라고')

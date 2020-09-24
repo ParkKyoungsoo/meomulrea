@@ -3,7 +3,6 @@ import App from "./App.vue";
 import router from "./router.js";
 import vuetify from "@/plugins/vuetify";
 import { store } from "./store/store.js";
-import {index} from "./store/index.js";
 
 import * as firebase from 'firebase'
 // import { store } from './store'
@@ -14,7 +13,6 @@ new Vue({
   router,
   vuetify,
   store,
-  index,
   render: (h) => h(App),
   created () {
     firebase.initializeApp({

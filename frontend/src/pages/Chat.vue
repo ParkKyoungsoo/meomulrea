@@ -1,4 +1,5 @@
 <template>
+<v-main>
   <v-container fluid style="padding: 0;">
     <v-row no-gutters>
       <v-col sm="2" class="scrollable">
@@ -18,6 +19,7 @@
       </v-col>
     </v-row>
   </v-container>
+</v-main>
 </template>
 
 <script>
