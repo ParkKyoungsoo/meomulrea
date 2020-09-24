@@ -2,7 +2,7 @@
   <v-card class="mx-auto" max-width="320" outlined>
     <v-col>
       <v-row justify="center">
-        <div>{{ storeData.name }}</div>
+        <div>{{ storeData.category }}</div>
       </v-row>
       <v-row justify="center">
         <v-list-item-avatar tile size="200" color="grey" />

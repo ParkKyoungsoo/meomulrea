@@ -25,14 +25,14 @@
       </v-layout>
       <div class="advertise" align="center" justify="center">
         광고영역
-        <Carousel :storeData="tmpData" />
+        <Carousel :storeData="recommendedDate" />
       </div>
       <v-layout>
-        <v-flex> 현재 {{ this.getLocation.dong }}에서 인기있는 음식은? </v-flex>
+        <v-flex> 오늘은 뭐먹지? </v-flex>
       </v-layout>
       <div class="shopList">
         <div
-          v-for="(item, index) in tmpData"
+          v-for="(item, index) in recommendedDate"
           :key="index"
           s
           style="margin: 10px;"
@@ -47,7 +47,7 @@
 <script>
 import Carousel from "../components/Carousel";
 import axios from "axios";
-import tmpData from "../assets/datas/store.json";
+import recommendedDate from "../assets/datas/recommend_result_1.json";
 import ShowList from "../components/ShowList";
 import { mapMutations, mapGetters } from "vuex";
 import test from "../components/Addr2Code.vue";
@@ -66,7 +66,7 @@ export default {
       lat: 0,
       lng: 0,
       locationData: "",
-      tmpData: tmpData,
+      recommendedDate: recommendedDate.data,
     };
   },
 
@@ -165,5 +165,6 @@ export default {
 .shopList {
   display: flex;
   justify-content: center;
+  flex-wrap: wrap;
 }
 </style>
