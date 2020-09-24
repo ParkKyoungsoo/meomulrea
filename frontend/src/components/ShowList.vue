@@ -11,7 +11,6 @@
 
     <v-card-actions>
       <v-btn depressed color="primary" @click="goToShop">가게 보러가기</v-btn>
-      <v-btn depressed color="primary">파티 구하러가기</v-btn>
     </v-card-actions>
   </v-card>
 </template>

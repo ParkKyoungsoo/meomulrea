@@ -1,6 +1,6 @@
 <template>
-  <v-main class="content">
-    <v-container style="width: 80%;">
+  <v-main>
+    <v-container class="content" style="width: 80%; ">
       <h2>본문영역</h2>
       <test />
       <v-layout class="weather">

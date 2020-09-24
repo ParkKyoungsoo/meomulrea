@@ -37,13 +37,14 @@
       <br />
       <v-card>
         <v-row>
-          <v-col @click="showContent(1)">메뉴</v-col>
-          <v-col @click="showContent(2)">리뷰</v-col>
-          <v-col @click="showContent(3)">파티만들기</v-col>
+          <v-col class="menu" @click="showContent(1)">메뉴</v-col>
+          <v-col class="review" @click="showContent(2)">리뷰</v-col>
+          <v-col class="party" @click="showContent(3)">파티만들기</v-col>
         </v-row>
         <v-row>
           <v-col>
-            {{ this.contents }}
+            <review v-if="contentTrigger2" />
+            <party v-if="contentTrigger3" />
           </v-col>
         </v-row>
       </v-card>
@@ -52,12 +53,20 @@
 </template>
 <script>
 import StoreData from "../assets/datas/all_store_encoding2.json";
+import review from "../components/review.vue";
+import party from "../components/party.vue";
 
 export default {
+  components: {
+    review,
+    party,
+  },
   data() {
     return {
       storeInfo: "",
-      contents: "1번내용",
+      contentTrigger1: true,
+      contentTrigger2: false,
+      contentTrigger3: false,
     };
   },
   created() {
@@ -66,11 +75,17 @@ export default {
   methods: {
     showContent(num) {
       if (num == 1) {
-        this.contents = "1번내용";
+        this.contentTrigger1 = true;
+        this.contentTrigger2 = false;
+        this.contentTrigger3 = false;
       } else if (num == 2) {
-        this.contents = "2번내용";
+        this.contentTrigger1 = false;
+        this.contentTrigger2 = true;
+        this.contentTrigger3 = false;
       } else if (num == 3) {
-        this.contents = "3번내용";
+        this.contentTrigger1 = false;
+        this.contentTrigger2 = false;
+        this.contentTrigger3 = true;
       }
     },
     getStoreDetail() {
@@ -83,3 +98,4 @@ export default {
   },
 };
 </script>
+<style></style>
