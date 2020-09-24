@@ -5,6 +5,9 @@ import vuetify from "@/plugins/vuetify";
 import { store } from "./store/store.js";
 
 import * as firebase from 'firebase'
+import VueCookies from 'vue-cookies'
+Vue.use(VueCookies)
+
 // import { store } from './store'
 
 Vue.config.productionTip = false;

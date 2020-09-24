@@ -4,31 +4,31 @@ const AuthModule = {
   state: {
     user: null
   },
-  mutations: {
-    setUser (state, payload) {
-      state.user = payload
-      const userListRef = firebase.database().ref('presence')
-      const myUserRef = userListRef.push()
+  // mutations: {
+  //   setUser (state, payload) {
+  //     state.user = payload
+  //     const userListRef = firebase.database().ref('presence')
+  //     const myUserRef = userListRef.push()
 
-      firebase.database().ref('.info/connected')
-        .on(
-          'value', function (snap) {
-            if (snap.val()) {
-              // if we lose network then remove this user from the list
-              myUserRef.onDisconnect()
-                .remove()
-              // set user's online status
-              let presenceObject = {user: payload, status: 'online'}
-              myUserRef.set(presenceObject)
-            } else {
-              // client has lost network
-              let presenceObject = {user: payload, status: 'offline'}
-              myUserRef.set(presenceObject)
-            }
-          }
-        )
-    }
-  },
+  //     firebase.database().ref('.info/connected')
+  //       .on(
+  //         'value', function (snap) {
+  //           if (snap.val()) {
+  //             // if we lose network then remove this user from the list
+  //             myUserRef.onDisconnect()
+  //               .remove()
+  //             // set user's online status
+  //             let presenceObject = {user: payload, status: 'online'}
+  //             myUserRef.set(presenceObject)
+  //           } else {
+  //             // client has lost network
+  //             let presenceObject = {user: payload, status: 'offline'}
+  //             myUserRef.set(presenceObject)
+  //           }
+  //         }
+  //       )
+  //   }
+  // },
   actions: {
     // signUserUp ({commit}, payload) {
     //   commit('setLoading', true)

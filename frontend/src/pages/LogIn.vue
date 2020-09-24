@@ -265,25 +265,27 @@ export default {
         },
       }).open();
     },
-    nm_login() {
-      axios
-        .post(baseURL + "account/login/", {
-          email: this.nm_email,
-          password: this.nm_password,
-        })
-        .then((res) => {
-          console.log('res : ' + res.data.key)
-          this.$store.dispatch('signUserIn', {email: this.nm_email, password: this.nm_password})
-          console.log(this.$store.getters.user)
-          this.$router.push("/chat")
-          this.err = "";
-          // console.log(this.nm_page)
-        })
-        .catch(() => {
-          console.log("err");
-          this.err = "이메일과 비밀번호를 다시 확인해주세요.";
-        });
+    setCookie(token) {
+      this.$cookies.set('auth-token', token)
+      this.isLoggedIn = true
     },
+    nm_login() {
+      // var nm_password = this.nm_password;
+      
+      axios.post(baseURL + "account/login/", {
+        email: this.nm_email,
+        password: this.nm_password,
+      })
+      .then((res) => {
+        this.setCookie(res.data.key);
+        firebase.auth().setPersistence(firebase.auth.Auth.Persistence.SESSION)
+        .then(()=>{
+          firebase.auth().signInWithEmailAndPassword(this.nm_email, this.nm_password)
+          this.$router.push('/chat')
+        })
+      });
+    },
+
     nm_signup() {
       axios
         .post(baseURL + "account/signup/", {
@@ -317,6 +319,7 @@ export default {
                     password: this.nm_password
                   })
                 })
+                this.nm_page=1;
             })  // post > post > then
         });
     },
