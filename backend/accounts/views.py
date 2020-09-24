@@ -24,6 +24,7 @@ def user_email(request):
         return Response({'message': '이미 존재하는 이메일입니다.'})
     except:
         return Response({'message': '사용가능한 이메일입니다.'})
+
 # res.data.message로 프론트에서 받으면 된다.
 
 # user 모델 추가사항들 저장
