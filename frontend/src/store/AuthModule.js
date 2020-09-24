@@ -30,53 +30,54 @@ const AuthModule = {
     }
   },
   actions: {
-    signUserUp ({commit}, payload) {
-      commit('setLoading', true)
-      commit('clearError')
-      firebase.auth().createUserWithEmailAndPassword(payload.email, payload.password)
-        .then(
-          auth => {
-            firebase.database().ref('users').child(auth.user.uid).set({
-              name: payload.username
-            })
-              .then(
-                message => {
-                    console.log(message)
-                  commit('setLoading', false)
-                  const newUser = {
-                    id: auth.user.uid,
-                    username: payload.username
-                  }
-                  commit('setUser', newUser)
-                }
-              )
-              .catch(
-                error => {
-                  commit('setLoading', false)
-                  commit('setError', error)
-                  console.log('AuthModule.js signUserUp 에러')
-                }
-              )
-          }
-        )
-        .catch(
-          error => {
-            commit('setLoading', false)
-            commit('setError', error)
-            console.log('여기 에러')
-          }
-        )
-    },
+    // signUserUp ({commit}, payload) {
+    //   commit('setLoading', true)
+    //   commit('clearError')
+    //   firebase.auth().createUserWithEmailAndPassword(payload.email, payload.password)
+    //     .then(
+    //       auth => {
+    //         console.log("auth email : "+auth.user.email)
+    //         console.log("auth password : "+payload.password)
+    //         console.log("auth username : "+payload.username)
+    //         firebase.database().ref('users').set({
+    //           name: payload.username,
+    //           email: auth.user.email,
+    //           password: payload.password
+    //         })  // 얘가 유저 테이블
+    //           .then(
+    //             () => {
+    //               commit('setLoading', false)
+    //       //         const newUser = {
+    //       //           id: auth.user.uid,
+    //       //           username: payload.username
+    //       //         }
+    //               // commit('setUser', newUser)
+    //             }
+    //           )
+    //           .catch(
+    //             // error => {
+    //             //   commit('setLoading', false)
+    //             //   commit('setError', error)
+    //             //   console.log('AuthModule.js signUserUp 에러')
+    //             // }
+    //           )
+    //       }
+    //     )
+    //     .catch(
+    //       error => {
+    //         commit('setLoading', false)
+    //         commit('setError', error)
+    //         console.log('여기 에러')
+    //       }
+    //     )
+    // },
     signUserIn ({commit}, payload) {
       commit('setLoading', true)
       commit('clearError')
-      console.log('clear error')
       firebase.auth().signInWithEmailAndPassword(payload.email, payload.password)
         .then(
           auth => {
-            firebase.database().ref('users').child(auth.user.uid).once('value', function (data) {
-                console.log(data)
-                console.log('auth.user : '+auth.user.username)
+            firebase.database().ref('users').child(auth.user.uid).once('value', function () {
               commit('setLoading', false)
               const newUser = {
                 id: auth.user.uid,

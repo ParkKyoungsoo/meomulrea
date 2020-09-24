@@ -139,6 +139,7 @@
 
 <script>
 import axios from "axios";
+import * as firebase from 'firebase'
 const baseURL = "http://127.0.0.1:8000/";
 export default {
   name: "LogIn",
@@ -306,19 +307,17 @@ export default {
                   Authorization : `Token ${res.data.key}`
                   }
               }
-            )
+            ) // post > post
             .then(res => {
-              console.log(res.data)
-              this.$store.dispatch('signUserUp', {email: this.nm_email, password: this.nm_password, username: this.nm_nickname})
-              this.$router.push('/')
-            })
-            .catch(err => {
-              console.log(err.response)
-              console.log(err)
-            })
-        })
-        .catch(err => {
-          console.log(err);
+              firebase.auth().createUserWithEmailAndPassword(this.nm_email, this.nm_password)
+                .then(auth =>{
+                  firebase.database().ref('users').push({
+                    name: this.nm_nickname,
+                    email: auth.user.email,
+                    password: this.nm_password
+                  })
+                })
+            })  // post > post > then
         });
     },
     reset(nm) {

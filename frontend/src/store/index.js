@@ -19,7 +19,8 @@ export const index = new Vuex.Store({
   },
   mutations: {
     setLoading (state, payload) {
-      state.loading = payload
+      // state.loading = payload
+      console.log('index.js setLoading' + state + ' ' + payload)
     },
     setError (state, payload) {
       state.error = payload
