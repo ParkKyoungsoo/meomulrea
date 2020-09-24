@@ -1,5 +1,5 @@
 <template>
-  <v-app-bar app color="indigo" dark>
+  <v-app-bar app color="rgb(233, 105, 30)" dark>
     <v-toolbar-title>
       <router-link style="text-decoration: none; color: white;" to="/">
         Home
@@ -30,6 +30,7 @@
 
 <script>
 import user from "../assets/datas/user.json";
+import { mapMutations } from "vuex";
 import { EventBus } from "../utils/EventBus.js";
 
 export default {
@@ -46,8 +47,13 @@ export default {
     console.log("userAddress", user[0]);
   },
   methods: {
+    ...mapMutations(("location", ["setLocation"])),
     changeAddress: function() {
       EventBus.$emit("addressChange", this.seletedAddress);
+      this.$store.commit("location/setLocation", {
+        lat: this.lat,
+        lng: this.lng,
+      });
     },
   },
 };
