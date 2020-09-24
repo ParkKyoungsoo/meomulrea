@@ -39,12 +39,7 @@
               <v-text-field v-model="nm_nickname" label="닉네임"></v-text-field>
               <v-text-field v-model="nm_password" :messages="[error.pwd]" label="비밀번호" ref="nm_password"></v-text-field>
               <v-text-field v-model="nm_password_confirm" :messages="[error.pwdconfirm]" label="비밀번호" ref="nm_password_confirm"></v-text-field>
-              <v-text-field
-                v-model="nm_address"
-                label="주소"
-                readonly="readonly"
-                @click="findAddress()"
-              ></v-text-field>
+              <v-text-field label="주소" @click="findAddress()" v-model="nm_address"></v-text-field>
               <v-container fluid style="height:fit-content;">
                 <v-layout style="height:fit-content;" row>
                   <v-radio-group v-model="nm_gender" row>
@@ -138,6 +133,9 @@
   </v-container>
 </template>
 
+<script src="http://dmaps.daum.net/map_js_init/postcode.v2.js"></script>
+<script src="//dapi.kakao.com/v2/maps/sdk.js?appkey=48cbffa8392e1a7acffc1975347ec0d3&libraries=services"></script>
+
 <script>
 import axios from "axios";
 const baseURL = "http://127.0.0.1:8000/";
@@ -151,7 +149,7 @@ export default {
       nm_nickname: "",
       nm_password: "",
       nm_password_confirm: "",
-      nm_address: "",
+      nm_address: "주소 어디ㅜ",
       nm_gender: "",
       nm_birthyear:0,
 
@@ -247,7 +245,23 @@ export default {
       }
     },
     findAddress() {
-      console.log("findADDRESS");
+      new daum.Postcode({
+        oncomplete: (data) => {
+          var fullAddr = data.address;
+          var extraAddr = '';
+
+          if(data.addressType==='R'){
+            if(data.bname!==''){
+              extraAddr += data.bname;
+            }
+            if(data.buildingName !== ''){
+              extraAddr += (extraAddr !== '' ? ', ' + data.buildingName : data.buildingName);
+            }
+            fullAddr += (extraAddr !== '' ? ' (' + extraAddr + ')' : '');
+            this.nm_address = fullAddr;
+          }
+        },
+      }).open();
     },
     nm_login() {
       axios
@@ -255,7 +269,8 @@ export default {
           email: this.nm_email,
           password: this.nm_password,
         })
-        .then(() => {
+        .then((res) => {
+          console.log('res : ' + res.data.key)
           this.$store.dispatch('signUserIn', {email: this.nm_email, password: this.nm_password})
           console.log(this.$store.dispatch)
           console.log(this.$store.getters.user)
@@ -279,7 +294,7 @@ export default {
         })
         .then((res) => {
           // let token = res.data.key;
-          console.log('res : ' + res.data)
+          console.log('res : ' + res.data.key)
           this.$store.dispatch('signUserUp', {email: this.nm_email, password: this.nm_password, username: this.nm_nickname})
           console.log('user : '+this.$store.getters.user)
           this.$router.push('/chat')
@@ -301,7 +316,7 @@ export default {
         this.nm_nickname = "";
         this.nm_password = "";
         this.nm_password_confirm = "";
-        this.nm_address = "";
+        this.nm_address = "주소는 어디";
         this.nm_gender = "";
       } else {
         this.biz_page -= 1;
@@ -320,7 +335,7 @@ export default {
         this.nm_nickname = "";
         this.nm_password = "";
         this.nm_password_confirm = "";
-        this.nm_address = "";
+        this.nm_address = "주소는 어디";
         this.nm_gender = "";
       } else {
         this.biz_page += 1;

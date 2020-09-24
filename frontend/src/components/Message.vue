@@ -1,4 +1,5 @@
 <template>
+<v-main>
   <div>
     <div class="message" v-for="(message,index) in messages" v-bind:key="index" :class="{own: message.user == username}">
       <div class="username" v-if="index>0 && messages[index-1].user != message.user">{{message.user}}</div>
@@ -10,6 +11,7 @@
       </div>
     </div>
   </div>
+</v-main>
 </template>
 
 <script>
