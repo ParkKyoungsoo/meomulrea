@@ -1,5 +1,6 @@
 from rest_framework import serializers
 from django.contrib.auth import get_user_model
+from .models import Order
 
 User = get_user_model()
 
@@ -18,3 +19,10 @@ class UserDetailSerializer(UserSerializer):
         model = User
         # fields = ['id', 'username', 'email', 'usertype', 'gender', 'address', 'date_of_birth', 'biznumber', 'bizname', 'bizimage', 'bizaddress']
         fields = ['id', 'username', 'email', 'usertype', 'gender', 'address', 'birth_year', 'biznumber', 'bizname', 'bizcategory', 'bizimage', 'bizaddress']
+
+
+class UserOrderSerializer(serializers.ModelSerializer):
+    user = UserSerializer(required=True)
+    class Meta:
+        model = Order
+        fields = ['id', 'user', 'store', 'created_at']

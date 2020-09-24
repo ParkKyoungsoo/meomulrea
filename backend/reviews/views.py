@@ -6,14 +6,14 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
 
-@api_view(['GET'])
+@api_view(['POST'])
 def review_list(request):
     reviews = Review.objects.all()
     serializer = ReviewListSerializer(reviews, many=True)
     return Response(serializer.data)
 
 
-@api_view(['GET'])
+@api_view(['POST'])
 def review_detail(request, review_pk):
     review = get_object_or_404(Review, pk=review_pk)
     serializer = ReviewSerializer(review)
