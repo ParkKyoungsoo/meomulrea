@@ -1,19 +1,19 @@
-import Vue from "vue";
-import App from "./App.vue";
-import router from "./router.js";
-import vuetify from "@/plugins/vuetify";
-import { store } from "./store/store.js";
-
+import Vue from 'vue'
+import App from './App.vue'
+import vuetify from './plugins/vuetify'
 import * as firebase from 'firebase'
-// import { store } from './store'
+import router from './router'
+import { store } from './store'
+import AlertComponent from './components/Shared/Alert.vue'
 
-Vue.config.productionTip = false;
+Vue.config.productionTip = false
+Vue.component('app-alert', AlertComponent)
 
 new Vue({
-  router,
   vuetify,
+  router,
   store,
-  render: (h) => h(App),
+  render: h => h(App),
   created () {
     firebase.initializeApp({
       apiKey: "AIzaSyBLLbDAcF_E4SIDDtT6sGd_BNHLtiudxZc",
@@ -26,4 +26,4 @@ new Vue({
       measurementId: "G-CYPY4K6VGB"
     })
   }
-}).$mount("#app");
+}).$mount('#app')
