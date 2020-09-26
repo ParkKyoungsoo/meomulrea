@@ -19,7 +19,8 @@
                       id="email"
                       v-model="email"
                       type="email"
-                      required></v-text-field>
+                      required
+                    ></v-text-field>
                   </v-flex>
                 </v-layout>
                 <v-layout row>
@@ -30,7 +31,8 @@
                       id="password"
                       v-model="password"
                       type="password"
-                      required></v-text-field>
+                      required
+                    ></v-text-field>
                   </v-flex>
                 </v-layout>
                 <v-layout>
@@ -48,38 +50,41 @@
 </template>
 
 <script>
-  export default {
-    data () {
-      return {
-        email: '',
-        password: ''
+export default {
+  data() {
+    return {
+      email: "",
+      password: "",
+    };
+  },
+  computed: {
+    user() {
+      return this.$store.getters.user;
+    },
+    error() {
+      return this.$store.getters.error;
+    },
+    loading() {
+      return this.$store.getters.loading;
+    },
+  },
+  watch: {
+    user(value) {
+      if (value !== null && value !== undefined) {
+        this.$router.push("/chat/0");
       }
     },
-    computed: {
-      user () {
-        return this.$store.getters.user
-      },
-      error () {
-        return this.$store.getters.error
-      },
-      loading () {
-        return this.$store.getters.loading
-      }
+  },
+  methods: {
+    onSignin() {
+      this.$store.dispatch("signUserIn", {
+        email: this.email,
+        password: this.password,
+      });
     },
-    watch: {
-      user (value) {
-        if (value !== null && value !== undefined) {
-          this.$router.push('/chat/0')
-        }
-      }
+    onDismissed() {
+      this.$store.dispatch("clearError");
     },
-    methods: {
-      onSignin () {
-        this.$store.dispatch('signUserIn', {email: this.email, password: this.password})
-      },
-      onDismissed () {
-        this.$store.dispatch('clearError')
-      }
-    }
-  }
+  },
+};
 </script>
