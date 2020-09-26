@@ -33,4 +33,5 @@ urlpatterns = [
     path('stores/', include('stores.urls')),
     path('deliveries/', include('deliveries.urls')),
     path('main/', include('main.urls')),
+    path('calc/', include('calcembedding.urls')),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

@@ -23,4 +23,4 @@ from django.contrib.auth import get_user_model
 class StoreInfoSerializer(serializers.ModelSerializer):
     class Meta:
         model = Store
-        fields = '__all__'
+        fields = ['store_id', 'category'] # 보내는 데이터의 형태를 지정해준다.
