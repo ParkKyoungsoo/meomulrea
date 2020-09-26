@@ -36,6 +36,11 @@ export default new Router({
       component: StoreDetail,
     },
     {
+      path: "/chat",
+      name: "chat",
+      component: Chat,
+    },
+    {
       path: "/create",
       name: "CreateChat",
       component: Create,

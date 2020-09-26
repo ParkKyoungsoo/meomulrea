@@ -25,6 +25,9 @@ export default {
     goToShop: function() {
       this.$router.push("/storelist/" + this.storeData.category);
     },
+    mvpage: function(){
+      this.$router.push("/chat");
+    }
   },
 };
 </script>

@@ -34,7 +34,6 @@
         <div
           v-for="(item, index) in recommendedDate"
           :key="index"
-          s
           style="margin: 10px;"
         >
           <ShowList :storeData="item" />
@@ -97,10 +96,11 @@ export default {
       })
         .then((response) => {
           this.locationData = response.data;
-          console.log(this.locationData);
+          // console.log(this.locationData);
         })
-        .catch((ex) => {
-          console.log("ERR!!!!! : ", ex);
+        .catch(() => {
+        // .catch((ex) => {
+          // console.log("ERR!!!!! : ", ex);
         });
     },
 
