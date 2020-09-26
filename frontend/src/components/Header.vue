@@ -58,12 +58,10 @@ export default {
       });
     },
     logout(){
-      var user = firebase.auth().currentUser;
-      user.delete().then(()=>{
-        console.log('지움')
+      firebase.auth().signOut().then(()=>{
+        this.$cookies.remove('auth-token');
+        this.$router.push('/login')
       })
-      // this.$cookies.remove('auth-token');
-      // this.$router.push('/login')
     },
   },
 };
