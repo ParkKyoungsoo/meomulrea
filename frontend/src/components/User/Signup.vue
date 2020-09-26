@@ -19,7 +19,8 @@
                       id="email"
                       v-model="email"
                       type="email"
-                      required></v-text-field>
+                      required
+                    ></v-text-field>
                   </v-flex>
                 </v-layout>
                 <v-layout row>
@@ -30,7 +31,8 @@
                       id="username"
                       v-model="username"
                       type="text"
-                      required></v-text-field>
+                      required
+                    ></v-text-field>
                   </v-flex>
                 </v-layout>
                 <v-layout row>
@@ -41,7 +43,8 @@
                       id="password"
                       v-model="password"
                       type="password"
-                      required></v-text-field>
+                      required
+                    ></v-text-field>
                   </v-flex>
                 </v-layout>
                 <v-layout row>
@@ -52,7 +55,8 @@
                       id="confirmPassword"
                       v-model="confirmPassword"
                       type="password"
-                      :rules="[comparePasswords]"></v-text-field>
+                      :rules="[comparePasswords]"
+                    ></v-text-field>
                   </v-flex>
                 </v-layout>
                 <v-layout>
@@ -70,43 +74,49 @@
 </template>
 
 <script>
-  export default {
-    data () {
-      return {
-        email: '',
-        username: '',
-        password: '',
-        confirmPassword: ''
+export default {
+  data() {
+    return {
+      email: "",
+      username: "",
+      password: "",
+      confirmPassword: "",
+    };
+  },
+  computed: {
+    comparePasswords() {
+      return this.password !== this.confirmPassword
+        ? "Passwords do not match."
+        : true;
+    },
+    user() {
+      return this.$store.getters.user;
+    },
+    error() {
+      return this.$store.getters.error;
+    },
+    loading() {
+      return this.$store.getters.loading;
+    },
+  },
+  watch: {
+    user(value) {
+      if (value !== null && value !== undefined) {
+        this.$router.push("/");
       }
     },
-    computed: {
-      comparePasswords () {
-        return this.password !== this.confirmPassword ? 'Passwords do not match.' : true
-      },
-      user () {
-        return this.$store.getters.user
-      },
-      error () {
-        return this.$store.getters.error
-      },
-      loading () {
-        return this.$store.getters.loading
-      }
+  },
+  methods: {
+    onSignup() {
+      this.$store.dispatch("signUserUp", {
+        email: this.email,
+        password: this.password,
+        username: this.username,
+      });
     },
-    watch: {
-      user (value) {
-        if (value !== null && value !== undefined) {
-          this.$router.push('/')
-        }
-      }
+    onDismissed() {
+      this.$store.dispatch("clearError");
     },
-    methods: {
-      onSignup () {
-        this.$store.dispatch('signUserUp', {email: this.email, password: this.password, username: this.username})
-      },
-      onDismissed () {
-        this.$store.dispatch('clearError')
-      }
-    }
-  }
+  },
+};
 </script>
