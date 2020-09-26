@@ -1,6 +1,6 @@
 <template>
   <v-main>
-    <v-container class="content" style="width: 80%; ">
+    <v-container class="content" style="margin:0px; max-width:1600px; min-height: 673px;">
       <h2>본문영역</h2>
       <test />
       <v-layout class="weather">
@@ -31,32 +31,42 @@
         <v-flex> 오늘은 뭐먹지? </v-flex>
       </v-layout>
       <div class="shopList">
-        <div
+        <!-- <div
           v-for="(item, index) in recommendedDate"
           :key="index"
           style="margin: 10px;"
         >
           <ShowList :storeData="item" />
-        </div>
+        </div> -->
+        <carousel-3d :controls-visible="true">
+          <slide v-for="(item, index) in recommendedDate" :key="index" :index="index">
+              <img :src="item.src" :alt=item.category>
+          </slide>
+        </carousel-3d>
       </div>
     </v-container>
   </v-main>
 </template>
 
 <script>
+import Vue from 'vue';
 import Carousel from "../components/Carousel";
+import { Carousel3d, Slide } from 'vue-carousel-3d';
 import axios from "axios";
 import recommendedDate from "../assets/datas/recommend_result_1.json";
-import ShowList from "../components/ShowList";
+// import ShowList from "../components/ShowList";
 import { mapMutations, mapGetters } from "vuex";
 import test from "../components/Addr2Code.vue";
 import { EventBus } from "../utils/EventBus.js";
 
+Vue.use(Carousel3d);
 export default {
   components: {
     test,
     Carousel,
-    ShowList,
+    // ShowList,
+    Carousel3d,
+    Slide
   },
 
   data() {
@@ -110,6 +120,11 @@ export default {
         this.getWeather();
       }, 60000);
     },
+
+    gotoShop(index){
+      console.log('gotoShop'+index)
+      this.$router.push("/storelist/" + this.recommendedDate[index].category);
+    }
 
     // getLocation: function() {
     //   if (navigator.geolocation) {

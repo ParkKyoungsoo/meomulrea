@@ -19,10 +19,10 @@
                 </button>
                 <h2>일반회원</h2>
               </div>
-              <v-text-field v-model="nm_email" label="이메일" :messages="[error.email]"></v-text-field>
-              <v-text-field v-model="nm_password" label="비밀번호" :type="password"></v-text-field>
+              <v-text-field v-model="nm_email" label="이메일"  ref="nm_email" :messages="[error.email]"></v-text-field>
+              <v-text-field v-model="nm_password" label="비밀번호"  ref="nm_password" :type="password"></v-text-field>
               <button @click="look()">보기</button>
-              <v-btn rounded color="rgb(233, 105, 30)" dark @click="nm_login()" :loading="loading">로그인</v-btn>
+              <v-btn rounded color="rgb(233, 105, 30)" dark @click="checkLogin()" :loading="loading">로그인</v-btn>
               <v-btn rounded color="rgb(0,0,0)" dark @click="mvpage(true)">회원등록</v-btn>
             </div>
           </div>
@@ -154,6 +154,7 @@ export default {
       nm_address: "",
       nm_gender: "",
       nm_birthyear:0,
+      nm_check: false,
 
       biz_page: 0,
       biz_email: "",
@@ -223,9 +224,6 @@ export default {
     }
   },
   computed:{
-    // comparePasswords () {
-    //     return this.password !== this.confirmPassword ? 'Passwords do not match.' : true
-    //   },
       user () {
         return this.$store.getters.user
       },
@@ -240,12 +238,18 @@ export default {
       !this.nm_email && ((msg = "이메일을 입력해주세요!"),(err = false),this.$refs.nm_email.focus());
       err && !this.nm_password && ((msg = "비밀번호를 입력해주세요!"),(err = false),this.$refs.nm_password.focus());
       err && !this.nm_password_confirm && ((msg = "비밀번호 확인을 입력해주세요!"),(err = false),this.$refs.nm_password_confirm.focus());
-      if (!err) {
-        alert(msg);
-      } else if (!this.error.email && !this.error.password && !this.error.passwordConfirm) {
+      if (!this.error.email && !this.error.password && !this.error.passwordConfirm) {
         this.nm_signup();
       }
     },
+    checkLogin(){
+      let err = true;
+      let msg = "";
+      !this.nm_email && ((msg = "이메일을 입력해주세요!"),(err = false),this.$refs.nm_email.focus());
+      err && !this.nm_password && ((msg = "비밀번호를 입력해주세요!"),(err = false),this.$refs.nm_password.focus());
+      if(err)
+        this.nm_login();
+    },  
     findAddress() {
       new daum.Postcode({
         oncomplete: (data) => {
@@ -271,19 +275,33 @@ export default {
     },
     nm_login() {
       // var nm_password = this.nm_password;
-      
-      axios.post(baseURL + "account/login/", {
-        email: this.nm_email,
-        password: this.nm_password,
-      })
-      .then((res) => {
-        firebase.auth().setPersistence(firebase.auth.Auth.Persistence.SESSION)
-        .then(()=>{
-          firebase.auth().signInWithEmailAndPassword(this.nm_email, this.nm_password)
-          this.setCookie(res.data.key);
-          this.$router.push('/chat')
+      var domain = ["@naver.com", "@daum.net", "@hanmail.net", "@gmail.com"]
+      for(var i=0;i<domain.length;i++){
+        if(this.nm_check)
+          break;
+        if(this.nm_email.includes(domain[i])){
+          this.nm_check=true;
+          break;
+        }
+      }
+      if(this.nm_check){
+        axios.post(baseURL + "account/login/", {
+          email: this.nm_email,
+          password: this.nm_password,
         })
-      });
+        .then((res) => {
+          // firebase.auth().setPersistence(firebase.auth.Auth.Persistence.SESSION)
+          // .then(()=>{
+            // firebase.auth().signInWithEmailAndPassword(this.nm_email, this.nm_password)
+            this.setCookie(res.data.key);
+            this.$router.push('/home')
+          // })
+        })
+        .catch((err)=>{
+          console.log(err)
+          alert('로그인 정보를 다시 확인하시지요')
+        });
+      }
     },
 
     nm_signup() {
@@ -312,14 +330,14 @@ export default {
               }
             ) // post > post
             .then(res => {
-              firebase.auth().createUserWithEmailAndPassword(this.nm_email, this.nm_password)
-                .then(auth =>{
-                  firebase.database().ref('users').push({
-                    name: this.nm_nickname,
-                    email: auth.user.email,
-                    password: this.nm_password
-                  })
-                })
+              // firebase.auth().createUserWithEmailAndPassword(this.nm_email, this.nm_password)
+                // .then(auth =>{
+                  // firebase.database().ref('users').push({
+                    // name: this.nm_nickname,
+                    // email: auth.user.email,
+                    // password: this.nm_password
+                  // })
+                // })
                 this.nm_page=1;
             })  // post > post > then
         });
