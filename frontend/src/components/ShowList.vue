@@ -2,7 +2,7 @@
   <v-card class="mx-auto" max-width="320" outlined>
     <v-col>
       <v-row justify="center">
-        <div>{{ storeData.category }}</div>
+        <div>{{ storeData[1] }}</div>
       </v-row>
       <v-row justify="center">
         <v-list-item-avatar tile size="200" color="grey" />
@@ -23,11 +23,11 @@ export default {
 
   methods: {
     goToShop: function() {
-      this.$router.push("/storelist/" + this.storeData.category);
+      this.$router.push("/storelist/" + this.storeData[1]);
     },
-    mvpage: function(){
+    mvpage: function() {
       this.$router.push("/chat");
-    }
+    },
   },
 };
 </script>

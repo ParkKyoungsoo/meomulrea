@@ -2,9 +2,8 @@
   <v-app>
     <Header />
     <v-main>
-      <v-container class="content" style="width: 80%; ">
+      <v-container class="content">
         <h2>본문영역</h2>
-        <v-btn @click="axiosTest"></v-btn>
         <test />
         <v-layout class="weather">
           <v-col>
@@ -75,7 +74,7 @@ export default {
       lat: 0,
       lng: 0,
       locationData: "",
-      recommendedDate: recommendedDate.data,
+      recommendedDate: "",
     };
   },
 
@@ -85,6 +84,7 @@ export default {
     EventBus.$on("addressChange", () => {
       this.getWeather();
     });
+    this.apiTest();
   },
   computed: {
     ...mapGetters("location", ["getLocation"]),
@@ -119,16 +119,27 @@ export default {
     },
 
     apiTest() {
-      axios
-        .post(baseURL + "main/", {
-          headers: {
-            Authorization: "",
-          },
-        }) // post > post
-        .then((res) => {
-          this.onSignup();
-          this.nm_page = 1;
-        }); // post > post > then
+      // axios
+      //   .post(baseURL + "main/", {
+      //     headers: {
+      //       Authorization: this.$cookies.get("auth-token"),
+      //     },
+      //   }) // post > post
+      //   .then((res) => {
+      //     this.onSignup();
+      //     this.nm_page = 1;
+      //   }); // post > post > then
+      axios({
+        method: "GET",
+        url: baseURL + "main/",
+      })
+        .then((response) => {
+          console.log(response.data.data);
+          this.recommendedDate = response.data.data;
+        })
+        .catch((ex) => {
+          console.log(ex);
+        });
     },
 
     pollData() {
