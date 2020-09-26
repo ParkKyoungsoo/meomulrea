@@ -1,46 +1,52 @@
 <template>
-  <v-main>
-    <v-container class="content" style="width: 80%; ">
-      <h2>본문영역</h2>
-      <test />
-      <v-layout class="weather">
-        <v-col>
-          <v-row>
-            날씨 영역
-            <v-btn icon color="green" @click="getWeather">
-              <v-icon>mdi-cached</v-icon>
-            </v-btn>
-          </v-row>
-          <v-row align="center" justify="center">
-            <v-flex>지역 : {{ this.getLocation.dong }} </v-flex>
-            <v-flex>기온 : {{ locationData.main.temp - 273.15 }} &deg;C</v-flex>
-            <v-flex>습도 : {{ locationData.main.humidity }} %</v-flex>
-            <v-flex>기압 : {{ locationData.main.pressure }}</v-flex>
-            <v-flex>날씨 : {{ locationData.weather[0].main }}</v-flex>
-            <v-flex>풍향 : {{ locationData.wind.deg }} &deg;</v-flex>
-            <v-flex>풍속 : {{ locationData.wind.speed }} m/s</v-flex>
-            <v-flex>구름 : {{ locationData.clouds.all + "%" }}</v-flex>
-          </v-row>
-        </v-col>
-      </v-layout>
-      <div class="advertise" align="center" justify="center">
-        광고영역
-        <Carousel :storeData="recommendedDate" />
-      </div>
-      <v-layout>
-        <v-flex> 오늘은 뭐먹지? </v-flex>
-      </v-layout>
-      <div class="shopList">
-        <div
-          v-for="(item, index) in recommendedDate"
-          :key="index"
-          style="margin: 10px;"
-        >
-          <ShowList :storeData="item" />
+  <v-app>
+    <Header />
+    <v-main>
+      <v-container class="content" style="width: 80%; ">
+        <h2>본문영역</h2>
+        <v-btn @click="axiosTest"></v-btn>
+        <test />
+        <v-layout class="weather">
+          <v-col>
+            <v-row>
+              날씨 영역
+              <v-btn icon color="green" @click="getWeather">
+                <v-icon>mdi-cached</v-icon>
+              </v-btn>
+            </v-row>
+            <v-row align="center" justify="center">
+              <v-flex>지역 : {{ this.getLocation.dong }} </v-flex>
+              <v-flex
+                >기온 : {{ locationData.main.temp - 273.15 }} &deg;C</v-flex
+              >
+              <v-flex>습도 : {{ locationData.main.humidity }} %</v-flex>
+              <v-flex>기압 : {{ locationData.main.pressure }}</v-flex>
+              <v-flex>날씨 : {{ locationData.weather[0].main }}</v-flex>
+              <v-flex>풍향 : {{ locationData.wind.deg }} &deg;</v-flex>
+              <v-flex>풍속 : {{ locationData.wind.speed }} m/s</v-flex>
+              <v-flex>구름 : {{ locationData.clouds.all + "%" }}</v-flex>
+            </v-row>
+          </v-col>
+        </v-layout>
+        <div class="advertise" align="center" justify="center">
+          광고영역
+          <Carousel :storeData="recommendedDate" />
         </div>
-      </div>
-    </v-container>
-  </v-main>
+        <v-layout>
+          <v-flex> 오늘은 뭐먹지? </v-flex>
+        </v-layout>
+        <div class="shopList">
+          <div
+            v-for="(item, index) in recommendedDate"
+            :key="index"
+            style="margin: 10px;"
+          >
+            <ShowList :storeData="item" />
+          </div>
+        </div>
+      </v-container>
+    </v-main>
+  </v-app>
 </template>
 
 <script>
@@ -51,12 +57,16 @@ import ShowList from "../components/ShowList";
 import { mapMutations, mapGetters } from "vuex";
 import test from "../components/Addr2Code.vue";
 import { EventBus } from "../utils/EventBus.js";
+import Header from "../components/Header.vue";
+
+const baseURL = "http://127.0.0.1:8000/";
 
 export default {
   components: {
     test,
     Carousel,
     ShowList,
+    Header,
   },
 
   data() {
@@ -78,7 +88,11 @@ export default {
   },
   computed: {
     ...mapGetters("location", ["getLocation"]),
+    user() {
+      return this.$store.getters.user;
+    },
   },
+
   beforeMount() {
     this.getWeather();
   },
@@ -99,9 +113,22 @@ export default {
           // console.log(this.locationData);
         })
         .catch(() => {
-        // .catch((ex) => {
+          // .catch((ex) => {
           // console.log("ERR!!!!! : ", ex);
         });
+    },
+
+    apiTest() {
+      axios
+        .post(baseURL + "main/", {
+          headers: {
+            Authorization: "",
+          },
+        }) // post > post
+        .then((res) => {
+          this.onSignup();
+          this.nm_page = 1;
+        }); // post > post > then
     },
 
     pollData() {

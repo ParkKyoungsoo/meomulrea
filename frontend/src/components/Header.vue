@@ -33,13 +33,14 @@
 import user from "../assets/datas/user.json";
 import { mapMutations } from "vuex";
 import { EventBus } from "../utils/EventBus.js";
-import * as firebase from 'firebase';
+import * as firebase from "firebase";
 
 export default {
   data: () => ({
     userAddress: user[0].nm_address,
     showAddrModal: false,
     seletedAddress: "",
+    isLogined: false,
   }),
   components: {},
   computed: {
@@ -57,13 +58,18 @@ export default {
         lng: this.lng,
       });
     },
-    logout(){
-      firebase.auth().signOut().then(()=>{
-        this.$cookies.remove('auth-token');
-        this.$router.push('/login')
-      })
+    logout() {
+      firebase
+        .auth()
+        .signOut()
+        .then(() => {
+          this.$cookies.remove("auth-token");
+          this.$router.push("/login");
+        });
     },
   },
+
+  watch() {},
 };
 </script>
 <style>
