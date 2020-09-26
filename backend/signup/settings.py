@@ -39,9 +39,12 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     
     'accounts',
-    'reviews',
     'stores',
-
+    'deliveries',
+    'main',
+    'reviews',
+    'calcembedding',
+    
     'django_extensions',
 
     'rest_framework',
