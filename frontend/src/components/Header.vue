@@ -24,6 +24,7 @@
       <router-link style="text-decoration: none; color: white;" to="/Login">
         Login
       </router-link>
+      <button @click="logout()">로그아웃</button>
     </v-toolbar-title>
   </v-app-bar>
 </template>
@@ -32,6 +33,7 @@
 import user from "../assets/datas/user.json";
 import { mapMutations } from "vuex";
 import { EventBus } from "../utils/EventBus.js";
+import * as firebase from 'firebase';
 
 export default {
   data: () => ({
@@ -54,6 +56,14 @@ export default {
         lat: this.lat,
         lng: this.lng,
       });
+    },
+    logout(){
+      var user = firebase.auth().currentUser;
+      user.delete().then(()=>{
+        console.log('지움')
+      })
+      // this.$cookies.remove('auth-token');
+      // this.$router.push('/login')
     },
   },
 };

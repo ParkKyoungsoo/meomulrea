@@ -277,10 +277,10 @@ export default {
         password: this.nm_password,
       })
       .then((res) => {
-        this.setCookie(res.data.key);
         firebase.auth().setPersistence(firebase.auth.Auth.Persistence.SESSION)
         .then(()=>{
           firebase.auth().signInWithEmailAndPassword(this.nm_email, this.nm_password)
+          this.setCookie(res.data.key);
           this.$router.push('/chat')
         })
       });
@@ -295,6 +295,7 @@ export default {
           password2: this.nm_password_confirm,
         })
         .then(res => {
+          console.log(res.data.key)
           axios.post(baseURL + "accounts/user_detail/",
             {
                 username: this.nm_nickname,
