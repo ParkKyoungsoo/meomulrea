@@ -16,14 +16,14 @@ export default new Router({
   mode: "history",
   routes: [
     {
-      path: "/login",
-      name: "Login",
-      component: Login,
+      path: "/home",
+      name: "Home",
+      component: Content,
     },
     {
       path: "/",
-      name: "Home",
-      component: Content,
+      name: "Login",
+      component: Login,
     },
     {
       path: "/storelist/:category",

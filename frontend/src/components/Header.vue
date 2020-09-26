@@ -1,7 +1,7 @@
 <template>
   <v-app-bar app color="rgb(233, 105, 30)" dark>
     <v-toolbar-title>
-      <router-link style="text-decoration: none; color: white;" to="/">
+      <router-link style="text-decoration: none; color: white;" to="/home">
         Home
       </router-link>
     </v-toolbar-title>
@@ -21,10 +21,12 @@
     <button @click="showAddrModal = true">추가하기</button>
     <v-spacer />
     <v-toolbar-title>
-      <router-link style="text-decoration: none; color: white;" to="/Login">
-        Login
-      </router-link>
-      <button @click="logout()">로그아웃</button>
+      <div v-if="$cookies.get('auth-token')===null || $cookies.get('auth-token')===''">
+        <router-link style="text-decoration: none; color: white;" to="/">
+          Login
+        </router-link>
+      </div>
+        <button @click="logout()">logout</button>
     </v-toolbar-title>
   </v-app-bar>
 </template>
@@ -36,18 +38,21 @@ import { EventBus } from "../utils/EventBus.js";
 import * as firebase from "firebase";
 
 export default {
-  data: () => ({
+  data(){
+    return{
     userAddress: user[0].nm_address,
     showAddrModal: false,
     seletedAddress: "",
+<<<<<<< HEAD
     isLogined: false,
   }),
+=======
+    }
+  },
+>>>>>>> f7a99b280509a0bf51f34498e4923d844ffe53e1
   components: {},
   computed: {
     options: () => user[0].nm_address,
-  },
-  created() {
-    console.log("userAddress", user[0]);
   },
   methods: {
     ...mapMutations(("location", ["setLocation"])),
@@ -58,6 +63,7 @@ export default {
         lng: this.lng,
       });
     },
+<<<<<<< HEAD
     logout() {
       firebase
         .auth()
@@ -66,6 +72,13 @@ export default {
           this.$cookies.remove("auth-token");
           this.$router.push("/login");
         });
+=======
+    logout(){
+      firebase.auth().signOut().then(()=>{
+        this.$cookies.remove('auth-token');
+        this.$router.push('/')
+      })
+>>>>>>> f7a99b280509a0bf51f34498e4923d844ffe53e1
     },
   },
 

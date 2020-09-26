@@ -19,6 +19,7 @@
                 </button>
                 <h2>일반회원</h2>
               </div>
+              <<<<<<< HEAD
               <v-text-field
                 v-model="nm_email"
                 label="이메일"
@@ -42,6 +43,32 @@
               <v-btn rounded color="rgb(0,0,0)" dark @click="mvpage(true)"
                 >회원등록</v-btn
               >
+              =======
+              <v-text-field
+                v-model="nm_email"
+                label="이메일"
+                ref="nm_email"
+                :messages="[error.email]"
+              ></v-text-field>
+              <v-text-field
+                v-model="nm_password"
+                label="비밀번호"
+                ref="nm_password"
+                :type="password"
+              ></v-text-field>
+              <button @click="look()">보기</button>
+              <v-btn
+                rounded
+                color="rgb(233, 105, 30)"
+                dark
+                @click="checkLogin()"
+                :loading="loading"
+                >로그인</v-btn
+              >
+              <v-btn rounded color="rgb(0,0,0)" dark @click="mvpage(true)"
+                >회원등록</v-btn
+              >
+              >>>>>>> f7a99b280509a0bf51f34498e4923d844ffe53e1
             </div>
           </div>
           <div v-if="nm_page === 2" class="start">
@@ -205,6 +232,7 @@ export default {
       nm_address: "",
       nm_gender: "",
       nm_birthyear: 0,
+      nm_check: false,
 
       biz_page: 0,
       biz_email: "",
@@ -324,6 +352,20 @@ export default {
         this.nm_signup();
       }
     },
+    checkLogin() {
+      let err = true;
+      let msg = "";
+      !this.nm_email &&
+        ((msg = "이메일을 입력해주세요!"),
+        (err = false),
+        this.$refs.nm_email.focus());
+      err &&
+        !this.nm_password &&
+        ((msg = "비밀번호를 입력해주세요!"),
+        (err = false),
+        this.$refs.nm_password.focus());
+      if (err) this.nm_login();
+    },
     findAddress() {
       new daum.Postcode({
         oncomplete: (data) => {
@@ -353,12 +395,42 @@ export default {
       this.$cookies.set("auth-token", token);
       this.isLoggedIn = true;
     },
-
     onSignin() {
       this.$store.dispatch("signUserIn", {
         email: this.nm_email,
         password: this.nm_password,
       });
+    },
+
+    nm_login() {
+      // var nm_password = this.nm_password;
+      var domain = ["@naver.com", "@daum.net", "@hanmail.net", "@gmail.com"];
+      for (var i = 0; i < domain.length; i++) {
+        if (this.nm_check) break;
+        if (this.nm_email.includes(domain[i])) {
+          this.nm_check = true;
+          break;
+        }
+      }
+      if (this.nm_check) {
+        axios
+          .post(baseURL + "account/login/", {
+            email: this.nm_email,
+            password: this.nm_password,
+          })
+          .then((res) => {
+            // firebase.auth().setPersistence(firebase.auth.Auth.Persistence.SESSION)
+            // .then(()=>{
+            // firebase.auth().signInWithEmailAndPassword(this.nm_email, this.nm_password)
+            this.setCookie(res.data.key);
+            this.$router.push("/home");
+            // })
+          })
+          .catch((err) => {
+            console.log(err);
+            alert("로그인 정보를 다시 확인하시지요");
+          });
+      }
     },
 
     onSignup() {
@@ -367,29 +439,6 @@ export default {
         password: this.nm_password,
         username: this.nm_nickname,
       });
-    },
-
-    nm_login() {
-      // var nm_password = this.nm_password;
-      // 로그인화면에서 아이디, 비밀번호 유효성 검사 해주세요
-      axios
-        .post(baseURL + "account/login/", {
-          email: this.nm_email,
-          password: this.nm_password,
-        })
-        .then((res) => {
-          firebase
-            .auth()
-            .setPersistence(firebase.auth.Auth.Persistence.SESSION)
-            .then(() => {
-              firebase
-                .auth()
-                .signInWithEmailAndPassword(this.nm_email, this.nm_password);
-              this.setCookie(res.data.key);
-              this.$router.push("/");
-            });
-          this.onSignin();
-        });
     },
 
     nm_signup() {
