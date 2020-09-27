@@ -1,5 +1,4 @@
 <template>
-<<<<<<< HEAD
   <v-app>
     <Header />
     <v-main>
@@ -36,50 +35,6 @@
           <v-flex> 오늘은 뭐먹지? </v-flex>
         </v-layout>
         <div class="shopList">
-          <div
-            v-for="(item, index) in recommendedDate"
-            :key="index"
-            style="margin: 10px;"
-          >
-            <ShowList :storeData="item" />
-          </div>
-        </div>
-      </v-container>
-    </v-main>
-  </v-app>
-=======
-  <v-main>
-    <v-container class="content" style="margin:0px; max-width:1600px; min-height: 673px;">
-      <h2>본문영역</h2>
-      <test />
-      <v-layout class="weather">
-        <v-col>
-          <v-row>
-            날씨 영역
-            <v-btn icon color="green" @click="getWeather">
-              <v-icon>mdi-cached</v-icon>
-            </v-btn>
-          </v-row>
-          <v-row align="center" justify="center">
-            <v-flex>지역 : {{ this.getLocation.dong }} </v-flex>
-            <v-flex>기온 : {{ locationData.main.temp - 273.15 }} &deg;C</v-flex>
-            <v-flex>습도 : {{ locationData.main.humidity }} %</v-flex>
-            <v-flex>기압 : {{ locationData.main.pressure }}</v-flex>
-            <v-flex>날씨 : {{ locationData.weather[0].main }}</v-flex>
-            <v-flex>풍향 : {{ locationData.wind.deg }} &deg;</v-flex>
-            <v-flex>풍속 : {{ locationData.wind.speed }} m/s</v-flex>
-            <v-flex>구름 : {{ locationData.clouds.all + "%" }}</v-flex>
-          </v-row>
-        </v-col>
-      </v-layout>
-      <div class="advertise" align="center" justify="center">
-        광고영역
-        <Carousel :storeData="recommendedDate" />
-      </div>
-      <v-layout>
-        <v-flex> 오늘은 뭐먹지? </v-flex>
-      </v-layout>
-      <div class="shopList">
         <!-- <div
           v-for="(item, index) in recommendedDate"
           :key="index"
@@ -117,14 +72,11 @@ export default {
   components: {
     test,
     Carousel,
-<<<<<<< HEAD
     ShowList,
     Header,
-=======
     // ShowList,
     Carousel3d,
     Slide
->>>>>>> f7a99b280509a0bf51f34498e4923d844ffe53e1
   },
 
   data() {
