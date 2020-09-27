@@ -49,30 +49,46 @@ def save_stores(request):
         store.save()
     return
 
-@api_view(['GET'])
-# @permission_classes(IsAuthenticated)
+
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def store_category(request):
+    stores = Store.objects.filter(category=request.data['category'])
+    serializer = StoreSerializer(stores, many=True)
+    return Response(serializer.data)
+
+
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
 def store_list(request):
     # 요청온 데이터의 카테고리 정보를 category로 프론트에서 담았다고 가정했을 때
     # Store 모델에서 카테고리가 요청온 category 정보가 같은 가게 리스트를 stores 변수에 담는다.
     if request.user.is_authenticated:
-        # 유저 집주소 조회?
-        user_address = request.user.address
-        print(user_address)
+        # 유저 집주소 조회
+        # user_address = request.user.address
+        # user_address = user_address.split(" ")
+
+        # 그러나 프론트에서 동을 줄 예정
+
         # stores = Stores.objects.filter(category=request.data['category'] and address__contains=user_address[:10]).order_by('-average_rating')
         # stores = Store.objects.filter(category=request.data['category']).filter(address__contains=user_address[:2]).order_by('-average_rating')
-        stores = Store.objects.filter(category=request.data['category']).order_by('-average_rating')
-        print(stores)
+
+        # stores = Store.objects.filter(category=request.data['category'], address__contains=user_address[2]).order_by('-average_rating')
+
+        stores = Store.objects.filter(category=request.data['category'], address__contains=request.data['user_location']).order_by('-average_rating')
         serializer = StoreSerializer(stores, many=True)
         return Response(serializer.data)
     else:
         return Response({'message': '로그인하세요'})
 
-@api_view(['GET'])
+# Store 상세 정보
+# Store에 해당하는 리뷰는 프론트에서 axios 재요청 해야함
+@api_view(['POST'])
 @permission_classes([IsAuthenticated])
 def store_detail(request, storeid):
     # print(request.data['storeid'])
     # storeid = request.data['storeid']
     # store = Store.objects.get(storeid=storeid)
-    store = get_object_or_404(Store, storeid=storeid)
+    store = get_object_or_404(Store, store_id=storeid)
     serializer = StoreDetailSerializer(store)
     return Response(serializer.data)

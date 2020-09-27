@@ -1,7 +1,6 @@
 from django.shortcuts import render, get_object_or_404
 from stores.models import Store
 from reviews.models import Review
-
 import json
 import pandas as pd
 import numpy as np
