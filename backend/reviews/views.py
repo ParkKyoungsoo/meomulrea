@@ -2,9 +2,21 @@ from django.shortcuts import render
 from django.shortcuts import get_object_or_404
 from .models import Review
 import json
+from collections import defaultdict
+import re
+
 # from rest_framework.decorators import api_view, permission_classes
 # from rest_framework.permissions import IsAuthenticated
 # from rest_framework.response import Response
+
+def deEmojify(text):
+    regrex_pattern = re.compile(pattern = u'[\U0001f300-\U0001f650]|[\u2000-\u3000]|[\U0001F600-\U0001F64F]|[\U0001F300-\U0001F5FF]|[\U0001F680-\U0001F6FF]|[\U0001F1E0-\U0001F1FF]', flags = re.UNICODE)
+    return regrex_pattern.sub(r'',text)
+
+def deEmojify3(text):
+    regrex_pattern = re.compile(pattern = u'[\ud800-\udbff][\udc00-\udfff]', flags = re.UNICODE)
+    
+    return regrex_pattern.sub(r'',text)
 
 def input_data(request):
     json_data = open('reviews/reviews.json').read()
@@ -14,9 +26,13 @@ def input_data(request):
         review.storeid = json_d['data'][i]['store_id']
         review.userid = json_d['data'][i]['user_id']
         review.score = json_d['data'][i]['score']
-        # review.content = json_d['data'][i]['content']
         review.reg_time = json_d['data'][i]['reg_time']
-        review.save()
+        try:
+            review.content = deEmojify(json_d['data'][i]['content'])
+            review.save()
+        except:
+            review.content = "맛있어요";
+            review.save()
     return
 
 # @api_view(['POST'])

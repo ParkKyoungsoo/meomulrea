@@ -29,7 +29,8 @@ from rest_framework.decorators import api_view
 @api_view(['GET'])
 def recommend_food(request):
     
-    user_id = request.user.id
+    # user_id = request.user.id
+    user_id = 68716
 
     embedding_filename = './saved_models/item_embeddings.pickle'
     item_embeddings = pickle.load(open(embedding_filename,'rb'))
@@ -63,10 +64,9 @@ def recommend_food(request):
 
         return best_items
 
-    user_visited_store = Review.objects.get(userid=user_id)
+    user_visited_store = Review.objects.filter(userid=user_id)[0].storeid
     report1 = make_best_items_report(item_embeddings, user_visited_store, 10)
     report1 = report1.to_json(orient="split")
     parsed = json.loads(report1)
     return Response(parsed)
     # return Response({'message': '여기요'})
-
