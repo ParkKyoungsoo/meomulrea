@@ -9,7 +9,7 @@
     <v-toolbar-title>
       <v-col>
         <v-select
-          v-model="seletedAddress"
+          v-model="select"
           @change="changeAddress"
           :items="userAddress"
           return-object
@@ -21,12 +21,17 @@
     <button @click="showAddrModal = true">추가하기</button>
     <v-spacer />
     <v-toolbar-title>
-      <div v-if="$cookies.get('auth-token')===null || $cookies.get('auth-token')===''">
+      <div
+        v-if="
+          $cookies.get('auth-token') === null ||
+            $cookies.get('auth-token') === ''
+        "
+      >
         <router-link style="text-decoration: none; color: white;" to="/">
           Login
         </router-link>
       </div>
-        <button @click="logout()">logout</button>
+      <button @click="logout()">logout</button>
     </v-toolbar-title>
   </v-app-bar>
 </template>
@@ -37,22 +42,24 @@ import { mapMutations } from "vuex";
 import { EventBus } from "../utils/EventBus.js";
 import * as firebase from "firebase";
 
+const baseURL = "http://127.0.0.1:8000/";
+
 export default {
-  data(){
-    return{
-    userAddress: user[0].nm_address,
-    showAddrModal: false,
-    seletedAddress: "",
-<<<<<<< HEAD
-    isLogined: false,
-  }),
-=======
-    }
+  data() {
+    return {
+      select: user[0].nm_address[0],
+      userAddress: user[0].nm_address,
+      showAddrModal: false,
+      seletedAddress: "",
+      isLogined: false,
+    };
   },
->>>>>>> f7a99b280509a0bf51f34498e4923d844ffe53e1
   components: {},
   computed: {
     options: () => user[0].nm_address,
+  },
+  created() {
+    this.getUserAddress();
   },
   methods: {
     ...mapMutations(("location", ["setLocation"])),
@@ -63,22 +70,25 @@ export default {
         lng: this.lng,
       });
     },
-<<<<<<< HEAD
     logout() {
       firebase
         .auth()
         .signOut()
         .then(() => {
           this.$cookies.remove("auth-token");
-          this.$router.push("/login");
+          this.$router.push("/");
         });
-=======
-    logout(){
-      firebase.auth().signOut().then(()=>{
-        this.$cookies.remove('auth-token');
-        this.$router.push('/')
-      })
->>>>>>> f7a99b280509a0bf51f34498e4923d844ffe53e1
+    },
+    getUserAddress() {
+      axios
+        .post(baseURL + "accounts/user_order_list/", {
+          headers: {
+            Authorization: this.$cookies.get("auth-token"),
+          },
+        }) // post > post
+        .then((res) => {
+          console.log("user Address is", res.data);
+        }); // post > post > then
     },
   },
 

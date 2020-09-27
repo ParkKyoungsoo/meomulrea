@@ -19,12 +19,7 @@
                 </button>
                 <h2>일반회원</h2>
               </div>
-              <<<<<<< HEAD
-              <v-text-field
-                v-model="nm_email"
-                label="이메일"
-                :messages="[error.email]"
-              ></v-text-field>
+              <v-text-field v-model="nm_email" label="이메일"></v-text-field>
               <v-text-field
                 v-model="nm_password"
                 label="비밀번호"
@@ -43,32 +38,6 @@
               <v-btn rounded color="rgb(0,0,0)" dark @click="mvpage(true)"
                 >회원등록</v-btn
               >
-              =======
-              <v-text-field
-                v-model="nm_email"
-                label="이메일"
-                ref="nm_email"
-                :messages="[error.email]"
-              ></v-text-field>
-              <v-text-field
-                v-model="nm_password"
-                label="비밀번호"
-                ref="nm_password"
-                :type="password"
-              ></v-text-field>
-              <button @click="look()">보기</button>
-              <v-btn
-                rounded
-                color="rgb(233, 105, 30)"
-                dark
-                @click="checkLogin()"
-                :loading="loading"
-                >로그인</v-btn
-              >
-              <v-btn rounded color="rgb(0,0,0)" dark @click="mvpage(true)"
-                >회원등록</v-btn
-              >
-              >>>>>>> f7a99b280509a0bf51f34498e4923d844ffe53e1
             </div>
           </div>
           <div v-if="nm_page === 2" class="start">

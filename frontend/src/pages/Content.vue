@@ -35,28 +35,32 @@
           <v-flex> 오늘은 뭐먹지? </v-flex>
         </v-layout>
         <div class="shopList">
-        <!-- <div
-          v-for="(item, index) in recommendedDate"
-          :key="index"
-          style="margin: 10px;"
-        >
-          <ShowList :storeData="item" />
-        </div> -->
-        <carousel-3d :controls-visible="true">
-          <slide v-for="(item, index) in recommendedDate" :key="index" :index="index">
-              <img :src="item.src" :alt=item.category>
-          </slide>
-        </carousel-3d>
-      </div>
-    </v-container>
-  </v-main>
->>>>>>> f7a99b280509a0bf51f34498e4923d844ffe53e1
+          <!-- <div
+            v-for="(item, index) in recommendedDate"
+            :key="index"
+            style="margin: 10px;"
+          >
+            <ShowList :storeData="item" /> -->
+          <carousel-3d :controls-visible="true">
+            <slide
+              v-for="(item, index) in recommendedDate"
+              :key="index"
+              :index="index"
+            >
+              <img :src="item.src" :alt="item.category" />
+            </slide>
+          </carousel-3d>
+          <!-- </div> -->
+        </div>
+      </v-container>
+    </v-main>
+  </v-app>
 </template>
 
 <script>
-import Vue from 'vue';
+import Vue from "vue";
 import Carousel from "../components/Carousel";
-import { Carousel3d, Slide } from 'vue-carousel-3d';
+import { Carousel3d, Slide } from "vue-carousel-3d";
 import axios from "axios";
 import recommendedDate from "../assets/datas/recommend_result_1.json";
 // import ShowList from "../components/ShowList";
@@ -68,15 +72,14 @@ import Header from "../components/Header.vue";
 const baseURL = "http://127.0.0.1:8000/";
 
 Vue.use(Carousel3d);
+
 export default {
   components: {
     test,
     Carousel,
-    ShowList,
     Header,
-    // ShowList,
     Carousel3d,
-    Slide
+    Slide,
   },
 
   data() {
@@ -95,7 +98,7 @@ export default {
     EventBus.$on("addressChange", () => {
       this.getWeather();
     });
-    this.apiTest();
+    this.getCategory();
   },
   computed: {
     ...mapGetters("location", ["getLocation"]),
@@ -107,6 +110,7 @@ export default {
   beforeMount() {
     this.getWeather();
   },
+
   methods: {
     ...mapMutations(("location", ["setLocation"])),
     getWeather: function() {
@@ -129,7 +133,7 @@ export default {
         });
     },
 
-    apiTest() {
+    getCategory() {
       // axios
       //   .post(baseURL + "main/", {
       //     headers: {
@@ -145,7 +149,6 @@ export default {
         url: baseURL + "main/",
       })
         .then((response) => {
-          console.log(response.data.data);
           this.recommendedDate = response.data.data;
         })
         .catch((ex) => {
@@ -155,15 +158,14 @@ export default {
 
     pollData() {
       this.polling = setInterval(() => {
-        console.log("hihi");
         this.getWeather();
       }, 60000);
     },
 
-    gotoShop(index){
-      console.log('gotoShop'+index)
+    gotoShop(index) {
+      console.log("gotoShop" + index);
       this.$router.push("/storelist/" + this.recommendedDate[index].category);
-    }
+    },
 
     // getLocation: function() {
     //   if (navigator.geolocation) {
