@@ -1,6 +1,21 @@
 <template>
 <v-main>
   <v-container fluid style="padding: 0;">
+  <!-- <v-app> -->
+    <!-- <v-app-bar app class="light-blue darken-1">
+      <v-app-bar-nav-icon @click.native.stop="drawerToggle = !drawerToggle"></v-app-bar-nav-icon>
+      <v-toolbar-title>
+        <router-link to="/chat/0" tag="span" style="cursor: pointer">Vuetify Chat</router-link>
+      </v-toolbar-title>
+      <v-spacer></v-spacer>
+      <v-toolbar-items v-for="item in menuItems" v-bind:key="item.route">
+        <v-btn text :key="item.title" :to="item.route">
+          <v-icon left>{{ item.icon }}</v-icon>
+          <div class="hidden-xs-only">{{ item.title }}</div>
+        </v-btn>
+      </v-toolbar-items>
+    </v-app-bar> -->
+  <!-- </v-app> -->
     <v-row no-gutters>
       <v-col sm="2" class="scrollable">
         <chats></chats>
@@ -12,14 +27,14 @@
         <!-- <emoji-picker :show="emojiPanel" @close="toggleEmojiPanel" @click="addEmojiToMessage"></emoji-picker> -->
         <div class="typer">
           <input type="text" placeholder="Type here..." v-on:keyup.enter="sendMessage" v-model="content">
-          <v-btn icon class="blue--text emoji-panel" @click="toggleEmojiPanel">
+          <!-- <v-btn icon class="blue--text emoji-panel" @click="toggleEmojiPanel">
             <v-icon>mdi-emoticon-outline</v-icon>
-          </v-btn>
+          </v-btn> -->
         </div>
       </v-col>
     </v-row>
   </v-container>
-</v-main>
+  </v-main>
 </template>
 
 <script>
@@ -33,7 +48,7 @@
       return {
         content: '',
         chatMessages: [],
-        emojiPanel: false,
+        // emojiPanel: false,
         currentRef: {},
         loading: false,
         totalChatHeight: 0
@@ -57,6 +72,27 @@
       },
       username () {
         return this.$store.getters.user.username
+      },
+      menuItems () {
+        let items = [
+          { icon: 'mdi-face', title: 'Register', route: '/register' },
+          { icon: 'mdi-lock-open', title: 'Login', route: '/login' }
+        ]
+        let user = firebase.auth().currentUser;
+        console.log(user)
+        if (user) {
+          items = [
+            {icon: 'mdi-forum', title: 'Create a Chat', route: '/create'},
+            {icon: "mdi-chat", title: 'Chat List', route: '/discover'}
+          ]
+        }
+        return items
+      },
+      userIsAuthenticated () {
+        return this.$store.getters.user !== null && this.$store.getters.user !== undefined
+      },
+      onlineUsers () {
+        return this.$store.getters.onlineUsers
       },
       onNewMessageAdded () {
         const that = this
@@ -130,20 +166,24 @@
       },
       processMessage (message) {
         /*eslint-disable */
-        var imageRegex = /([^\s\']+).(?:jpg|jpeg|gif|png)/i
+        // var imageRegex = /([^\s\']+).(?:jpg|jpeg|gif|png)/i
         /*eslint-enable */
-        if (imageRegex.test(message.content)) {
-          message.image = imageRegex.exec(message.content)[0]
-        }
-        var emojiRegex = /([\u{1f300}-\u{1f5ff}\u{1f900}-\u{1f9ff}\u{1f600}-\u{1f64f}\u{1f680}-\u{1f6ff}\u{2600}-\u{26ff}\u{2700}-\u{27bf}\u{1f1e6}-\u{1f1ff}\u{1f191}-\u{1f251}\u{2934}-\u{1f18e}])/gu
-        if (emojiRegex.test(message.content)) {
-          message.content = message.content.replace(emojiRegex, '<span class="emoji">$1</span>')
-        }
+        // if (imageRegex.test(message.content)) {
+        //   message.image = imageRegex.exec(message.content)[0]
+        // }
+        // var emojiRegex = /([\u{1f300}-\u{1f5ff}\u{1f900}-\u{1f9ff}\u{1f600}-\u{1f64f}\u{1f680}-\u{1f6ff}\u{2600}-\u{26ff}\u{2700}-\u{27bf}\u{1f1e6}-\u{1f1ff}\u{1f191}-\u{1f251}\u{2934}-\u{1f18e}])/gu
+        // if (emojiRegex.test(message.content)) {
+        //   message.content = message.content.replace(emojiRegex, '<span class="emoji">$1</span>')
+        // }
         return message
       },
       sendMessage () {
         if (this.content !== '') {
-          this.$store.dispatch('sendMessage', { username: this.username, content: this.content, date: new Date().toString(), chatID: this.id })
+          // this.$store.dispatch('sendMessage', { username: this.username, content: this.content, date: new Date().toString(), chatID: this.id })
+          firebase.database().ref('messages').child(this.chatID).child('messages').push(this.content)
+          .then((data)=>{
+            console.log(data)
+          })
           this.content = ''
         }
       },
@@ -161,12 +201,12 @@
           container.scrollTop = difference
         })
       },
-      addEmojiToMessage (emoji) {
-        this.content += emoji.value
-      },
-      toggleEmojiPanel () {
-        this.emojiPanel = !this.emojiPanel
-      }
+      // addEmojiToMessage (emoji) {
+      //   this.content += emoji.value
+      // },
+      // toggleEmojiPanel () {
+      //   this.emojiPanel = !this.emojiPanel
+      // }
     }
   }
 </script>

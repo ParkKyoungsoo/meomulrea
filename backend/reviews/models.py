@@ -2,8 +2,9 @@ from django.db import models
 from django.conf import settings
 
 class Review(models.Model):
-    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
-    title = models.CharField(max_length=200)
-    content = models.TextField()
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
+    
+    storeid = models.IntegerField()
+    userid = models.IntegerField(null=True)
+    score = models.DecimalField(max_digits=6, decimal_places=1, null=True)
+    content = models.TextField(null=True)
+    reg_time = models.DateTimeField(null=True)
