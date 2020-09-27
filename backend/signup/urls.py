@@ -31,5 +31,6 @@ urlpatterns = [
 
     path('reviews/', include('reviews.urls')),
     path('stores/', include('stores.urls')),
-
+    path('deliveries/', include('deliveries.urls')),
+    path('main/', include('main.urls')),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

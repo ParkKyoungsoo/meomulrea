@@ -3,7 +3,9 @@ from django.contrib.auth import get_user_model
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
-from .serializers import UserSerializer, UserDetailSerializer
+from .serializers import UserSerializer, UserDetailSerializer, UserProfileSerializer, BizUserProfileSerializer, UserProfileUpdateSerializer
+from .serializers import UserOrderSerializer
+from .models import Order
 
 # 닉네임 중복 여부 체크
 @api_view(['POST'])
@@ -19,7 +21,6 @@ def user_username(request):
 @api_view(['POST'])
 def user_email(request):
     User = get_user_model()
-    print(request.data)
     try:
         user = User.objects.get(email=request.data.get('email'))
         return Response({'message': '이미 존재하는 이메일입니다.'})
@@ -30,21 +31,44 @@ def user_email(request):
 # user 모델 추가사항들 저장
 # 프론트는 headers에 Token 값 담아서 보내야함
 @api_view(['POST'])
-# @permission_classes([IsAuthenticated])
+@permission_classes([IsAuthenticated])
 def user_detail(request):
     serializer = UserDetailSerializer(data=request.data, instance=request.user)
-    print(request.data.get('username'))
-    print(request.headers)
+    print(request.data.get('address'))
     if serializer.is_valid(raise_exception=True):
         serializer.save()
-    # return Response(serializer.data)
-        return Response({'message': '성공적으로 등록되었습니다.'})
-    else:
-        return Response({'message': '유효하지 않은 입력입니다.'})
+    return Response(serializer.data)
+
+# user 프로필 가져오기 or 수정
+@api_view(['POST', 'PUT'])
+@permission_classes([IsAuthenticated])
+def profile(request, user_id):
+    if request.method == 'POST':
+        serializer = UserProfileSerializer(request.user)
+        return Response(serializer.data)
+    elif request.method == 'PUT':
+        serializer = UserProfileUpdateSerializer(data=request.data, instance=request.user)
+        if serializer.is_valid(raise_exception=True):
+            serializer.save()
+            return Response(serializer.data)
+        else:
+            return Response({'message': '입력한 내용이 올바른지 확인해주세요'})
+
 
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
-def user_orders(request):
-    orders = Order.objects.filter(user=request.user).order_by('-created_at')[:5]
-    serializer = UserOrderSerializer(orders)
+def user_order_list(request):
+    order = Order.objects.filter(pk=request.data.get('user_id')).order_by['-created_at'][:5]
+    serializer = UserOrderSerializer(order, many=True)
     return Response(serializer.data)
+
+
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def user_order(request):
+    serializer = UserOrderSerializer(data=request.data)
+    if serializer.is_valid(raise_exception=True):
+        serializer.save(user=request.user)
+        return Response(serializer.data)
+    else:
+        return Response({'message': '입력 내용이 올바른지 확인해주세요'})

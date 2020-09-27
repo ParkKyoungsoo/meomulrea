@@ -52,10 +52,10 @@
                       <label for="nm_gender">성별</label>
                     </v-flex>
                     <v-flex xs4>
-                      <v-radio label="FEMALE" value=1></v-radio>
+                      <v-radio label="FEMALE" value="1"></v-radio>
                     </v-flex>
                     <v-flex xs4>
-                      <v-radio label="MALE" value=0></v-radio>
+                      <v-radio label="MALE" value="0"></v-radio>
                     </v-flex>
                   </v-radio-group>
                 </v-layout>
@@ -277,44 +277,18 @@ export default {
           password1: this.nm_password,
           password2: this.nm_password_confirm,
         })
-        .then(res => {
+        .then((res) => {
           // let token = res.data.key;
-          // console.log('res : ' + res.data)
-          // this.$store.dispatch('signUserUp', {email: this.nm_email, password: this.nm_password, username: this.nm_nickname})
-          // console.log('user : '+this.$store.getters.user)
-          // this.$router.push('/chat')
-
-          // const token = res.data.key;
-          // const authorization = "Token " + token
-
-          axios.post(baseURL + "accounts/user_detail/",
-            {
-                username: this.nm_nickname,
-                email: this.nm_email,
-                usertype: 1,
-                gender: this.nm_gender,
-                // address: this.nm_address,
-                // birth_year: this.nm_birthyear
-            },
-              {
-                headers : {
-                  Authorization : `Token ${res.data.key}`
-                  }
-              }
-            )
-            .then(res => {
-              console.log(res.data)
-            })
-            .catch(err => {
-              console.log(err.response)
-              console.log(err)
-            })
+          console.log('res : ' + res.data)
+          this.$store.dispatch('signUserUp', {email: this.nm_email, password: this.nm_password, username: this.nm_nickname})
+          console.log('user : '+this.$store.getters.user)
+          this.$router.push('/chat')
         })
         //   .catch((err)=>{
         //     console.log('err : '+err)
         //   })
         // })
-        .catch(err => {
+        .catch((err) => {
           console.log(err);
           console.log('이 에러라고')
         });
