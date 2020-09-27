@@ -44,6 +44,7 @@ class UserOrderListSerializer(serializers.ModelSerializer):
     class Meta:
         model = Order
         fields = ['id', 'user', 'location', 'created_at']
+        # fields = ['location']
 
 
 class UserOrderSerializer(serializers.ModelSerializer):
