@@ -5,10 +5,14 @@
         Home
       </router-link>
     </v-toolbar-title>
-    <v-col cols="12" sm="4" justify="center" align="center">
-      <v-select :items="userAddress" label="주소를 선택해주세요" dense solo />
-    </v-col>
+    <v-spacer />
+    <v-toolbar-title>
+      <v-col>
+        <v-select :items="userAddress" label="주소를 선택해주세요" dense solo />
+      </v-col>
+    </v-toolbar-title>
     <button @click="showAddrModal = true">추가하기</button>
+    <v-spacer />
     <v-toolbar-title>
       <router-link style="text-decoration: none; color: white;" to="/Login">
         Login
@@ -18,9 +22,11 @@
 </template>
 
 <script>
+import user from "../assets/datas/user.json";
+
 export default {
   data: () => ({
-    userAddress: [1, 2, 3, 4, 5],
+    userAddress: user.nm_address,
     showAddrModal: false,
   }),
   components: {},

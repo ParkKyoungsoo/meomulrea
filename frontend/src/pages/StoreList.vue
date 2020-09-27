@@ -3,6 +3,7 @@
     <v-container>
       카테고리에 해당하는 가게 목록들
       <div>{{ $route.params.category }}</div>
+      <!-- <div>{{ this.$store.getters["location/getLocation"] }}</div> -->
       <v-row>
         <v-col>
           <v-row>
@@ -12,7 +13,9 @@
             1-2
           </v-row>
         </v-col>
-        <v-col>지도가 들어갈 예정</v-col>
+        <v-col>
+          <kakaoMap :storeData="loc" />
+        </v-col>
       </v-row>
     </v-container>
   </v-main>
@@ -20,10 +23,31 @@
 
 <script>
 import axios from "axios";
+import kakaoMap from "../components/KakaoMap.vue";
+import { mapGetters } from "vuex";
 
 export default {
-  components: {},
+  data() {
+    return {
+      loc: 0,
+    };
+  },
+  components: {
+    kakaoMap,
+  },
+
+  computed: {
+    ...mapGetters("location", ["getLocation"]),
+  },
+
+  created: function() {
+    this.loc = this.getLocation;
+  },
+
   methods: {
+    test: function() {
+      console.log("loc", this.loc);
+    },
     showShopList: function() {
       axios({
         method: "GET",
