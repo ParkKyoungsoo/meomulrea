@@ -7,7 +7,7 @@ from django.contrib.auth import get_user_model
 
 class StoreSerializer(serializers.ModelSerializer):
     # reviews = ReviewSerializer(source='review_set', many=True)
-
+    
     class Meta:
         model = Store
         fields = '__all__'

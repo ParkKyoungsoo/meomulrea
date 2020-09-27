@@ -41,6 +41,7 @@ import user from "../assets/datas/user.json";
 import { mapMutations } from "vuex";
 import { EventBus } from "../utils/EventBus.js";
 import * as firebase from "firebase";
+import axios from "axios";
 
 const baseURL = "http://127.0.0.1:8000/";
 
@@ -60,6 +61,7 @@ export default {
   },
   created() {
     this.getUserAddress();
+    console.log("Token ", this.$cookies.get("auth-token"));
   },
   methods: {
     ...mapMutations(("location", ["setLocation"])),
@@ -82,12 +84,15 @@ export default {
     getUserAddress() {
       axios
         .post(baseURL + "accounts/user_order_list/", {
-          headers: {
-            Authorization: this.$cookies.get("auth-token"),
+          HEADERS: {
+            Authorization: `Token ${this.$cookies.get("auth-token")}`,
           },
         }) // post > post
         .then((res) => {
           console.log("user Address is", res.data);
+        })
+        .catch((res) => {
+          console.log("user Address error", res);
         }); // post > post > then
     },
   },

@@ -149,6 +149,7 @@ export default {
         url: baseURL + "main/",
       })
         .then((response) => {
+          console.log(response.data.data);
           this.recommendedDate = response.data.data;
         })
         .catch((ex) => {

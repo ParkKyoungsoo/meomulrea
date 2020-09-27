@@ -14,16 +14,14 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='Store',
             fields=[
-                ('id', models.AutoField(auto_created=True,
-                                        primary_key=True, serialize=False, verbose_name='ID')),
+                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
                 ('store_id', models.IntegerField()),
                 ('store_name', models.CharField(max_length=50, null=True)),
                 ('category', models.CharField(max_length=50, null=True)),
                 ('address', models.CharField(max_length=100, null=True)),
                 ('latitude', models.CharField(max_length=50, null=True)),
                 ('longitude', models.CharField(max_length=50, null=True)),
-                ('average_rating', models.DecimalField(
-                    decimal_places=1, max_digits=6, null=True)),
+                ('average_rating', models.DecimalField(decimal_places=1, max_digits=6, null=True)),
                 ('start_time', models.CharField(max_length=20, null=True)),
                 ('end_time', models.CharField(max_length=20, null=True)),
                 ('min_price', models.IntegerField(null=True)),

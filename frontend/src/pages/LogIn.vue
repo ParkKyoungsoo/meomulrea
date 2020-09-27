@@ -444,6 +444,23 @@ export default {
         })
         .catch((res) => {
           console.log(res);
+          // let token = res.data.key;
+          console.log("res : " + res.data);
+          this.$store.dispatch("signUserUp", {
+            email: this.nm_email,
+            password: this.nm_password,
+            username: this.nm_nickname,
+          });
+          console.log("user : " + this.$store.getters.user);
+          this.$router.push("/chat");
+        })
+        //   .catch((err)=>{
+        //     console.log('err : '+err)
+        //   })
+        // })
+        .catch((err) => {
+          console.log(err);
+          console.log("이 에러라고");
         });
     },
     reset(nm) {
