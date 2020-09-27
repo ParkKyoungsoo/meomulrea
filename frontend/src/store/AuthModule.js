@@ -62,6 +62,7 @@ const AuthModule = {
           commit("setError", error);
         });
     },
+
     signUserIn({ commit }, payload) {
       commit("setLoading", true);
       commit("clearError");
@@ -88,6 +89,7 @@ const AuthModule = {
         });
     },
   },
+
   getters: {
     user(state) {
       return state.user;

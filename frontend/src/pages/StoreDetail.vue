@@ -18,6 +18,7 @@
               md="7"
             >
               <div>{{ this.storeInfo.store_name }}</div>
+              <div>{{ this.storeInfo.category }}</div>
               <div>{{ this.storeInfo.address }}</div>
               <div>최소 주문 금액 : {{ this.storeInfo.min_price }} 원</div>
               <div style="display: flex; justify-content: start;">

@@ -4,7 +4,7 @@
     <v-main>
       <v-container class="content">
         <h2>본문영역</h2>
-        <test />
+        <Addr2Code />
         <v-layout class="weather">
           <v-col>
             <v-row>
@@ -27,6 +27,7 @@
             </v-row>
           </v-col>
         </v-layout>
+        <v-btn @click="getCategory">버튼</v-btn>
         <div class="advertise" align="center" justify="center">
           광고영역
           <Carousel :storeData="recommendedDate" />
@@ -65,7 +66,7 @@ import axios from "axios";
 import recommendedDate from "../assets/datas/recommend_result_1.json";
 // import ShowList from "../components/ShowList";
 import { mapMutations, mapGetters } from "vuex";
-import test from "../components/Addr2Code.vue";
+import Addr2Code from "../components/Addr2Code.vue";
 import { EventBus } from "../utils/EventBus.js";
 import Header from "../components/Header.vue";
 
@@ -75,7 +76,7 @@ Vue.use(Carousel3d);
 
 export default {
   components: {
-    test,
+    Addr2Code,
     Carousel,
     Header,
     Carousel3d,

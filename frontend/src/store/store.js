@@ -2,7 +2,10 @@ import Vue from "vue";
 import Vuex from "vuex";
 import Location from "./Location";
 import ShopList from "./ShopList";
+import UserInfo from "./UserInfo";
+
 import createPersistedState from "vuex-persistedstate";
+
 import AuthModule from "./AuthModule";
 import ChatModule from "./ChatModule";
 import * as firebase from "firebase";
@@ -13,14 +16,17 @@ export const store = new Vuex.Store({
   modules: {
     location: Location,
     shopList: ShopList,
+    userInfo: UserInfo,
     auth: AuthModule,
     chat: ChatModule,
   },
+
   state: {
     loading: false,
     error: null,
     onlineUsers: [],
   },
+
   mutations: {
     setLoading(state, payload) {
       state.loading = payload;
@@ -35,6 +41,7 @@ export const store = new Vuex.Store({
       state.onlineUsers = payload;
     },
   },
+
   actions: {
     loadOnlineUsers({ commit }) {
       firebase
@@ -51,6 +58,7 @@ export const store = new Vuex.Store({
       commit("clearError");
     },
   },
+
   getters: {
     loading(state) {
       return state.loading;
@@ -62,9 +70,6 @@ export const store = new Vuex.Store({
       return state.onlineUsers;
     },
   },
-  plugins: [
-    createPersistedState({
-      paths: ["Location.state", "ShopList"],
-    }),
-  ],
+
+  plugins: [createPersistedState()],
 });

@@ -49,6 +49,8 @@ import kakaoMap from "../components/KakaoMap.vue";
 import { mapGetters } from "vuex";
 import Header from "../components/Header.vue";
 
+const baseURL = "http://127.0.0.1:8000/";
+
 export default {
   data() {
     return {
@@ -84,21 +86,24 @@ export default {
       console.log("loc", this.loc);
     },
     showShopList: function() {
-      axios({
-        method: "GET",
-        url: ``,
-        params: {
-          page: 1,
-          pagesize: 5,
-        },
-      })
-        .then((response) => {
-          this.locationData = response.data;
-          console.log(this.locationData);
+      axios
+        .post(
+          baseURL + "stores/store_category/",
+          {
+            category: this.$route.params.category,
+          },
+          {
+            headers: {
+              Authorization: `Token ${this.$cookies.get("auth-token")}`,
+            },
+          }
+        ) // post > post
+        .then((res) => {
+          this.userInfo = res.data;
         })
-        .catch((ex) => {
-          console.log("ERR!!!!! : ", ex);
-        });
+        .catch((res) => {
+          console.log("user Address error", res);
+        }); // post > post > then
     },
   },
 };
