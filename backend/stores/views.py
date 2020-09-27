@@ -66,14 +66,17 @@ def store_list(request):
     # Store 모델에서 카테고리가 요청온 category 정보가 같은 가게 리스트를 stores 변수에 담는다.
     if request.user.is_authenticated:
         # 유저 집주소 조회
-        user_address = request.user.address
-        user_address = user_address.split(" ")
+        # user_address = request.user.address
+        # user_address = user_address.split(" ")
 
         # 그러나 프론트에서 동을 줄 예정
 
         # stores = Stores.objects.filter(category=request.data['category'] and address__contains=user_address[:10]).order_by('-average_rating')
         # stores = Store.objects.filter(category=request.data['category']).filter(address__contains=user_address[:2]).order_by('-average_rating')
-        stores = Store.objects.filter(category=request.data['category'], address__contains=user_address[2]).order_by('-average_rating')
+
+        # stores = Store.objects.filter(category=request.data['category'], address__contains=user_address[2]).order_by('-average_rating')
+
+        stores = Store.objects.filter(category=request.data['category'], address__contains=request.data['user_location']).order_by('-average_rating')
         serializer = StoreSerializer(stores, many=True)
         return Response(serializer.data)
     else:

@@ -4,7 +4,7 @@ from rest_framework.decorators import api_view, permission_classes
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
 from .serializers import UserSerializer, UserDetailSerializer, UserProfileSerializer, BizUserProfileSerializer, UserProfileUpdateSerializer
-from .serializers import UserOrderSerializer
+from .serializers import UserOrderSerializer, UserOrderListSerializer
 from .models import Order
 
 # 닉네임 중복 여부 체크
@@ -54,13 +54,19 @@ def profile(request, user_id):
         else:
             return Response({'message': '입력한 내용이 올바른지 확인해주세요'})
 
-
+from django.http import HttpResponse, JsonResponse
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
 def user_order_list(request):
-    order = Order.objects.filter(pk=request.data.get('user_id')).order_by['-created_at'][:5]
-    serializer = UserOrderSerializer(order, many=True)
+    print(request.user)
+    order = Order.objects.filter(user=request.user).order_by('-created_at')[:5]
+    serializer = UserOrderListSerializer(order_list, many=True)
     return Response(serializer.data)
+    # 아래는 경수님 요청한 데이터 형태로 커스터마이징 했을 경우
+    # order_list = {"location": []}
+    # for item in order:
+    #     order_list["location"].append(item.location)
+    # return JsonResponse(order_list)
 
 
 @api_view(['POST'])
