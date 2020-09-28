@@ -6,6 +6,7 @@
         카테고리에 해당하는 가게 목록들
         <div>{{ $route.params.category }}</div>
         <div>{{ this.getLocation.dong }}</div>
+        <v-btn @click="getStoreInfo">버튼</v-btn>
         <v-row>
           <v-col class="shopList">
             <v-card
@@ -79,6 +80,29 @@ export default {
   },
 
   methods: {
+    getStoreInfo() {
+      console.log(this.$cookies.get("auth-token"));
+      axios
+        .post(
+          baseURL + "stores/store_list/",
+          {
+            category: this.category,
+            user_location: this.getLocation.dong,
+          },
+          {
+            headers: {
+              Authorization: `Token ${this.$cookies.get("auth-token")}`,
+            },
+          }
+        ) // post > post
+        .then((res) => {
+          console.log(res.data);
+        })
+        .catch((res) => {
+          console.log(res);
+        }); // post > post > then
+    },
+
     goToShopDetail: function(shopId) {
       this.$router.push("/storedetail/" + shopId);
     },
