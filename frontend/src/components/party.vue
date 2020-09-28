@@ -6,10 +6,19 @@
     </v-btn>
     <v-btn text to="/discover">
       <v-icon left>mdi-chat</v-icon>
-      <div class="hidden-xs-only">파타찾기</div>
+      <div class="hidden-xs-only">파티찾기</div>
     </v-btn>
+    <div>
+      <ChatList />
+    </div>
   </div>
 </template>
 <script>
-export default {};
+import ChatList from "./Chat/ChatList.vue";
+
+export default {
+  components: {
+    ChatList,
+  },
+};
 </script>

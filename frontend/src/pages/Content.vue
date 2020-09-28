@@ -2,7 +2,7 @@
   <v-main>
     <Header/>
     <div class="advertise" align="center" justify="center" style="border: 1px solid black;">
-      <Carousel :storeData="recommendedDate" :pagination="false"/>
+      <Carousel :storeData="recommendedDate"/>
     </div>
     <v-container class="content">
       <div style="width:80%;">
@@ -32,18 +32,12 @@
         <v-flex> 오늘은 뭐먹지? </v-flex>
       </v-layout>
       <div class="shopList">
-        <!-- <div
-          v-for="(item, index) in recommendedDate"
-          :key="index"
-          style="margin: 10px;"
-        >
-          <ShowList :storeData="item" />
-        </div> -->
         <carousel-3d :controls-visible="true">
           <slide v-for="(item, index) in recommendedDate" :key="index" :index="index">
               <figure>
-                <img :src="item.src" :alt="item.category">
-                <figcaption  @click="gotoShop(index)">
+                <img :src="item.src" :alt="item[1]">
+                <!-- <img src="../assets/image/background.jpg"> -->
+                <figcaption  @click="gotoShop(item[1])">
                   <h2>{{index+1}}위</h2>
                 </figcaption>
               </figure>
@@ -56,27 +50,28 @@
 </template>
 
 <script>
-import Vue from 'vue';
+import Vue from "vue";
 import Carousel from "../components/Carousel";
-import { Carousel3d, Slide } from 'vue-carousel-3d';
+import { Carousel3d, Slide } from "vue-carousel-3d";
 import axios from "axios";
 import recommendedDate from "../assets/datas/recommend_result_1.json";
 // import ShowList from "../components/ShowList";
 import { mapMutations, mapGetters } from "vuex";
-import test from "../components/Addr2Code.vue";
+// import Addr2Code from "../components/Addr2Code.vue";
 import { EventBus } from "../utils/EventBus.js";
 import Header from "../components/Header.vue";
 
+const baseURL = "http://127.0.0.1:8000/";
 
 Vue.use(Carousel3d);
+
 export default {
   components: {
-    test,
+    // Addr2Code,
     Carousel,
-    // ShowList,
+    Header,
     Carousel3d,
     Slide,
-    Header,
   },
 
   data() {
@@ -85,7 +80,7 @@ export default {
       lat: 0,
       lng: 0,
       locationData: "",
-      recommendedDate: recommendedDate.data,
+      recommendedDate: "",
     };
   },
 
@@ -95,14 +90,23 @@ export default {
     EventBus.$on("addressChange", () => {
       this.getWeather();
     });
+    this.getCategory();
   },
   computed: {
     ...mapGetters("location", ["getLocation"]),
+    user() {
+      return this.$store.getters.user;
+    },
   },
+
   beforeMount() {
     this.getWeather();
   },
+
   methods: {
+    test() {
+      console.log(recommendedDate);
+    },
     ...mapMutations(("location", ["setLocation"])),
     getWeather: function() {
       console.log("weather function called!!");
@@ -119,22 +123,35 @@ export default {
           // console.log(this.locationData);
         })
         .catch(() => {
-        // .catch((ex) => {
+          // .catch((ex) => {
           // console.log("ERR!!!!! : ", ex);
+        });
+    },
+
+    getCategory() {
+      axios({
+        method: "GET",
+        url: baseURL + "main/",
+      })
+        .then((response) => {
+          console.log(response.data.data);
+          this.recommendedDate = response.data.data;
+        })
+        .catch((ex) => {
+          console.log(ex);
         });
     },
 
     pollData() {
       this.polling = setInterval(() => {
-        console.log("hihi");
         this.getWeather();
       }, 60000);
     },
 
-    gotoShop(index){
-      console.log('gotoShop'+index)
-      this.$router.push("/storelist/" + this.recommendedDate[index].category);
-    }
+    gotoShop(index) {
+      console.log("gotoShop : " + index);
+      this.$router.push("/storelist/" + index);
+    },
 
     // getLocation: function() {
     //   if (navigator.geolocation) {
@@ -185,8 +202,8 @@ export default {
   /* background-image: url('../assets/image/background.jpg'); */
   // background: url('../assets/image/background.jpg');
   // background: rgba(233, 105, 30, 0.3);
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+  // -webkit-font-smoothing: antialiased;
+  // -moz-osx-font-smoothing: grayscale;
   // background: linear-gradient(180deg, rgba(255,255,255,1) 0%, rgba(233,105,30,0.8) 100%);
   // background: url('../assets/image/cloud.jpg');
   // background-size: 100%;

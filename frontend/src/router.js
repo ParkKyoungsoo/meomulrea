@@ -10,6 +10,7 @@ import StoreDetail from "./pages/StoreDetail.vue";
 import Create from "./components/Chat/Create.vue";
 import Chat from "./components/Chat/Chat.vue";
 import ChatList from "./components/Chat/ChatList";
+import Signin from "@/components/User/Signin";
 
 export default new Router({
   mode: "history",
@@ -54,6 +55,11 @@ export default new Router({
       path: "/discover",
       name: "JoinChat",
       component: ChatList,
+    },
+    {
+      path: "/loginChat",
+      name: "Signin",
+      component: Signin,
     },
   ],
 });

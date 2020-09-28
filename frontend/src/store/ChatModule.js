@@ -32,8 +32,8 @@ const ChatModule = {
         });
     },
     loadUserChats(context) {
-      // let user = context.getters.user;
-      let user = "pks313527";
+      let user = context.getters.user;
+      // let user = "pks313527";
       firebase
         .database()
         .ref("users")

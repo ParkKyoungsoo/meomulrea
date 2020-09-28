@@ -48,9 +48,9 @@ const AuthModule = {
               const newUser = {
                 id: auth.user.uid,
                 username: payload.username,
+                isLogined: true,
               };
               commit("setUser", newUser);
-              console.log(message);
             })
             .catch((error) => {
               commit("setLoading", false);
@@ -62,6 +62,7 @@ const AuthModule = {
           commit("setError", error);
         });
     },
+
     signUserIn({ commit }, payload) {
       commit("setLoading", true);
       commit("clearError");
@@ -80,7 +81,6 @@ const AuthModule = {
                 username: auth.user.email,
               };
               commit("setUser", newUser);
-              console.log(data);
             });
         })
         .catch((error) => {
@@ -89,6 +89,7 @@ const AuthModule = {
         });
     },
   },
+
   getters: {
     user(state) {
       return state.user;

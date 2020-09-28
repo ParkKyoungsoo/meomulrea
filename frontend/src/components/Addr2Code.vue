@@ -13,18 +13,22 @@ export default {
       lng: 0,
     };
   },
+
   computed: {
     ...mapGetters("location", ["getLocation"]),
   },
+
   mounted() {
     window.kakao && window.kakao.maps ? null : this.addScript();
   },
+
   created() {
     EventBus.$on("addressChange", (userAddress) => {
       this.address = userAddress;
       this.searchAddr();
     });
   },
+
   methods: {
     addScript() {
       let script = document.createElement("script");

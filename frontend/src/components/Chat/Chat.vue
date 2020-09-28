@@ -71,8 +71,8 @@ export default {
       return this.chatMessages;
     },
     username() {
-      // return this.$store.getters.user.username;
-      return "pks313527";
+      return this.$store.getters.user.username;
+      // return "pks313527";
     },
     onNewMessageAdded() {
       const that = this;

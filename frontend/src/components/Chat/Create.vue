@@ -31,16 +31,16 @@ export default {
     return {
       chatName: "",
       loading: false,
-      user: {
-        id: "pks313527",
-      },
+      // user: {
+      //   id: "pks313527",
+      // },
     };
   },
-  // computed: {
-  //   user() {
-  //     return this.$store.getters.user;
-  //   },
-  // },
+  computed: {
+    user() {
+      return this.$store.getters.user;
+    },
+  },
   methods: {
     createChat() {
       if (this.chatName == "" || this.loading) {

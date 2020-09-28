@@ -48,6 +48,7 @@ export default {
   },
   computed: {
     user() {
+      console.log("userInfo", this.$store.getters.user);
       return this.$store.getters.user;
     },
     chats() {

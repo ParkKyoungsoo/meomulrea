@@ -1,49 +1,55 @@
 <template>
-  <v-main>
-    <v-container>
-      카테고리에 해당하는 가게 목록들
-      <div>{{ $route.params.category }}</div>
-      <div>{{ this.getLocation.dong }}</div>
-      <v-row>
-        <v-col class="shopList">
-          <v-card
-            class="mx-auto"
-            max-width="320"
-            outlined
-            v-for="(item, index) in this.getShopList.shopList"
-            :key="index"
-          >
-            <v-col>
-              <v-row justify="center">
-                <div>{{ item.store_name }}</div>
-              </v-row>
-              <v-row justify="center">
-                <v-list-item-avatar tile size="200" color="grey" />
-              </v-row>
-            </v-col>
+  <v-app>
+    <Header />
+    <v-main>
+      <v-container>
+        카테고리에 해당하는 가게 목록들
+        <div>{{ $route.params.category }}</div>
+        <div>{{ this.getLocation.dong }}</div>
+        <v-row>
+          <v-col class="shopList">
+            <v-card
+              class="mx-auto"
+              max-width="320"
+              outlined
+              v-for="(item, index) in this.getShopList.shopList"
+              :key="index"
+            >
+              <v-col>
+                <v-row justify="center">
+                  <div>{{ item.store_name }}</div>
+                </v-row>
+                <v-row justify="center">
+                  <v-list-item-avatar tile size="200" color="grey" />
+                </v-row>
+              </v-col>
 
-            <v-card-actions>
-              <v-btn
-                depressed
-                color="primary"
-                @click="goToShopDetail(item.store_id)"
-                >가게 보러가기</v-btn
-              >
-            </v-card-actions>
-          </v-card>
-        </v-col>
-        <v-col>
-          <kakaoMap :storeData="loc" :category="category" />
-        </v-col>
-      </v-row>
-    </v-container>
-  </v-main>
+              <v-card-actions>
+                <v-btn
+                  depressed
+                  color="primary"
+                  @click="goToShopDetail(item.store_id)"
+                  >가게 보러가기</v-btn
+                >
+              </v-card-actions>
+            </v-card>
+          </v-col>
+          <v-col>
+            <kakaoMap :storeData="loc" :category="category" />
+          </v-col>
+        </v-row>
+      </v-container>
+    </v-main>
+  </v-app>
 </template>
 
 <script>
 import axios from "axios";
 import kakaoMap from "../components/KakaoMap.vue";
 import { mapGetters } from "vuex";
+import Header from "../components/Header.vue";
+
+const baseURL = "http://127.0.0.1:8000/";
 
 export default {
   data() {
@@ -57,6 +63,7 @@ export default {
   },
   components: {
     kakaoMap,
+    Header,
   },
 
   computed: {
@@ -79,21 +86,24 @@ export default {
       console.log("loc", this.loc);
     },
     showShopList: function() {
-      axios({
-        method: "GET",
-        url: ``,
-        params: {
-          page: 1,
-          pagesize: 5,
-        },
-      })
-        .then((response) => {
-          this.locationData = response.data;
-          console.log(this.locationData);
+      axios
+        .post(
+          baseURL + "stores/store_category/",
+          {
+            category: this.$route.params.category,
+          },
+          {
+            headers: {
+              Authorization: `Token ${this.$cookies.get("auth-token")}`,
+            },
+          }
+        ) // post > post
+        .then((res) => {
+          this.userInfo = res.data;
         })
-        .catch((ex) => {
-          console.log("ERR!!!!! : ", ex);
-        });
+        .catch((res) => {
+          console.log("user Address error", res);
+        }); // post > post > then
     },
   },
 };

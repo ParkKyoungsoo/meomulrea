@@ -2,7 +2,7 @@
   <!-- <v-card class="mx-auto" max-width="320" outlined>
     <v-col>
       <v-row justify="center">
-        <div>{{ storeData.category }}</div>
+        <div>{{ storeData[1] }}</div>
       </v-row>
       <v-row justify="center">
         <v-list-item-avatar tile size="200" color="grey" />
@@ -15,19 +15,21 @@
   </v-card> -->
   <div id="showlist">
     <button @click="goToShop">
-    <card data-image="https://images.unsplash.com/photo-1479660656269-197ebb83b540?dpr=2&auto=compress,format&fit=crop&w=1199&h=798&q=80&cs=tinysrgb&crop=">
-      <h1 slot="header">{{storeData.category}}</h1>
-      <p slot="content">가게 보러 가기</p>
-    </card>
+      <card
+        data-image="https://images.unsplash.com/photo-1479660656269-197ebb83b540?dpr=2&auto=compress,format&fit=crop&w=1199&h=798&q=80&cs=tinysrgb&crop="
+      >
+        <h1 slot="header">{{ storeData.category }}</h1>
+        <p slot="content">가게 보러 가기</p>
+      </card>
     </button>
   </div>
 </template>
 
 <script>
-import card from '../components/Card.vue';
+import card from "../components/Card.vue";
 export default {
-  components:{
-    card
+  components: {
+    card,
   },
   props: {
     storeData: {},
@@ -35,12 +37,11 @@ export default {
 
   methods: {
     goToShop: function() {
-      console.log('여기도 안들어오겠지뭐')
-      this.$router.push("/storelist/" + this.storeData.category);
+      this.$router.push("/storelist/" + this.storeData[1]);
     },
-    mvpage: function(){
+    mvpage: function() {
       this.$router.push("/chat");
-    }
+    },
   },
 };
 </script>

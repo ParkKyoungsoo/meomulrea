@@ -39,8 +39,8 @@ export default {
   },
   computed: {
     username() {
-      // return this.$store.getters.user.username
-      return "pks313527";
+      return this.$store.getters.user.username;
+      // return "pks313527";
     },
   },
   methods: {
