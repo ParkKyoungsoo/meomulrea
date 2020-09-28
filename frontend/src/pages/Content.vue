@@ -1,49 +1,60 @@
 <template>
   <v-main>
-    <Header/>
-    <div class="advertise" align="center" justify="center" style="border: 1px solid black;">
-      <Carousel :storeData="recommendedDate"/>
+    <Header />
+    <div
+      class="advertise"
+      align="center"
+      justify="center"
+      style="border: 1px solid black;"
+    >
+      <Carousel :storeData="recommendedDate" />
     </div>
     <v-container class="content">
       <div style="width:80%;">
-      <h2>본문영역</h2>
-      <test />
-      <v-layout class="weather">
-        <v-col>
-          <v-row>
-            날씨 영역
-            <v-btn icon color="green" @click="getWeather">
-              <v-icon>mdi-cached</v-icon>
-            </v-btn>
-          </v-row>
-          <v-row align="center" justify="center">
-            <v-flex>지역 : {{ this.getLocation.dong }} </v-flex>
-            <v-flex>기온 : {{ locationData.main.temp - 273.15 }} &deg;C</v-flex>
-            <v-flex>습도 : {{ locationData.main.humidity }} %</v-flex>
-            <v-flex>기압 : {{ locationData.main.pressure }}</v-flex>
-            <v-flex>날씨 : {{ locationData.weather[0].main }}</v-flex>
-            <v-flex>풍향 : {{ locationData.wind.deg }} &deg;</v-flex>
-            <v-flex>풍속 : {{ locationData.wind.speed }} m/s</v-flex>
-            <v-flex>구름 : {{ locationData.clouds.all + "%" }}</v-flex>
-          </v-row>
-        </v-col>
-      </v-layout>
-      <v-layout>
-        <v-flex> 오늘은 뭐먹지? </v-flex>
-      </v-layout>
-      <div class="shopList">
-        <carousel-3d :controls-visible="true">
-          <slide v-for="(item, index) in recommendedDate" :key="index" :index="index">
+        <h2>본문영역</h2>
+        <test />
+        <v-layout class="weather">
+          <v-col>
+            <v-row>
+              날씨 영역
+              <v-btn icon color="green" @click="getWeather">
+                <v-icon>mdi-cached</v-icon>
+              </v-btn>
+            </v-row>
+            <v-row align="center" justify="center">
+              <v-flex>지역 : {{ this.getLocation.dong }} </v-flex>
+              <v-flex
+                >기온 : {{ locationData.main.temp - 273.15 }} &deg;C</v-flex
+              >
+              <v-flex>습도 : {{ locationData.main.humidity }} %</v-flex>
+              <v-flex>기압 : {{ locationData.main.pressure }}</v-flex>
+              <v-flex>날씨 : {{ locationData.weather[0].main }}</v-flex>
+              <v-flex>풍향 : {{ locationData.wind.deg }} &deg;</v-flex>
+              <v-flex>풍속 : {{ locationData.wind.speed }} m/s</v-flex>
+              <v-flex>구름 : {{ locationData.clouds.all + "%" }}</v-flex>
+            </v-row>
+          </v-col>
+        </v-layout>
+        <v-layout>
+          <v-flex> 오늘은 뭐먹지? </v-flex>
+        </v-layout>
+        <div class="shopList">
+          <carousel-3d :controls-visible="true">
+            <slide
+              v-for="(item, index) in recommendedDate"
+              :key="index"
+              :index="index"
+            >
               <figure>
-                <img :src="item.src" :alt="item[1]">
+                <img :src="item.src" :alt="item[1]" />
                 <!-- <img src="../assets/image/background.jpg"> -->
-                <figcaption  @click="gotoShop(item[1])">
-                  <h2>{{index+1}}위</h2>
+                <figcaption @click="gotoShop(item[1])">
+                  <h2>{{ index + 1 }}위</h2>
                 </figcaption>
               </figure>
-          </slide>
-        </carousel-3d>
-      </div>
+            </slide>
+          </carousel-3d>
+        </div>
       </div>
     </v-container>
   </v-main>
@@ -196,21 +207,20 @@ export default {
 
 <style lang="scss" scoped>
 .container {
-  margin:0px; 
-  max-width:1600px; 
-  min-height: 690px; 
+  margin: 0px;
+  max-width: 1600px;
+  min-height: 690px;
   /* background-image: url('../assets/image/background.jpg'); */
-  // background: url('../assets/image/background.jpg');
+  /* // background: url('../assets/image/background.jpg');
   // background: rgba(233, 105, 30, 0.3);
   // -webkit-font-smoothing: antialiased;
   // -moz-osx-font-smoothing: grayscale;
   // background: linear-gradient(180deg, rgba(255,255,255,1) 0%, rgba(233,105,30,0.8) 100%);
   // background: url('../assets/image/cloud.jpg');
-  // background-size: 100%;
-
+  // background-size: 100%; */
 }
 .content {
-  // border: 1px solid black;
+  /* // border: 1px solid black; */
   display: flex;
   justify-content: center;
   flex-wrap: wrap;
