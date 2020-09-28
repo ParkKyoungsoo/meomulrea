@@ -1,38 +1,38 @@
 <template>
-    <v-main>
-  <v-container>
+  <v-main>
+    <!-- <v-container> -->
       <div class="cont">
         <div class="cont_center_left">
           <div v-if="nm_page === 0" class="start">
             <div>
-              <h2>일반회원</h2>
+              <h1>일반회원</h1>
               <v-btn rounded color="rgb(0,0,0)" dark @click="mvpage(true)"
                 >시작하기</v-btn
               >
             </div>
           </div>
           <div v-if="nm_page === 1" class="start">
-            <div>
+            <div class="inputform">
               <div>
                 <button @click="reset(true)">
                   <i class="material-icons">&#xE5C4;</i>
                 </button>
-                <h2>일반회원</h2>
+                <h1>일반회원</h1>
               </div>
-              <v-text-field v-model="nm_email" label="이메일"  ref="nm_email" :messages="[error.email]"></v-text-field>
-              <v-text-field v-model="nm_password" label="비밀번호"  ref="nm_password" :type="password"></v-text-field>
-              <button @click="look()">보기</button>
+              <v-text-field style="width:80%;" v-model="nm_email" label="이메일"  ref="nm_email" :messages="[error.email]"></v-text-field>
+              <v-text-field style="width:80%;" v-model="nm_password" label="비밀번호"  ref="nm_password" :type="password"></v-text-field>
+              <!-- <button @click="look()">보기</button> -->
               <v-btn rounded color="rgb(233, 105, 30)" dark @click="checkLogin()" :loading="loading">로그인</v-btn>
               <v-btn rounded color="rgb(0,0,0)" dark @click="mvpage(true)">회원등록</v-btn>
             </div>
           </div>
           <div v-if="nm_page === 2" class="start">
-            <div>
+            <div class="inputform">
               <div>
                 <button @click="reset(true)">
                   <i class="material-icons">&#xE5C4;</i>
                 </button>
-                <h2>일반회원</h2>
+                <h1>일반회원</h1>
               </div>
               <v-text-field v-model="nm_email" :messages="[error.email]" label="이메일" ref="nm_email"></v-text-field>
               <v-text-field v-model="nm_name" label="이름"></v-text-field>
@@ -65,24 +65,21 @@
         <div class="cont_center_right">
           <div v-if="biz_page === 0" class="start">
             <div>
-              <h2>사업자회원</h2>
+              <h1>사업자회원</h1>
               <v-btn rounded color="rgb(0,0,0)" dark @click="mvpage(false)"
                 >시작하기</v-btn
               >
             </div>
           </div>
           <div v-if="biz_page === 1" class="start">
-            <div>
+            <div class="inputform">
               <div>
                 <button @click="reset(false)">
                   <i class="material-icons">&#xE5C4;</i>
                 </button>
-                <h2>사업자회원</h2>
+                <h1>사업자회원</h1>
               </div>
-              <v-text-field
-                v-model="biz_email"
-                label="사업자번호"
-              ></v-text-field>
+              <v-text-field v-model="biz_email" label="사업자번호"></v-text-field>
               <v-text-field
                 v-model="biz_password"
                 label="비밀번호"
@@ -96,12 +93,12 @@
             </div>
           </div>
           <div v-if="biz_page === 2" class="start">
-            <div>
+            <div class="inputform">
               <div>
                 <button @click="reset(false)">
                   <i class="material-icons">&#xE5C4;</i>
                 </button>
-                <h2>사업자회원</h2>
+              <h1>사업자회원</h1>
               </div>
               <v-text-field
                 v-model="biz_email"
@@ -130,8 +127,8 @@
           </div>
         </div>
       </div>
-  </v-container>
-    </v-main>
+    <!-- </v-container> -->
+  </v-main>
 </template>
 
 <script src="http://dmaps.daum.net/map_js_init/postcode.v2.js"></script>
