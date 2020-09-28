@@ -27,7 +27,6 @@
             </v-row>
           </v-col>
         </v-layout>
-        <v-btn @click="getCategory">버튼</v-btn>
         <div class="advertise" align="center" justify="center">
           광고영역
           <Carousel :storeData="recommendedDate" />
@@ -47,8 +46,11 @@
               v-for="(item, index) in recommendedDate"
               :key="index"
               :index="index"
+              @click="gotoShop(item[1])"
             >
+              <div>{{ item[1] }}</div>
               <img :src="item.src" :alt="item.category" />
+              <v-btn @click="gotoShop(item[1])">이동</v-btn>
             </slide>
           </carousel-3d>
           <!-- </div> -->
@@ -113,6 +115,9 @@ export default {
   },
 
   methods: {
+    test() {
+      console.log(recommendedDate);
+    },
     ...mapMutations(("location", ["setLocation"])),
     getWeather: function() {
       console.log("weather function called!!");
@@ -165,8 +170,8 @@ export default {
     },
 
     gotoShop(index) {
-      console.log("gotoShop" + index);
-      this.$router.push("/storelist/" + this.recommendedDate[index].category);
+      console.log("gotoShop : " + index);
+      this.$router.push("/storelist/" + index);
     },
 
     // getLocation: function() {
