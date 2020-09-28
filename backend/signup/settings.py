@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     'deliveries',
     'main',
     'reviews',
+    'calcembedding',
     
     'django_extensions',
 

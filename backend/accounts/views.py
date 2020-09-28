@@ -60,7 +60,7 @@ from django.http import HttpResponse, JsonResponse
 def user_order_list(request):
     print(request.user)
     order = Order.objects.filter(user=request.user).order_by('-created_at')[:5]
-    serializer = UserOrderListSerializer(order_list, many=True)
+    serializer = UserOrderListSerializer(order, many=True)
     return Response(serializer.data)
     # 아래는 경수님 요청한 데이터 형태로 커스터마이징 했을 경우
     # order_list = {"location": []}

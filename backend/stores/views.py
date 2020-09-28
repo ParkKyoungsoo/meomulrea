@@ -1,7 +1,6 @@
 import json
 from django.conf import settings
 from django.contrib.auth import get_user_model
-from django.db.models import Q
 from django.shortcuts import render, get_object_or_404
 from rest_framework.response import Response
 from rest_framework.decorators import api_view, permission_classes
