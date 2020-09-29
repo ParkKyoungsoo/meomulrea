@@ -184,12 +184,8 @@
 import axios from "axios";
 import * as firebase from "firebase";
 
-<<<<<<< HEAD
 const baseURL = "http://127.0.0.1:8000/api/";
-=======
-// const baseURL = "http://127.0.0.1:8000/";
-const baseURL = "http://j3b304.p.ssafy.io/";
->>>>>>> 871f80d65878d2a458c732845d4f997f4611f356
+// const baseURL = "http://j3b304.p.ssafy.io/";
 
 export default {
   name: "LogIn",

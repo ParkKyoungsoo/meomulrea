@@ -10,6 +10,7 @@
     </div>
     <div class="review-write" style="border: 1px solid silver; margin-bottom:10px">
       <div style="margin:10px 10px 0 10px">
+        <v-rating v-model="rating" background-color="orange lighten-3" color="orange" dense="true" half-increments="true" hover="true"></v-rating><br>
         <v-textarea solo name="input-7-4" label="리뷰를 남겨보세요." v-model="myReview"></v-textarea>
         <div class="text-right" style="pt-0; mb-5">
           <v-btn @click="registerReview()" style="text-align:right;" color="orange">등록</v-btn>
@@ -21,25 +22,20 @@
       <span>최신순</span> | 
       <span>높은 평점순</span> | 
       <span>낮은 평점순</span>
+      <v-select :items="items" label="최신순" dense solo width=5></v-select>
     </div>
     <div class="review-origin" v-for="review in reviews" :key="review.id">
       <div style="border: 1px solid silver">
         <article class="review review-1">
-            <v-container>
-          <v-row>
-          <v-flex><h3 v-if="review.user===null" class="review-title" style="display: inline">{{ review.userid }}</h3>
-          <h3 v-else class="review-title">{{ review.user.username }}</h3></v-flex>
-         
-      <!-- <span class="review-archive-rating">
-        <i class="fa fa-star"></i>
-        <i class="fa fa-star"></i>
-        <i class="fa fa-star"></i>
-        <i class="fa fa-star"></i>
-        <i class="fa fa-star-o"></i>
-      </span> -->
-      <v-flex><span>{{ review.score }}</span></v-flex>
-      <v-flex><p>{{ timeForToday(review.reg_time) }}</p></v-flex>
-       </v-row>
+          <v-container>
+            <v-row>
+              <v-rating :value="review.score" readonly background-color="orange lighten-3" color="orange" dense="true" half-increments="true" small="true"></v-rating>({{ review.score }})<br>
+            </v-row>
+            <v-row>
+              <v-col-3><h3 v-if="review.user===null" class="review-title" style="display: inline">{{ review.userid }}</h3>
+              <h3 v-else class="review-title">{{ review.user.username }}</h3></v-col-3>
+              <v-col-9><p style="color: lightgray">{{ timeForToday(review.reg_time) }}</p></v-col-9>
+        </v-row>
        </v-container>
       <p class="review-excerpt">{{ review.content }}</p>
       <!-- </h3> -->
@@ -53,6 +49,7 @@
 <script>
 import axios from 'axios';
 const baseURL = "http://127.0.0.1:8000/api/";
+// const baseURL = "http://j3b304.p.ssafy.io/";
 
 export default {
   data () {
@@ -61,6 +58,7 @@ export default {
       reviews: "",
       review_cnt: 0,
       myReview: "",
+      items: ['최신순', '높은 평점 순', '낮은 평점 순'],
     }
   },
   created() {
@@ -93,10 +91,13 @@ export default {
       if (this.myReview.length == 0) {
         alert("리뷰를 작성해주세요.")
       }
+      // if (this.rating == 0) {
+      //   alert("평점을 매겨주세요.")
+      // }
       axios.post(baseURL + "reviews/create_review/", {
         storeid: 148,
         content: this.myReview,
-        score: 0,
+        score: this.rating,
       },
       {
         headers: {
@@ -107,10 +108,12 @@ export default {
         console.log(res)
         alert("리뷰가 등록되었습니다.")
         this.getReview()
+
       })
       .catch(err => {
         console.log(err)
       })
+      this.reviews = ""
     },
     // 시간 체크
     timeForToday(value) {
@@ -119,15 +122,15 @@ export default {
 
       const betweenTime = Math.floor((today.getTime() - timeValue.getTime()) / 1000 / 60);
 
-      // if (betweenTime < 1) return '방금 전';
-      // if (betweenTime < 60) return `${betweenTime}분 전`;
+      if (betweenTime < 1) return '방금 전';
+      if (betweenTime < 60) return `${betweenTime}분 전`;
 
       const betweenTimeHour = Math.floor(betweenTime / 60);
       if (betweenTimeHour < 24) return `오늘`;
 
       const betweenTimeDay = Math.floor(betweenTime / 60 / 24);
       if (betweenTimeDay < 365) return `${betweenTimeDay}일 전`;
-
+      // return value
       return `${Math.floor(betweenTimeDay / 365)}년 전`;
     },
   },

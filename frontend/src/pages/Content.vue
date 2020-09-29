@@ -49,8 +49,8 @@ import { mapMutations, mapGetters } from "vuex";
 import { EventBus } from "../utils/EventBus.js";
 import Header from "../components/Header.vue";
 
-// const baseURL = "http://127.0.0.1:8000/api/";
-const baseURL = "http://j3b304.p.ssafy.io/";
+const baseURL = "http://127.0.0.1:8000/api/";
+// const baseURL = "http://j3b304.p.ssafy.io/";
 
 Vue.use(Carousel3d);
 
