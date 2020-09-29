@@ -50,7 +50,8 @@ import kakaoMap from "../components/KakaoMap.vue";
 import { mapGetters } from "vuex";
 import Header from "../components/Header.vue";
 
-const baseURL = "http://127.0.0.1:8000/";
+// const baseURL = "http://127.0.0.1:8000/";
+const baseURL = "http://j3b304.p.ssafy.io/";
 
 export default {
   data() {
