@@ -1,33 +1,22 @@
 <template>
   <v-main>
     <Header/>
-    <div class="advertise" align="center" justify="center" style="border: 1px solid black;">
-      <Carousel :storeData="recommendedDate"/>
+    <div class="advertise" align="center" justify="center">
+      <Carousel :storeData="recommendedDate"/> 
     </div>
     <v-container class="content">
-      <div style="width:80%;">
-      <h2>본문영역</h2>
-      <test />
-      <v-layout class="weather">
-        <v-col>
-          <v-row>
-            날씨 영역
+      <div style="width: 80%;">
+        <v-layout class="weather">
+          오늘의 날씨
             <v-btn icon color="green" @click="getWeather">
               <v-icon>mdi-cached</v-icon>
             </v-btn>
-          </v-row>
-          <v-row align="center" justify="center">
             <v-flex>지역 : {{ this.getLocation.dong }} </v-flex>
-            <v-flex>기온 : {{ locationData.main.temp - 273.15 }} &deg;C</v-flex>
+            <v-flex>기온 : {{ parseInt(locationData.main.temp - 273.15) }} &deg;C</v-flex>
             <v-flex>습도 : {{ locationData.main.humidity }} %</v-flex>
-            <v-flex>기압 : {{ locationData.main.pressure }}</v-flex>
-            <v-flex>날씨 : {{ locationData.weather[0].main }}</v-flex>
-            <v-flex>풍향 : {{ locationData.wind.deg }} &deg;</v-flex>
-            <v-flex>풍속 : {{ locationData.wind.speed }} m/s</v-flex>
+            <v-flex>날씨 : <img style="width:25px; height:25px;" :src="require('../assets/image/' + weatherimg)" :alt=weatherimg></v-flex>
             <v-flex>구름 : {{ locationData.clouds.all + "%" }}</v-flex>
-          </v-row>
-        </v-col>
-      </v-layout>
+        </v-layout>
       <v-layout>
         <v-flex> 오늘은 뭐먹지? </v-flex>
       </v-layout>
@@ -57,7 +46,6 @@ import axios from "axios";
 import recommendedDate from "../assets/datas/recommend_result_1.json";
 // import ShowList from "../components/ShowList";
 import { mapMutations, mapGetters } from "vuex";
-// import Addr2Code from "../components/Addr2Code.vue";
 import { EventBus } from "../utils/EventBus.js";
 import Header from "../components/Header.vue";
 
@@ -67,7 +55,6 @@ Vue.use(Carousel3d);
 
 export default {
   components: {
-    // Addr2Code,
     Carousel,
     Header,
     Carousel3d,
@@ -81,6 +68,7 @@ export default {
       lng: 0,
       locationData: "",
       recommendedDate: "",
+      weatherimg: "",
     };
   },
 
@@ -120,7 +108,18 @@ export default {
       })
         .then((response) => {
           this.locationData = response.data;
-          // console.log(this.locationData);
+          if(this.locationData.weather[0].main==='Clear')
+            this.weatherimg = 'Clear.png';
+          else if(this.locationData.weather[0].main==='Clouds'){
+            this.weatherimg = 'Clouds.png';
+          }
+          else if(this.locationData.weather[0].main==='wind')
+            this.weatherimg = 'wind.png';
+          else if(this.locationData.weather[0].main==='rain')
+            this.weatherimg = 'rain.png';
+          else if(this.locationData.weather[0].main==='snow')
+            this.weatherimg = 'snow.png';
+          console.log(this.weatherimg)
         })
         .catch(() => {
           // .catch((ex) => {
@@ -129,6 +128,7 @@ export default {
     },
 
     getCategory() {
+      console.log('getCategory')
       axios({
         method: "GET",
         url: baseURL + "main/",
@@ -195,28 +195,15 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.container {
-  margin:0px; 
-  max-width:1600px; 
-  min-height: 690px; 
-  /* background-image: url('../assets/image/background.jpg'); */
-  // background: url('../assets/image/background.jpg');
-  // background: rgba(233, 105, 30, 0.3);
-  // -webkit-font-smoothing: antialiased;
-  // -moz-osx-font-smoothing: grayscale;
-  // background: linear-gradient(180deg, rgba(255,255,255,1) 0%, rgba(233,105,30,0.8) 100%);
-  // background: url('../assets/image/cloud.jpg');
-  // background-size: 100%;
-
-}
 .content {
-  // border: 1px solid black;
   display: flex;
   justify-content: center;
   flex-wrap: wrap;
+  height: fit-content;
+  padding: 0;
 }
 .weather {
-  text-align: left;
+  text-align: right;
 }
 .weatherInfo {
   display: flex;
@@ -225,6 +212,7 @@ export default {
   display: flex;
   justify-content: center;
   flex-wrap: wrap;
+  height: fit-content;
 }
 figure {
   padding: 0;
