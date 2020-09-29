@@ -24,15 +24,15 @@
         <carousel-3d :controls-visible="true">
           <slide v-for="(item, index) in recommendedDate" :key="index" :index="index">
               <figure>
-                <img :src="item.src" :alt="item[1]">
+                <img :src="item.src" :alt="item[1]" />
                 <!-- <img src="../assets/image/background.jpg"> -->
-                <figcaption  @click="gotoShop(item[1])">
-                  <h2>{{index+1}}위</h2>
+                <figcaption @click="gotoShop(item[1])">
+                  <h2>{{ index + 1 }}위</h2>
                 </figcaption>
               </figure>
-          </slide>
-        </carousel-3d>
-      </div>
+            </slide>
+          </carousel-3d>
+        </div>
       </div>
     </v-container>
   </v-main>
@@ -49,7 +49,8 @@ import { mapMutations, mapGetters } from "vuex";
 import { EventBus } from "../utils/EventBus.js";
 import Header from "../components/Header.vue";
 
-const baseURL = "http://127.0.0.1:8000/";
+// const baseURL = "http://127.0.0.1:8000/";
+const baseURL = "http://j3b304.p.ssafy.io/";
 
 Vue.use(Carousel3d);
 
