@@ -1,7 +1,10 @@
 <template>
-  <v-app-bar app color="rgb(233, 105, 30)" dark>
+  <v-app-bar app style="box-shadow:none;">
     <v-toolbar-title>
-      <router-link style="text-decoration: none; color: white;" to="/home">
+      <router-link
+        style="text-decoration: none; color: rgb(233,105,30);"
+        to="/home"
+      >
         Home
       </router-link>
     </v-toolbar-title>
@@ -14,8 +17,9 @@
           :items="userInfo"
           item-text="location"
           return-object
-          dense
-          solo
+          style="margin:10px; margin-top:25px; width:250px;"
+          color="rgb(233,105,30)"
+          item-color="none"
         />
       </v-col>
     </v-toolbar-title>
@@ -29,11 +33,11 @@
             $cookies.get('auth-token') === ''
         "
       >
-        <router-link style="text-decoration: none; color: white;" to="/">
-          Login
-        </router-link>
+        <button @click="login()">login</button>
       </div>
-      <button @click="logout()">logout</button>
+      <div v-else>
+        <button @click="logout()">logout</button>
+      </div>
     </v-toolbar-title>
   </v-app-bar>
 </template>
@@ -45,7 +49,8 @@ import { EventBus } from "../utils/EventBus.js";
 import * as firebase from "firebase";
 import axios from "axios";
 
-const baseURL = "http://127.0.0.1:8000/";
+// const baseURL = "http://127.0.0.1:8000/";
+const baseURL = "http://j3b304.p.ssafy.io/";
 
 export default {
   data() {
@@ -142,6 +147,9 @@ export default {
         }
       });
     },
+    login() {
+      this.$router.push("/");
+    },
   },
 
   watch() {},
@@ -150,5 +158,8 @@ export default {
 <style>
 .address {
   margin-top: 25px;
+}
+button {
+  color: rgb(233, 105, 30);
 }
 </style>
