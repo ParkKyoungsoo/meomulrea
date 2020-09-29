@@ -34,6 +34,7 @@
         </div>
         <v-layout>
           <v-flex> 오늘은 뭐먹지? </v-flex>
+          <v-btn @click="test">버어튼</v-btn>
         </v-layout>
         <div class="shopList">
           <!-- <div
@@ -48,7 +49,9 @@
               :key="index"
               :index="index"
             >
+              <div>{{ item[1] }}</div>
               <img :src="item.src" :alt="item.category" />
+              <v-btn @click="gotoShop(item[1])">이동</v-btn>
             </slide>
           </carousel-3d>
           <!-- </div> -->
@@ -70,7 +73,7 @@ import Addr2Code from "../components/Addr2Code.vue";
 import { EventBus } from "../utils/EventBus.js";
 import Header from "../components/Header.vue";
 
-const baseURL = "http://127.0.0.1:8000/";
+const baseURL = "http://127.0.0.1:8000/api/";
 
 Vue.use(Carousel3d);
 
@@ -113,6 +116,9 @@ export default {
   },
 
   methods: {
+    test() {
+      console.log(recommendedDate);
+    },
     ...mapMutations(("location", ["setLocation"])),
     getWeather: function() {
       console.log("weather function called!!");
@@ -165,8 +171,8 @@ export default {
     },
 
     gotoShop(index) {
-      console.log("gotoShop" + index);
-      this.$router.push("/storelist/" + this.recommendedDate[index].category);
+      console.log("gotoShop : " + index);
+      this.$router.push("/storelist/" + index);
     },
 
     // getLocation: function() {

@@ -185,7 +185,7 @@
 import axios from "axios";
 import * as firebase from "firebase";
 
-const baseURL = "http://127.0.0.1:8000/";
+const baseURL = "http://127.0.0.1:8000/api/";
 
 export default {
   name: "LogIn",
