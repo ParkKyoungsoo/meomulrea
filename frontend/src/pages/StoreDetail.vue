@@ -69,8 +69,12 @@
 </template>
 <script>
 import StoreData from "../assets/datas/all_store_encoding2.json";
-import review from "@/components/review.vue";
-import party from "@/components/party.vue";
+import review from "../components/review.vue";
+import party from "../components/party.vue";
+import Header from "../components/Header.vue";
+import axios from "axios";
+
+const baseURL = "http://j3b304.p.ssafy.io/";
 
 export default {
   components: {
@@ -89,6 +93,21 @@ export default {
     this.getStoreDetail();
   },
   methods: {
+    getStoreDetail() {
+      axios
+        .post(baseURL + `stores/${this.$route.params.storeid}/`, null, {
+          headers: {
+            Authorization: `Token ${this.$cookies.get("auth-token")}`,
+          },
+        }) // post > post
+        .then((res) => {
+          console.log("res Data", res.data);
+          this.storeInfo = res.data;
+        })
+        .catch((res) => {
+          console.log("user Address error", res);
+        }); // post > post > then
+    },
     showContent(num) {
       if (num == 1) {
         this.contentTrigger1 = true;
@@ -104,13 +123,13 @@ export default {
         this.contentTrigger3 = true;
       }
     },
-    getStoreDetail() {
-      for (var i = 0; i < StoreData.data.length; i++) {
-        if (StoreData.data[i].store_id == this.$route.params.storeid) {
-          this.storeInfo = StoreData.data[i];
-        }
-      }
-    },
+    // getStoreDetail() {
+    //   for (var i = 0; i < StoreData.data.length; i++) {
+    //     if (StoreData.data[i].store_id == this.$route.params.storeid) {
+    //       this.storeInfo = StoreData.data[i];
+    //     }
+    //   }
+    // },
   },
 };
 </script>
