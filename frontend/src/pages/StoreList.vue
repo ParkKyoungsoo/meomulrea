@@ -3,42 +3,47 @@
     <Header />
     <v-main>
       <v-container>
-        카테고리에 해당하는 가게 목록들
-        <div>{{ $route.params.category }}</div>
-        <div>{{ this.getLocation.dong }}</div>
-        <v-btn @click="getStoreInfo">버튼</v-btn>
         <v-row>
-          <v-col class="shopList">
-            <v-card
+        <v-flex>{{ $route.params.category }}</v-flex>
+        <v-flex>{{ this.getLocation.dong }}</v-flex>
+        <v-btn @click="getStoreInfo">버튼</v-btn>
+        </v-row>
+        <kakaoMap :storeData="loc" :category="category" />
+        <v-row>
+          <!-- <v-col class="shopList"> -->
+            <!-- <v-card
               class="mx-auto"
               max-width="320"
               outlined
               v-for="(item, index) in this.getShopList.shopList"
               :key="index"
-            >
-              <v-col>
+              style="border: 1px solid grey"
+            > -->
+            <Card/>
+              <!-- <v-col>
                 <v-row justify="center">
                   <div>{{ item.store_name }}</div>
                 </v-row>
                 <v-row justify="center">
                   <v-list-item-avatar tile size="200" color="grey" />
                 </v-row>
-              </v-col>
+              </v-col> -->
 
-              <v-card-actions>
+              <!-- <v-card-actions>
                 <v-btn
                   depressed
                   color="primary"
                   @click="goToShopDetail(item.store_id)"
                   >가게 보러가기</v-btn
                 >
-              </v-card-actions>
-            </v-card>
-          </v-col>
-          <v-col>
-            <kakaoMap :storeData="loc" :category="category" />
-          </v-col>
+              </v-card-actions> -->
+            <!-- </v-card> -->
+          <!-- </v-col> -->
+          <!-- <v-col> -->
         </v-row>
+        <!-- <v-row> -->
+          <!-- </v-col> --> 
+        <!-- </v-row> -->
       </v-container>
     </v-main>
   </v-app>
@@ -49,6 +54,7 @@ import axios from "axios";
 import kakaoMap from "../components/KakaoMap.vue";
 import { mapGetters } from "vuex";
 import Header from "../components/Header.vue";
+import Card from "../components/Card.vue";
 
 // const baseURL = "http://127.0.0.1:8000/";
 const baseURL = "http://j3b304.p.ssafy.io/";
@@ -66,6 +72,7 @@ export default {
   components: {
     kakaoMap,
     Header,
+    Card
   },
 
   computed: {
