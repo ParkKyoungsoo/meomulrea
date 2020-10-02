@@ -33,13 +33,9 @@
             <v-row>
               <h3 v-if="review.user===null" class="review-title" style="display: inline">{{ review.userid }}</h3>
               <h3 v-else class="review-title">{{ review.user.username }}</h3>
-              <v-rating :value="review.score" readonly background-color="orange lighten-3" color="orange" dense="true" half-increments="true" small="true"></v-rating>({{ review.score }})<br>
-              <v-spacer></v-spacer>
-              <p style="color: lightgray">{{ review.reg_time }}</p>
-
-                      <!-- v-show="item.user.id == userId || comment.user.id == userId" -->
-
-              <p @click="deleteBtn(review.id)" style="cursor:hover">삭제</p>
+              <v-rating :value="review.score" readonly background-color="orange lighten-3" color="orange" dense="true" half-increments="true" small="true"></v-rating><br>
+              <p style="color: lightgray">{{ review.reg_time.slice(0, 10) }}</p>
+              <p v-show="review.userid == userId" @click="clickedDeleteBtn(review.id)" style="cursor:pointer;"><img src="../assets/image/delete.png" style="width:15px;" alt=""></p>
             </v-row>
             <!-- <v-row>
               <v-rating :value="review.score" readonly background-color="orange lighten-3" color="orange" dense="true" half-increments="true" small="true"></v-rating>({{ review.score }})<br>
@@ -124,28 +120,28 @@ export default {
       })
       this.reviews = ""
     },
-    // deleteBtn(index) {
-    //   console.log("review.id"+index)
-      // var answer = confirm("리뷰를 삭제하시겠습니까?");
-      // if(answer) { // true
-      //   axios.delete(baseURL + 'reviews/',
-      //     { "review_id" : this.reviews[index].review_id },
-      //     {
-      //         headers:{
-      //           Authorization: `Token ${this.$cookies.get('auth-token')}`
-      //         }
-      //     },
-      //   )
-      //   .then((res) => {
-      //       alert("게시글이 삭제 되었습니다.");
-      //       this.getReview();
-      //   })
-      //   .catch((err) => {
-      //       alert("게시글 삭제 실패!");
-      //       console.log("삭제 실패")
-      //   });
-      // }
-    // },
+
+    clickedDeleteBtn(reviewId) {
+      console.log("review.id"+reviewId)
+      var answer = confirm("리뷰를 삭제하시겠습니까?");
+      if(answer) { // true
+        axios.delete(baseURL + `reviews/${reviewId}/`,
+          {
+              headers:{
+                Authorization: `Token ${this.$cookies.get('auth-token')}`
+              }
+          },
+        )
+        .then((res) => {
+            alert("게시글이 삭제 되었습니다.");
+            this.getReview();
+        })
+        .catch((err) => {
+            alert("게시글 삭제 실패!");
+            console.log("삭제 실패")
+        });
+      }
+    },
   },
 }
 </script>
