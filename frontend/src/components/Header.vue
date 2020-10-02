@@ -2,7 +2,7 @@
   <v-app-bar app style="box-shadow:none;">
     <v-toolbar-title>
       <router-link style="text-decoration: none; color: rgb(233,105,30); display:flex; align-items: center;" to="/home">
-        <img style="height:50px; width: 50px;" src="../assets/image/home.png"><h2>머물래?!</h2>
+        <img style="height:65px; width: 65px;" src="../assets/image/home.png">
       </router-link>
     </v-toolbar-title>
     <v-spacer/>
