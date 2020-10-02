@@ -71,7 +71,7 @@
 <script>
 import StoreData from "../assets/datas/all_store_encoding2.json";
 import Header from "../components/Header.vue";
-import KakaoMap from "../components/KakaoMap.vue";
+// import KakaoMap from "../components/KakaoMap.vue";
 import review from "../components/review.vue";
 import party from "../components/party.vue";
 import axios from "axios";
@@ -82,7 +82,7 @@ const baseURL = "http://127.0.0.1:8000/api/";
 export default {
   components: {
     Header,
-    KakaoMap,
+    // KakaoMap,
     review,
     party,
   },

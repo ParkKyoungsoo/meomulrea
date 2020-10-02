@@ -5,9 +5,6 @@
       <hr>
       <br>
     </div>
-    <div class="review-stats" style="background-color:yellow">
-      <p>Review stats</p>
-    </div>
     <div class="review-write" style="border: 1px solid silver; margin-bottom:10px; border-radius: 0.4em">
       <div style="margin:10px">
         <v-rating v-model="rating" style="text-align:left" background-color="orange lighten-3" color="orange" dense="true" half-increments="true" hover="true"></v-rating><br>
@@ -20,11 +17,11 @@
     </div>
     <div class="review-sort" style="display:inline;">
       <v-row>
-        <h3 style="text-align:left;">리뷰({{ review_cnt }}개)</h3>
+        <h2 style="text-align:left;">리뷰({{ review_cnt }}개)</h2>
         <v-spacer></v-spacer>
-        <span>최신순 | </span> 
-        <span> 높은 평점순 | </span> 
-        <span> 낮은 평점순</span>
+        <span @click="getReview()" style="cursor:pointer;">최신순 | </span> 
+        <span @click="getReviewHighScore()" style="cursor:pointer;"> 높은 평점순 | </span> 
+        <span @click="getReviewLowScore()" style="cursor:pointer;"> 낮은 평점순</span>
       </v-row>
     </div>
     <div class="review-origin" v-for="review in reviews" :key="review.id">
@@ -34,7 +31,8 @@
               <h3 v-if="review.user===null" class="review-title" style="display: inline">{{ review.userid }}</h3>
               <h3 v-else class="review-title">{{ review.user.username }}</h3>
               <v-rating :value="review.score" readonly background-color="orange lighten-3" color="orange" dense="true" half-increments="true" small="true"></v-rating><br>
-              <p style="color: lightgray">{{ review.reg_time.slice(0, 10) }}</p>
+              <p style="color: lightgray">{{ review.created_at.slice(0, 10) }}</p>
+              <v-spacer></v-spacer>
               <p v-show="review.userid == userId" @click="clickedDeleteBtn(review.id)" style="cursor:pointer;"><img src="../assets/image/delete.png" style="width:15px;" alt=""></p>
             </v-row>
             <!-- <v-row>
@@ -61,6 +59,7 @@ export default {
       reviews: "",
       review_cnt: 0,
       myReview: "",
+      flag: 1,
     }
   },
   created() {
@@ -69,8 +68,9 @@ export default {
 
   methods: {
     getReview() {
+      this.flag = 1
       axios.post(baseURL + "reviews/store_review_list/", {
-        storeid: 148
+        storeid: this.$route.params.storeid
       },
       {
         headers: {
@@ -78,8 +78,6 @@ export default {
         }
       })
       .then(res => {
-        console.log(res)
-        console.log('getreview' + res.data)
         this.reviews = res.data
         this.review_cnt = res.data.length
         
@@ -87,20 +85,20 @@ export default {
       .catch(err => {
         console.log("리뷰 안온다" + err)
       })
-    }, // getReview
+    },
 
     registerReview() {
-      if (this.myReview.length == 0 || this.rating == 0) {
-        if (this.myReview.length == 0) {
-          alert("리뷰를 작성해주세요.")
-        }
-        if (this.rating < 1) {
-          alert("평점을 매겨주세요.")
-        }
-        this.getReview()
+      if (this.myReview.length == 0) {
+        alert("최소 한 글자 이상 작성해주세요.")
+        return
       }
+      if (this.rating < 1) {
+        alert("평점을 매겨주세요.")
+        return
+      }
+
       axios.post(baseURL + "reviews/create_review/", {
-        storeid: 148,
+        storeid: this.$route.params.storeid,
         content: this.myReview,
         score: this.rating,
       },
@@ -118,11 +116,11 @@ export default {
       .catch(err => {
         console.log(err)
       })
-      this.reviews = ""
+      this.myReview = ""
+      this.rating = 0
     },
 
     clickedDeleteBtn(reviewId) {
-      console.log("review.id"+reviewId)
       var answer = confirm("리뷰를 삭제하시겠습니까?");
       if(answer) { // true
         axios.delete(baseURL + `reviews/${reviewId}/`,
@@ -132,15 +130,52 @@ export default {
               }
           },
         )
-        .then((res) => {
-            alert("게시글이 삭제 되었습니다.");
-            this.getReview();
+        .then(res => {
+            alert("리뷰가 삭제 되었습니다.");
+            if (this.flag == 1) {
+              this.getReview()
+            }
+            else if (this.flag == 2) {
+              this.getReviewHighScore()
+            }
+            else {
+              this.getReviewLowScore()
+            }
         })
-        .catch((err) => {
-            alert("게시글 삭제 실패!");
-            console.log("삭제 실패")
+        .catch(err => {
+            alert("리뷰 삭제 실패!");
         });
       }
+    },
+
+    getReviewHighScore() {
+      this.flag = 2
+      axios.post(baseURL + "reviews/sort_review_high_score/", {
+        storeid: this.$route.params.storeid,
+      },
+      {
+        headers: {
+          Authorization: `Token ${this.$cookies.get('auth-token')}`
+        }
+      })
+      .then(res => {
+        this.reviews = res.data
+      })
+    },
+
+    getReviewLowScore() {
+      this.flag = 3
+      axios.post(baseURL + "reviews/sort_review_low_score/", {
+        storeid: this.$route.params.storeid,
+      },
+      {
+        headers: {
+          Authorization: `Token ${this.$cookies.get('auth-token')}`
+        }
+      })
+      .then(res => {
+        this.reviews = res.data
+      })
     },
   },
 }
@@ -196,9 +231,9 @@ a {
   padding-bottom: 5px;
   border-bottom: 1px solid gainsboro;
 } */
-.review a {
+/* .review a {
   text-decoration: none;
-}
+} */
 
 
 </style>
