@@ -6,9 +6,7 @@
         <div v-if="nm_page === 0" class="start">
           <div>
             <h1>일반회원</h1>
-            <v-btn rounded color="rgb(0,0,0)" dark @click="mvpage(true)"
-              >시작하기</v-btn
-            >
+            <v-btn rounded color="rgb(0,0,0)" dark @click="mvpage(true)">시작하기</v-btn>
           </div>
         </div>
         <div v-if="nm_page === 1" class="start">
@@ -19,30 +17,11 @@
               </button>
               <h1>일반회원</h1>
             </div>
-            <v-text-field
-              style="width:80%;"
-              v-model="nm_email"
-              label="이메일"
-            ></v-text-field>
-            <v-text-field
-              style="width:80%;"
-              v-model="nm_password"
-              label="비밀번호"
-              :append-icon="show2 ? 'mdi-eye' : 'mdi-eye-off'"
-              :type="show2 ? 'text' : 'password'"
-              @click:append="show2 = !show2"
-            ></v-text-field>
-            <v-btn
-              rounded
-              color="rgb(233, 105, 30)"
-              dark
-              @click="nm_login()"
-              :loading="loading"
-              >로그인</v-btn
-            >
-            <v-btn rounded color="rgb(0,0,0)" dark @click="mvpage(true)"
-              >회원등록</v-btn
-            >
+            <v-text-field v-model="nm_email" label="이메일"></v-text-field>
+            <v-text-field v-model="nm_password" label="비밀번호" :append-icon="show2 ? 'mdi-eye' : 'mdi-eye-off'" :type="show2 ? 'text' : 'password'"
+              @click:append="show2 = !show2"></v-text-field>
+            <v-btn rounded color="rgb(233, 105, 30)" dark @click="nm_login()" :loading="loading">로그인</v-btn>
+            <v-btn rounded color="rgb(0,0,0)" dark @click="mvpage(true)">회원등록</v-btn>
           </div>
         </div>
         <div v-if="nm_page === 2" class="start">
@@ -53,7 +32,7 @@
               </button>
               <h1>일반회원</h1>
             </div>
-            <v-text-field
+            <v-text-field 
               v-model="nm_email"
               :messages="[error.email]"
               label="이메일"
@@ -128,12 +107,12 @@
               </button>
               <h1>사업자회원</h1>
             </div>
-            <v-text-field v-model="biz_email" label="사업자번호"></v-text-field>
+            <v-text-field v-model="biz_email" ref="biz_email" label="사업자번호"></v-text-field>
             <v-text-field
-              v-model="biz_password"
+              v-model="biz_password" ref="biz_password"
               label="비밀번호"
             ></v-text-field>
-            <v-btn rounded color="rgb(233, 105, 30)" dark @click="biz_login()"
+            <v-btn rounded color="rgb(233, 105, 30)" dark @click="checkBizLogin()"
               >로그인</v-btn
             >
             <v-btn rounded color="rgb(0,0,0)" dark @click="mvpage(false)"
@@ -161,7 +140,7 @@
               label="비밀번호"
             ></v-text-field>
             <v-text-field
-              v-model="nm_address"
+              v-model="biz_address"
               label="사업장주소"
               readonly="readonly"
               @click="findAddress()"
@@ -403,6 +382,24 @@ export default {
           });
       }
     },
+    checkBizLogin() {
+      let err = true;
+      let msg = "";
+      !this.biz_email &&
+        ((msg = "이메일을 입력해주세요!"),
+        (err = false),
+        this.$refs.biz_email.focus());
+      err &&
+        !this.biz_password &&
+        ((msg = "비밀번호를 입력해주세요!"),
+        (err = false),
+        this.$refs.biz_password.focus());
+      if (err) this.biz_login();
+    },
+    biz_login(){
+        // axios.post().then((res)=>{});
+        console.log('biz_login호출')
+    },
 
     onSignup() {
       this.$store.dispatch("signUserUp", {
@@ -506,4 +503,4 @@ export default {
   },
 };
 </script>
-<style scoped src="../assets/login.css"></style>
+<style scoped src="../assets/css/login.css"></style>

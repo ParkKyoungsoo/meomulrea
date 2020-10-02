@@ -5,8 +5,6 @@
             <v-row style="margin: 10px; width: fit-content;">
                 <div class="flip">
                   <div class="front" :style="{ backgroundImage: `url(`+imgUrl[index]+`)` }">
-                  <!-- <div class="front"> -->
-                      <!-- <span role="img" :src="imgUrl[index]" aria-label="[place alt text here]"> </span> -->
                       <h1 class="text-shadow">{{item.store_name}}</h1>
                   </div>
                   <div class="back">
