@@ -56,8 +56,8 @@ import { mapGetters } from "vuex";
 import Header from "../components/Header.vue";
 import Card from "../components/Card.vue";
 
-// const baseURL = "http://127.0.0.1:8000/";
-const baseURL = "http://j3b304.p.ssafy.io/";
+const baseURL = "http://127.0.0.1:8000/api/";
+// const baseURL = "http://j3b304.p.ssafy.io/";
 
 export default {
   data() {
