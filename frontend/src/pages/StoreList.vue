@@ -6,9 +6,9 @@
         <v-row>
         <v-flex>{{ $route.params.category }}</v-flex>
         <v-flex>{{ this.getLocation.dong }}</v-flex>
-        <v-btn @click="getStoreInfo">버튼</v-btn>
+        <!-- <v-btn @click="getStoreInfo">버튼</v-btn> -->
         </v-row>
-        <kakaoMap :storeData="loc" :category="category" />
+        <!-- <kakaoMap :storeData="loc" :category="category" /> -->
         <v-row>
           <!-- <v-col class="shopList"> -->
             <!-- <v-card
@@ -51,7 +51,7 @@
 
 <script>
 import axios from "axios";
-import kakaoMap from "../components/KakaoMap.vue";
+// import kakaoMap from "../components/KakaoMap.vue";
 import { mapGetters } from "vuex";
 import Header from "../components/Header.vue";
 import Card from "../components/Card.vue";
@@ -70,7 +70,7 @@ export default {
     };
   },
   components: {
-    kakaoMap,
+    // kakaoMap,
     Header,
     Card
   },
@@ -84,7 +84,6 @@ export default {
     this.loc = this.getLocation;
     this.category = this.$route.params.category;
     this.shopList = this.getShopList;
-    console.log("shopList : ", this.shopList);
   },
 
   methods: {
