@@ -230,7 +230,7 @@ export default {
 }
 
 .feedback {
-  max-width: 360px;
+  max-width: 150px;
   background-color: #fff;
   width: 100%;
   padding: 30px;

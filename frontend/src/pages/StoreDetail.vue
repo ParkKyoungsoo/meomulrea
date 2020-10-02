@@ -1,5 +1,6 @@
 <template>
   <v-main>
+    <Header />
     <v-container>
       가게 상세 정보
       <v-card>
@@ -69,9 +70,10 @@
 </template>
 <script>
 import StoreData from "../assets/datas/all_store_encoding2.json";
+import Header from "../components/Header.vue";
+import KakaoMap from "../components/KakaoMap.vue";
 import review from "../components/review.vue";
 import party from "../components/party.vue";
-import Header from "../components/Header.vue";
 import axios from "axios";
 
 const baseURL = "http://127.0.0.1:8000/api/";
@@ -79,6 +81,8 @@ const baseURL = "http://127.0.0.1:8000/api/";
 
 export default {
   components: {
+    Header,
+    KakaoMap,
     review,
     party,
   },

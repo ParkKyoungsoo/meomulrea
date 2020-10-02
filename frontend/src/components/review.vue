@@ -1,43 +1,50 @@
 <template>
   <v-container fluid>
     <div class="review-top">
-      <h3 style="text-align:left">리뷰({{ review_cnt }}개)</h3>
+      <!-- <h3 style="text-align:left">리뷰({{ review_cnt }}개)</h3> -->
       <hr>
       <br>
     </div>
     <div class="review-stats" style="background-color:yellow">
       <p>Review stats</p>
     </div>
-    <div class="review-write" style="border: 1px solid silver; margin-bottom:10px">
-      <div style="margin:10px 10px 0 10px">
-        <v-rating v-model="rating" background-color="orange lighten-3" color="orange" dense="true" half-increments="true" hover="true"></v-rating><br>
+    <div class="review-write" style="border: 1px solid silver; margin-bottom:10px; border-radius: 0.4em">
+      <div style="margin:10px">
+        <v-rating v-model="rating" style="text-align:left" background-color="orange lighten-3" color="orange" dense="true" half-increments="true" hover="true"></v-rating><br>
         <v-textarea solo name="input-7-4" label="리뷰를 남겨보세요." v-model="myReview"></v-textarea>
-        <div class="text-right" style="pt-0; mb-5">
-          <v-btn @click="registerReview()" style="text-align:right;" color="orange">등록</v-btn>
+        <div class="text-right">
+          <v-btn @click="registerReview()" color="orange">등록</v-btn>
         </div>
         <hr>
       </div>
     </div>
-    <div class="review-sort" style="background-color:yellow">
-      <span>최신순</span> | 
-      <span>높은 평점순</span> | 
-      <span>낮은 평점순</span>
-      <v-select :items="items" label="최신순" dense solo width=5></v-select>
+    <div class="review-sort" style="display:inline;">
+      <v-row>
+        <h3 style="text-align:left;">리뷰({{ review_cnt }}개)</h3>
+        <v-spacer></v-spacer>
+        <span>최신순 | </span> 
+        <span> 높은 평점순 | </span> 
+        <span> 낮은 평점순</span>
+      </v-row>
     </div>
     <div class="review-origin" v-for="review in reviews" :key="review.id">
-      <div style="border: 1px solid silver">
+      <div style="border: 1px solid silver; border-radius: 0.4em">
         <article class="review review-1">
-          <v-container>
             <v-row>
+              <h3 v-if="review.user===null" class="review-title" style="display: inline">{{ review.userid }}</h3>
+              <h3 v-else class="review-title">{{ review.user.username }}</h3>
               <v-rating :value="review.score" readonly background-color="orange lighten-3" color="orange" dense="true" half-increments="true" small="true"></v-rating>({{ review.score }})<br>
+              <v-spacer></v-spacer>
+              <p style="color: lightgray">{{ review.reg_time }}</p>
+
+                      <!-- v-show="item.user.id == userId || comment.user.id == userId" -->
+
+              <p @click="deleteBtn(review.id)" style="cursor:hover">삭제</p>
             </v-row>
-            <v-row>
-              <v-col-3><h3 v-if="review.user===null" class="review-title" style="display: inline">{{ review.userid }}</h3>
-              <h3 v-else class="review-title">{{ review.user.username }}</h3></v-col-3>
-              <v-col-9><p style="color: lightgray">{{ timeForToday(review.reg_time) }}</p></v-col-9>
-        </v-row>
-       </v-container>
-      <p class="review-excerpt">{{ review.content }}</p>
+            <!-- <v-row>
+              <v-rating :value="review.score" readonly background-color="orange lighten-3" color="orange" dense="true" half-increments="true" small="true"></v-rating>({{ review.score }})<br>
+            </v-row> -->
+          <p class="review-excerpt">{{ review.content }}</p>
       <!-- </h3> -->
         </article>
       </div>
@@ -58,7 +65,6 @@ export default {
       reviews: "",
       review_cnt: 0,
       myReview: "",
-      items: ['최신순', '높은 평점 순', '낮은 평점 순'],
     }
   },
   created() {
@@ -88,12 +94,15 @@ export default {
     }, // getReview
 
     registerReview() {
-      if (this.myReview.length == 0) {
-        alert("리뷰를 작성해주세요.")
+      if (this.myReview.length == 0 || this.rating == 0) {
+        if (this.myReview.length == 0) {
+          alert("리뷰를 작성해주세요.")
+        }
+        if (this.rating < 1) {
+          alert("평점을 매겨주세요.")
+        }
+        this.getReview()
       }
-      // if (this.rating == 0) {
-      //   alert("평점을 매겨주세요.")
-      // }
       axios.post(baseURL + "reviews/create_review/", {
         storeid: 148,
         content: this.myReview,
@@ -115,24 +124,28 @@ export default {
       })
       this.reviews = ""
     },
-    // 시간 체크
-    timeForToday(value) {
-      const today = new Date();
-      const timeValue = new Date(value);
-
-      const betweenTime = Math.floor((today.getTime() - timeValue.getTime()) / 1000 / 60);
-
-      if (betweenTime < 1) return '방금 전';
-      if (betweenTime < 60) return `${betweenTime}분 전`;
-
-      const betweenTimeHour = Math.floor(betweenTime / 60);
-      if (betweenTimeHour < 24) return `오늘`;
-
-      const betweenTimeDay = Math.floor(betweenTime / 60 / 24);
-      if (betweenTimeDay < 365) return `${betweenTimeDay}일 전`;
-      // return value
-      return `${Math.floor(betweenTimeDay / 365)}년 전`;
-    },
+    // deleteBtn(index) {
+    //   console.log("review.id"+index)
+      // var answer = confirm("리뷰를 삭제하시겠습니까?");
+      // if(answer) { // true
+      //   axios.delete(baseURL + 'reviews/',
+      //     { "review_id" : this.reviews[index].review_id },
+      //     {
+      //         headers:{
+      //           Authorization: `Token ${this.$cookies.get('auth-token')}`
+      //         }
+      //     },
+      //   )
+      //   .then((res) => {
+      //       alert("게시글이 삭제 되었습니다.");
+      //       this.getReview();
+      //   })
+      //   .catch((err) => {
+      //       alert("게시글 삭제 실패!");
+      //       console.log("삭제 실패")
+      //   });
+      // }
+    // },
   },
 }
 </script>
@@ -175,18 +188,18 @@ a {
   border: 2px solid transparent;
   box-sizing: border-box;
   margin: -10px;
-  padding: 20px 10px;
+  padding: 20px;
   text-align: left;
 }
 /* .review:hover {
   border-color: gainsboro;
   background: #f0f0f0;
 } */
-.review-title {
+/* .review-title {
   margin-bottom: 5px;
   padding-bottom: 5px;
   border-bottom: 1px solid gainsboro;
-}
+} */
 .review a {
   text-decoration: none;
 }
