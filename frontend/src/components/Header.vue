@@ -1,14 +1,11 @@
 <template>
   <v-app-bar app style="box-shadow:none;">
     <v-toolbar-title>
-      <router-link
-        style="text-decoration: none; color: rgb(233,105,30);"
-        to="/home"
-      >
-        Home
+      <router-link style="text-decoration: none; color: rgb(233,105,30); display:flex; align-items: center;" to="/home">
+        <img style="height:65px; width: 65px;" src="../assets/image/home.png">
       </router-link>
     </v-toolbar-title>
-    <v-spacer />
+    <v-spacer/>
     <v-toolbar-title>
       <v-col>
         <v-select
@@ -33,10 +30,10 @@
             $cookies.get('auth-token') === ''
         "
       >
-        <button @click="login()">login</button>
+        <button @click="login()"><h2>login</h2></button>
       </div>
       <div v-else>
-        <button @click="logout()">logout</button>
+        <button @click="logout()"><h2>logout</h2></button>
       </div>
     </v-toolbar-title>
   </v-app-bar>

@@ -69,7 +69,7 @@
   </v-main>
 </template>
 <script>
-import StoreData from "../assets/datas/all_store_encoding2.json";
+// import StoreData from "../assets/datas/all_store_encoding2.json";
 import Header from "../components/Header.vue";
 // import KakaoMap from "../components/KakaoMap.vue";
 import review from "../components/review.vue";
