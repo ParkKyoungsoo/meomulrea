@@ -42,7 +42,7 @@ export default {
     // this.loc = this.getLocation;
     // this.category = this.$route.params.category;
     this.shopList = this.getShopList;
-    for(var i=0;i<6;i++){
+    for(var i=0;i<this.shopList.shopList.length;i++){
       this.imgUrl.push(require('../assets/image/storelist/'+this.shopList.shopList[i].store_name.replace(/(\s*)/g, "")+'.jpg'));
     }
     console.log(this.imgUrl)
