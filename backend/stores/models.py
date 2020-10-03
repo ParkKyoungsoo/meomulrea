@@ -21,3 +21,4 @@ class Store(models.Model):
     fri = models.IntegerField(null=True)
     sat = models.IntegerField(null=True)
     sun = models.IntegerField(null=True)
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True)
