@@ -128,7 +128,7 @@ export default {
         })
         .catch((res) => {
           console.log("user Address error", res);
-        }); // post > post > then
+        });
     },
   },
 };
