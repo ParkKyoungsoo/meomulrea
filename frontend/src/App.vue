@@ -19,5 +19,6 @@ export default {
   /* font-family: 'Jua', sans-serif; */
   text-align: center;
   /* color: #2c3e50; */
+  font-size: 22px;
 }
 </style>

@@ -11,6 +11,7 @@ import Create from "./components/Chat/Create.vue";
 import Chat from "./components/Chat/Chat.vue";
 import ChatList from "./components/Chat/ChatList";
 import Signin from "@/components/User/Signin";
+import test from "@/components/test.vue"
 
 export default new Router({
   mode: "history",
@@ -60,6 +61,11 @@ export default new Router({
       path: "/loginChat",
       name: "Signin",
       component: Signin,
+    },
+    {
+      path: "/test",
+      name: "test",
+      component: test,
     },
   ],
 });
