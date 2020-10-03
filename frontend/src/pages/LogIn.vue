@@ -6,9 +6,7 @@
         <div v-if="nm_page === 0" class="start">
           <div>
             <h1>일반회원</h1>
-            <v-btn rounded color="rgb(0,0,0)" dark @click="mvpage(true)"
-              >시작하기</v-btn
-            >
+            <v-btn rounded color="rgb(0,0,0)" dark @click="mvpage(true)">시작하기</v-btn>
           </div>
         </div>
         <div v-if="nm_page === 1" class="start">
@@ -19,30 +17,11 @@
               </button>
               <h1>일반회원</h1>
             </div>
-            <v-text-field
-              style="width:80%;"
-              v-model="nm_email"
-              label="이메일"
-            ></v-text-field>
-            <v-text-field
-              style="width:80%;"
-              v-model="nm_password"
-              label="비밀번호"
-              :append-icon="show2 ? 'mdi-eye' : 'mdi-eye-off'"
-              :type="show2 ? 'text' : 'password'"
-              @click:append="show2 = !show2"
-            ></v-text-field>
-            <v-btn
-              rounded
-              color="rgb(233, 105, 30)"
-              dark
-              @click="nm_login()"
-              :loading="loading"
-              >로그인</v-btn
-            >
-            <v-btn rounded color="rgb(0,0,0)" dark @click="mvpage(true)"
-              >회원등록</v-btn
-            >
+            <v-text-field v-model="nm_email" label="이메일"></v-text-field>
+            <v-text-field v-model="nm_password" label="비밀번호" :append-icon="show2 ? 'mdi-eye' : 'mdi-eye-off'" :type="show2 ? 'text' : 'password'"
+              @click:append="show2 = !show2"></v-text-field>
+            <v-btn rounded color="rgb(233, 105, 30)" dark @click="nm_login()" :loading="loading">로그인</v-btn>
+            <v-btn rounded color="rgb(0,0,0)" dark @click="mvpage(true)">회원등록</v-btn>
           </div>
         </div>
         <div v-if="nm_page === 2" class="start">
@@ -53,7 +32,7 @@
               </button>
               <h1>일반회원</h1>
             </div>
-            <v-text-field
+            <v-text-field 
               v-model="nm_email"
               :messages="[error.email]"
               label="이메일"
@@ -81,7 +60,7 @@
             ></v-text-field>
             <v-text-field
               label="주소"
-              @click="findAddress()"
+              @click="findAddress(true)"
               readonly="readonly"
               v-model="nm_address"
             ></v-text-field>
@@ -128,12 +107,12 @@
               </button>
               <h1>사업자회원</h1>
             </div>
-            <v-text-field v-model="biz_email" label="사업자번호"></v-text-field>
+            <v-text-field v-model="biz_email" ref="biz_email" label="사업자번호"></v-text-field>
             <v-text-field
-              v-model="biz_password"
+              v-model="biz_password" ref="biz_password"
               label="비밀번호"
             ></v-text-field>
-            <v-btn rounded color="rgb(233, 105, 30)" dark @click="biz_login()"
+            <v-btn rounded color="rgb(233, 105, 30)" dark @click="checkBizLogin()"
               >로그인</v-btn
             >
             <v-btn rounded color="rgb(0,0,0)" dark @click="mvpage(false)"
@@ -149,24 +128,28 @@
               </button>
               <h1>사업자회원</h1>
             </div>
-            <v-text-field v-model="biz_email" label="사업자번호"></v-text-field>
+            <v-text-field v-model="biz_email" :messages="[error.bizemail]" ref="biz_email" label="사업자번호"></v-text-field>
             <v-file-input accept="image/*" label="사진"></v-file-input>
-            <v-text-field v-model="biz_name" label="업주명"></v-text-field>
+            <v-text-field v-model="biz_name" ref="biz_name" label="업주명"></v-text-field>
             <v-text-field
               v-model="biz_password"
+              ref="biz_password"
+              :messages="[error.bizpwd]"
               label="비밀번호"
             ></v-text-field>
             <v-text-field
               v-model="biz_password_confirm"
+              ref="biz_password_confirm"
+              :messages="[error.bizpwdconfirm]"
               label="비밀번호"
             ></v-text-field>
             <v-text-field
-              v-model="nm_address"
+              v-model="biz_address"
               label="사업장주소"
               readonly="readonly"
-              @click="findAddress()"
+              @click="findAddress(false)"
             ></v-text-field>
-            <v-btn rounded color="rgb(0,0,0)" dark @click="biz_signup()"
+            <v-btn rounded color="rgb(0,0,0)" dark @click="checkBizHandler()"
               >회원가입</v-btn
             >
           </div>
@@ -216,6 +199,9 @@ export default {
         email: "",
         pwd: "",
         pwdconfirm: "",
+        bizemail:"",
+        bizpwd:"",
+        bizpwdconfirm:""
       },
       password: "password",
 
@@ -252,6 +238,27 @@ export default {
           }
         });
     },
+    biz_email: function() {
+      if (this.biz_email.length > 0) {
+        if (!this.checkBizEmail()) {
+          this.error.bizemail = this.rules[0].message;
+          return;
+        }
+        this.error.bizemail = "";
+      }
+      this.biz_nickname = this.biz_name;
+      axios
+        .post(baseURL + "accounts/user_email/", {
+          email: this.biz_email,
+        })
+        .then((res) => {
+          console.log(res.data.message);
+          if (res.data.message === "이미 존재하는 이메일입니다.") {
+            this.error.bizemail = "이미 존재하는 이메일입니다.";
+          }
+        });
+    },
+
     nm_password: function() {
       var temp = ["qwert", "asdfg", "zxcvb"];
       var nm_password = this.nm_password;
@@ -271,6 +278,23 @@ export default {
         return;
       }
     },
+    biz_password: function() {
+      var temp = ["qwert", "asdfg", "zxcvb"];
+      if (this.biz_password.length > 0) {
+        for (var t in temp) {
+          if (this.biz_password.includes(temp[t])) {
+            this.error.bizpwd = this.rules[1].message;
+            return;
+          }
+        }
+        if (!this.rules[1].regex.test(this.biz_password)) {
+          this.error.bizpwd = this.rules[1].message;
+          return;
+        }
+        this.error.bizpwd = "";
+        return;
+      }
+    },
     nm_password_confirm: function() {
       if (this.nm_password_confirm.length > 0) {
         if (this.nm_password_confirm !== this.nm_password) {
@@ -278,6 +302,15 @@ export default {
           return;
         }
         this.error.pwdconfirm = "";
+      }
+    },
+    biz_password_confirm: function() {
+      if (this.biz_password_confirm.length > 0) {
+        if (this.biz_password_confirm !== this.biz_password) {
+          this.error.bizpwdconfirm = "비밀번호가 틀렸습니다";
+          return;
+        }
+        this.error.bizpwdconfirm = "";
       }
     },
   },
@@ -323,6 +356,38 @@ export default {
         this.nm_signup();
       }
     },
+    checkBizHandler(){
+      let err = true;
+      let msg = "";
+      !this.biz_email &&
+        ((msg = "이메일을 입력해주세요!"),
+        (err = false),
+        this.$refs.biz_email.focus());
+      err &&
+      !this.biz_name &&
+      ((msg = "이름을 입력해주세요!"),
+      (err = false),
+      this.$refs.biz_name.focus());
+      err &&
+        !this.biz_password &&
+        ((msg = "비밀번호를 입력해주세요!"),
+        (err = false),
+        this.$refs.biz_password.focus());
+      err &&
+        !this.biz_password_confirm &&
+        ((msg = "비밀번호 확인을 입력해주세요!"),
+        (err = false),
+        this.$refs.biz_password_confirm.focus());
+      if (!err) {
+        alert(msg);
+      } else if (
+        !this.error.email &&
+        !this.error.password &&
+        !this.error.passwordConfirm
+      ) {
+        this.biz_signup();
+      }
+    },
     checkLogin() {
       let err = true;
       let msg = "";
@@ -337,7 +402,7 @@ export default {
         this.$refs.nm_password.focus());
       if (err) this.nm_login();
     },
-    findAddress() {
+    findAddress(check) {
       new daum.Postcode({
         oncomplete: (data) => {
           var fullAddr = data.address;
@@ -355,7 +420,10 @@ export default {
               console.log("buildingName : " + extraAddr);
             }
             fullAddr += extraAddr !== "" ? " (" + extraAddr + ")" : "";
-            this.nm_address = fullAddr;
+            if(check)
+              this.nm_address = fullAddr;
+            else
+              this.biz_address = fullAddr;
             console.log("fullADDR : " + fullAddr);
           }
         },
@@ -402,6 +470,44 @@ export default {
             alert("로그인 정보를 다시 확인하시지요");
           });
       }
+    },
+    checkBizLogin() {
+      let err = true;
+      let msg = "";
+      !this.biz_email &&
+        ((msg = "이메일을 입력해주세요!"),
+        (err = false),
+        this.$refs.biz_email.focus());
+      err &&
+        !this.biz_password &&
+        ((msg = "비밀번호를 입력해주세요!"),
+        (err = false),
+        this.$refs.biz_password.focus());
+      if (err) this.biz_login();
+    },
+    biz_login(){
+        // axios.post().then((res)=>{});
+        console.log('biz_login호출')
+    },
+
+    checkBizEmail(){
+      var valueMap = this.biz_email.replace(/-/gi, '').split('').map(function(item) {
+        return parseInt(item, 10);
+    });
+
+    if (valueMap.length === 10) {
+        var multiply = new Array(1, 3, 7, 1, 3, 7, 1, 3, 5);
+        var checkSum = 0;
+
+        for (var i = 0; i < multiply.length; ++i) {
+            checkSum += multiply[i] * valueMap[i];
+        }
+
+        checkSum += parseInt((multiply[8] * valueMap[8]) / 10, 10);
+        return Math.floor(valueMap[9]) === (10 - (checkSum % 10));
+    }
+
+    return false;
     },
 
     onSignup() {
@@ -465,6 +571,9 @@ export default {
           console.log("이 에러라고");
         });
     },
+    biz_signup(){
+      console.log('biz_signup() 악시오스 호출 then router push')
+    },
     reset(nm) {
       if (nm) {
         this.nm_page -= 1;
@@ -506,4 +615,4 @@ export default {
   },
 };
 </script>
-<style scoped src="../assets/login.css"></style>
+<style scoped src="../assets/css/login.css"></style>

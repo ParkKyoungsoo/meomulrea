@@ -5,7 +5,7 @@
             <v-row style="margin: 10px; width: fit-content;">
                 <div class="flip">
                   <div class="front" :style="{ backgroundImage: `url(`+imgUrl[index]+`)` }">
-                    <h1 class="text-shadow">{{item.store_name}}</h1>
+                      <h1 class="text-shadow">{{item.store_name}}</h1>
                   </div>
                   <div class="back">
                     <h2>{{item.store_name}}</h2>
@@ -45,6 +45,7 @@ export default {
     this.shopList = this.getShopList;
     for(var i=0;i<this.shopList.shopList.length;i++){
       this.imgUrl.push(require('../assets/image/storelist/'+this.shopList.shopList[i].store_name.replace(/(\s*)/g, "")+'.jpg'));
+      // this.imgUrl.push('../assets/image/storelist/',this.shopList[i].store_name.replace(/(\s*)/g, ""),'.jpg');
     }
     console.log(this.imgUrl)
   },
