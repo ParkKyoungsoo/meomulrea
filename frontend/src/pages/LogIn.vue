@@ -185,7 +185,7 @@ export default {
       nm_password_confirm: "",
       nm_address: "",
       nm_gender: "",
-      nm_birthyear: 0,
+      nm_birthyear: 1990,
       nm_check: false,
 
       biz_page: 0,
@@ -240,6 +240,8 @@ export default {
     },
     biz_email: function() {
       if (this.biz_email.length > 0) {
+        if(this.biz_email.length==3 || this.biz_email.length==6)
+          this.biz_email += '-';
         if (!this.checkBizEmail()) {
           this.error.bizemail = this.rules[0].message;
           return;
@@ -584,6 +586,7 @@ export default {
         this.nm_password_confirm = "";
         this.nm_address = "";
         this.nm_gender = "";
+        this.nm_birthyear = "1990";
       } else {
         this.biz_page -= 1;
         this.biz_email = "";
@@ -603,6 +606,7 @@ export default {
         this.nm_password_confirm = "";
         this.nm_address = "";
         this.nm_gender = "";
+        this.nm_birthyear = "1990";
       } else {
         this.biz_page += 1;
         this.biz_email = "";

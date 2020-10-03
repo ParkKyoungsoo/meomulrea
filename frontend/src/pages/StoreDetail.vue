@@ -143,6 +143,7 @@ export default {
           this.endTime = time.substring(4,6) + ':' + time.substring(7,9)
         }  
       }
+      if (this.endTime == '00:00') this.endTime = '24:00' 
     },
 
     getBusinessDay(day) {
@@ -157,15 +158,15 @@ export default {
     
       if (!this.days.includes(0)) {this.businessDay = "매일"}
       for (var d in this.days) {
-        if (this.days[d] != 0) {
-          this.businessDay += this.days[d]
-          if (this.businessDay == "월화수목금") {this.businessDay = "평일"}
-          else if (this.businessDay == "토일") {this.businessDay = "주말"}
-          // else if (this.businessDay.length == 1) {this.businessDay = this.businessDay}
-          // 월화일 추가
-          else {this.businessDay = this.businessDay[0] + '-' + this.businessDay.slice(-1)[0]}
-        }
+        if (this.days[d] != 0) 
+          this.businessDay += (this.days[d]+",")
       }
+      if (this.businessDay == "월,화,수,목,금")
+        this.businessDay = "평일"
+      else if (this.businessDay == "토,일") 
+        this.businessDay = "주말"
+      else
+        this.businessDay = this.businessDay.substring(0, this.businessDay.length-1);
     },
 
     getStoreDetail() {
