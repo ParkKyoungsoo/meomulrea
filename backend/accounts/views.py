@@ -1,3 +1,4 @@
+from django.http import HttpResponse, JsonResponse
 from django.shortcuts import get_object_or_404
 from django.contrib.auth import get_user_model
 from rest_framework.decorators import api_view, permission_classes
@@ -6,6 +7,7 @@ from rest_framework.permissions import IsAuthenticated
 from .serializers import UserSerializer, UserDetailSerializer, UserProfileSerializer, BizUserProfileSerializer, UserProfileUpdateSerializer
 from .serializers import UserOrderSerializer, UserOrderListSerializer
 from .models import Order
+
 
 # 닉네임 중복 여부 체크
 @api_view(['POST'])
@@ -16,6 +18,7 @@ def user_username(request):
         return Response({'message': '이미 존재하는 닉네임입니다.'})
     except:
         return Response({'message': '사용가능한 닉네임입니다.'})
+
 
 # 이메일 중복 여부 체크
 @api_view(['POST'])
@@ -28,6 +31,7 @@ def user_email(request):
         return Response({'message': '사용가능한 이메일입니다.'})
 # res.data.message로 프론트에서 받으면 된다.
 
+
 # user 모델 추가사항들 저장
 # 프론트는 headers에 Token 값 담아서 보내야함
 @api_view(['POST'])
@@ -38,6 +42,7 @@ def user_detail(request):
     if serializer.is_valid(raise_exception=True):
         serializer.save()
     return Response(serializer.data)
+
 
 # user 프로필 가져오기 or 수정
 @api_view(['POST', 'PUT'])

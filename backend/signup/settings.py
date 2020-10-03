@@ -46,6 +46,7 @@ INSTALLED_APPS = [
     'main',
     'reviews',
     'calcembedding',
+    'advertisements',
     
     'django_extensions',
 

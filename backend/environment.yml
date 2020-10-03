@@ -1,4 +1,4 @@
-name: kyoung
+name: base
 channels:
   - conda-forge
   - defaults

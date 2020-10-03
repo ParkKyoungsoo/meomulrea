@@ -1,5 +1,6 @@
 from rest_framework import serializers
-from .models import Review
+from .models import Review, Reply
+from accounts.serializers import UserProfileSerializer
 
 class WholeReviewSerializer(serializers.ModelSerializer):
     class Meta:
@@ -12,13 +13,27 @@ class StoreReviewSerializer(serializers.ModelSerializer):
         model = Review
         fields = '__all__'
 
-
-class ReviewDetailSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Review
-        fields = '__all__'
-
 class ReviewSerializer(serializers.ModelSerializer):
     class Meta:
         model = Review
         fields = '__all__'
+
+
+class ReviewDetailSerializer(serializers.ModelSerializer):
+    user = UserProfileSerializer()
+    class Meta:
+        model = Review
+        fields = ['id', 'content', 'storeid', 'userid', 'score', 'reg_time', 'created_at', 'user']
+
+
+class ReplySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Reply
+        fields = '__all__'
+
+
+class ReviewReplySerializer(serializers.ModelSerializer):
+    review = ReviewSerializer()
+    class Meta:
+        model = Reply
+        fields = ['id', 'content', 'created_at', 'review']
