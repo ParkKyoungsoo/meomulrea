@@ -8,10 +8,11 @@
       >
         <v-row style="margin: 10px; width: fit-content;">
           <div class="flip">
-            <div
+            <!-- <div
               class="front"
               :style="{ backgroundImage: `url(` + imgUrl[index] + `)` }"
-            >
+            > -->
+            <div class="front" :style="{backgroundImage: `url(` + imgUrl + `)`}">
               <h1 class="text-shadow">{{ item.store_name }}</h1>
             </div>
             <div class="back">
@@ -35,7 +36,8 @@ const baseURL =
 export default {
   data() {
     return {
-      imgUrl: [],
+      // imgUrl: [],
+      imgUrl:"",
       data: {
         category: "",
         shopList: "",
@@ -51,15 +53,16 @@ export default {
     // this.loc = this.getLocation;
     // this.category = this.$route.params.category;
     this.shopList = this.getShopList;
-    for (var i = 0; i < this.shopList.shopList.length; i++) {
-      this.imgUrl.push(
-        require("../assets/image/storelist/" +
-          this.shopList.shopList[i].store_name.replace(/(\s*)/g, "") +
-          ".jpg")
-      );
-      // this.imgUrl.push('../assets/image/storelist/',this.shopList[i].store_name.replace(/(\s*)/g, ""),'.jpg');
-    }
-    console.log(this.imgUrl);
+    // for (var i = 0; i < this.shopList.shopList.length; i++) {
+    //   this.imgUrl.push(
+    //     require("../assets/image/storelist/" +
+    //       this.shopList.shopList[i].store_name.replace(/(\s*)/g, "") +
+    //       ".jpg")
+    //   );
+    //   // this.imgUrl.push('../assets/image/storelist/',this.shopList[i].store_name.replace(/(\s*)/g, ""),'.jpg');
+    // }
+    // console.log(this.imgUrl);
+    this.imgUrl = require('../assets/image/storelist/default.jpg')
   },
 
   methods: {
