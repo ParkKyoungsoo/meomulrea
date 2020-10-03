@@ -9,6 +9,7 @@
       class="review-write"
       style="border: 1px solid silver; margin-bottom:10px; border-radius: 0.4em"
     >
+    
       <div style="margin:10px">
         <v-rating
           v-model="rating"
@@ -25,6 +26,7 @@
           name="input-7-4"
           label="리뷰를 남겨보세요."
           v-model="myReview"
+          color="orange"
         ></v-textarea>
         <div class="text-right">
           <v-btn v-show="rating == 0 || myReview == 0" @click="msg()" color="gray" style="color:darkgray">등록</v-btn>
@@ -35,7 +37,7 @@
     </div>
     <div class="review-sort" style="display:inline;">
       <v-row>
-        <h2 style="text-align:left; width: fit-content;">리뷰({{ review_cnt }}개)</h2>
+        <h2 style="text-align:left; width: fit-content;">리뷰({{ this.review_cnt }}개)</h2>
         <v-spacer></v-spacer>
         <!-- <v-bottom-navigation style="box-shadow:none; width: fit-content; height: fit-content;" :value="value" color="orange" >
           <span><v-btn>최신순</v-btn></span>
@@ -95,6 +97,28 @@
               <v-rating :value="review.score" readonly background-color="orange lighten-3" color="orange" dense="true" half-increments="true" small="true"></v-rating>({{ review.score }})<br>
             </v-row> -->
           <p class="review-excerpt">{{ review.content }}</p>
+          <v-row justify="center">
+            <v-expansion-panels inset>
+              <v-expansion-panel>
+                <v-expansion-panel-header>댓글 달기</v-expansion-panel-header>
+                <v-expansion-panel-content>
+                  <!-- <div class="message other-message float-right"> -->
+                  <v-textarea
+                    outlined
+                    name="input-7-4"
+                    label="댓글을 남겨보세요." 
+                    value
+                    color="orange"
+                  ></v-textarea>
+                  <div class="text-right">
+                    <v-btn v-show="myComment == 0" @click="msgComment()" color="gray" style="color:darkgray">등록</v-btn>
+                    <v-btn v-show="myComment != 0" @click="registerComment(review.id)" color="orange">등록</v-btn>
+                  </div>
+                  <!-- </div>                 -->
+                </v-expansion-panel-content>
+              </v-expansion-panel>
+            </v-expansion-panels>
+          </v-row>
           <!-- </h3> -->
         </article>
       </div>
@@ -105,7 +129,7 @@
 
 <script>
 import axios from "axios";
-// const baseURL = "http://127.0.0.1:8000/api/";
+// const baseURL = "http://127.0.0.1:8000/";
 const baseURL =
   "http://ec2-54-180-109-206.ap-northeast-2.compute.amazonaws.com/";
 
@@ -117,7 +141,7 @@ export default {
       review_cnt: 0,
       myReview: "",
       flag: 1,
-      value: 1,
+      myComment: "",
     }
   },
   created() {
@@ -127,8 +151,8 @@ export default {
   methods: {
     getReview() {
       this.flag = 1;
-      this.value = 1;
-      axios.post(baseURL + "reviews/store_review_list/", {
+      // this.value = 1;
+      axios.post(baseURL + "api/reviews/store_review_list/", {
         storeid: this.$route.params.storeid
       },
       {
@@ -137,18 +161,54 @@ export default {
         }
       })
       .then(res => {
+        console.log('최신순 리뷰 여기요', res.data)
         this.reviews = res.data
         this.review_cnt = res.data.length
-        
       })
       .catch(err => {
         console.log("리뷰 안온다" + err)
       })
     },
 
+    getReviewHighScore() {
+      // this.value=3;
+      this.flag = 2;
+      axios.post(baseURL + "api/reviews/sort_review_high_score/", 
+      {
+        storeid: this.$route.params.storeid,
+      },
+      {
+        headers: {
+          Authorization: `Token ${this.$cookies.get('auth-token')}`
+        }
+      })
+      .then(res => {
+        this.reviews = res.data;
+        this.review_cnt = res.data.length;
+      })
+    },
+
+    getReviewLowScore() {
+      this.flag = 3;
+      axios.post(baseURL + "api/reviews/sort_review_low_score/",
+      {
+        storeid: this.$route.params.storeid,
+      },
+      {
+        headers: {
+          Authorization: `Token ${this.$cookies.get("auth-token")}`,
+        },
+      })
+      .then(res => {
+        this.reviews = res.data;
+        this.review_cnt = res.data.length;
+      });
+    },
+
     msg () {
       if (this.myReview.length == 0 && this.rating == 0) {
         alert("평점과 리뷰를 평가해주세요.")
+        return
       }
       else if (this.myReview.length == 0) {
         alert("최소 한 글자 이상 작성해주세요.")
@@ -159,28 +219,45 @@ export default {
         return
       }
 
+      if (this.flag == 1) {
+        this.getReview();
+      } else if (this.flag == 2) {
+        this.getReviewHighScore();
+      } else {
+        this.getReviewLowScore();
+      }
+    },
+
+    msgComment() {
+      alert("댓글을 남겨주세요.")
     },
 
     registerReview() {
-      this.value=2;
-      axios.post(baseURL + "reviews/create_review/", {
+      // this.value=2;
+      axios.post(baseURL + "api/reviews/create_review/", {
         storeid: this.$route.params.storeid,
         content: this.myReview,
         score: this.rating,
       },
       {
         headers: {
-          Authorization: `Token ${this.$cookies.get('auth-token')}`
-        }
+          Authorization: `Token ${this.$cookies.get("auth-token")}`,
+        },
       })
       .then(res => {
-        console.log(res)
-        alert("리뷰가 등록되었습니다.")
-        this.getReview()
-
+        console.log("새로운 리뷰"+res.data)
+        // console.log(res.data)
+        alert("리뷰가 등록되었습니다.");
+        if (this.flag == 1) {
+          this.getReview();
+        } else if (this.flag == 2) {
+          this.getReviewHighScore();
+        } else {
+          this.getReviewLowScore();
+        }
       })
       .catch(err => {
-        console.log(err)
+        console.log(err.response)
       })
       this.myReview = ""
       this.rating = 0
@@ -196,7 +273,7 @@ export default {
               Authorization: `Token ${this.$cookies.get("auth-token")}`,
             },
           })
-          .then((res) => {
+          .then(res => {
             alert("리뷰가 삭제 되었습니다.");
             if (this.flag == 1) {
               this.getReview();
@@ -206,45 +283,26 @@ export default {
               this.getReviewLowScore();
             }
           })
-          .catch((err) => {
+          .catch(err => {
             alert("리뷰 삭제 실패!");
           });
       }
     },
 
-    getReviewHighScore() {
-      this.value=3
-      this.flag = 2
-      axios.post(baseURL + "reviews/sort_review_high_score/", {
-        storeid: this.$route.params.storeid,
+    registerComment(idx) {
+      console.log("idx" , idx)
+      axios.post(baseURL + `api/reviews/${idx}/create_reply/`, {
+        content: this.Comment,
       },
       {
         headers: {
-          Authorization: `Token ${this.$cookies.get('auth-token')}`
-        }
+          Authorization: `Token ${this.$cookies.get("auth-token")}`,
+        },
       })
       .then(res => {
-        this.reviews = res.data
+        console.log("사장님 댓글", res.data)
+        // this.myComment = res.data
       })
-    },
-
-    getReviewLowScore() {
-      this.flag = 3;
-      axios
-        .post(
-          baseURL + "api/reviews/sort_review_low_score/",
-          {
-            storeid: this.$route.params.storeid,
-          },
-          {
-            headers: {
-              Authorization: `Token ${this.$cookies.get("auth-token")}`,
-            },
-          }
-        )
-        .then((res) => {
-          this.reviews = res.data;
-        });
     },
   },
 };
