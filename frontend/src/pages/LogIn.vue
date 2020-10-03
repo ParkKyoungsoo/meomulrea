@@ -184,8 +184,8 @@
 import axios from "axios";
 import * as firebase from "firebase";
 
-// const baseURL = "http://127.0.0.1:8000/";
-const baseURL = "http://j3b304.p.ssafy.io/";
+const baseURL = "http://127.0.0.1:8000/";
+// const baseURL = "http://j3b304.p.ssafy.io/";
 
 export default {
   name: "LogIn",
@@ -252,6 +252,7 @@ export default {
           }
         });
     },
+
     nm_password: function() {
       var temp = ["qwert", "asdfg", "zxcvb"];
       var nm_password = this.nm_password;
@@ -271,6 +272,7 @@ export default {
         return;
       }
     },
+
     nm_password_confirm: function() {
       if (this.nm_password_confirm.length > 0) {
         if (this.nm_password_confirm !== this.nm_password) {
@@ -281,6 +283,7 @@ export default {
       }
     },
   },
+
   computed: {
     // comparePasswords () {
     //     return this.password !== this.confirmPassword ? 'Passwords do not match.' : true
@@ -295,6 +298,7 @@ export default {
       return this.$store.getters.loading;
     },
   },
+
   methods: {
     checkHandler() {
       let err = true;
@@ -323,6 +327,7 @@ export default {
         this.nm_signup();
       }
     },
+
     checkLogin() {
       let err = true;
       let msg = "";
@@ -337,6 +342,7 @@ export default {
         this.$refs.nm_password.focus());
       if (err) this.nm_login();
     },
+
     findAddress() {
       new daum.Postcode({
         oncomplete: (data) => {
@@ -366,6 +372,7 @@ export default {
       this.$cookies.set("auth-token", token);
       this.isLoggedIn = true;
     },
+
     onSignin() {
       this.$store.dispatch("signUserIn", {
         email: this.nm_email,
@@ -390,9 +397,13 @@ export default {
             password: this.nm_password,
           })
           .then((res) => {
-            // firebase.auth().setPersistence(firebase.auth.Auth.Persistence.SESSION)
+            firebase
+              .auth()
+              .setPersistence(firebase.auth.Auth.Persistence.SESSION);
             // .then(()=>{
-            // firebase.auth().signInWithEmailAndPassword(this.nm_email, this.nm_password)
+            firebase
+              .auth()
+              .signInWithEmailAndPassword(this.nm_email, this.nm_password);
             this.setCookie(res.data.key);
             this.$router.push("/home");
             // })

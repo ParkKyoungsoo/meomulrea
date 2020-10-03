@@ -49,8 +49,8 @@ import { EventBus } from "../utils/EventBus.js";
 import * as firebase from "firebase";
 import axios from "axios";
 
-// const baseURL = "http://127.0.0.1:8000/";
-const baseURL = "http://j3b304.p.ssafy.io/";
+const baseURL = "http://127.0.0.1:8000/";
+// const baseURL = "http://j3b304.p.ssafy.io/";
 
 export default {
   data() {
