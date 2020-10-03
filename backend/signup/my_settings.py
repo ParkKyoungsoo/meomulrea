@@ -4,7 +4,7 @@ DATABASES = {
         'NAME': 'babygoat',
         'USER': 'root',
         'PASSWORD': 'ssafy',
-        'HOST': 'j3b304.p.ssafy.io',
+        'HOST': 'ec2-54-180-109-206.ap-northeast-2.compute.amazonaws.com',
         'PORT': '3306',
     }
 }

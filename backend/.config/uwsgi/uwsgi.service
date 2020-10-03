@@ -3,7 +3,7 @@ Description=uWSGI service
 After=syslog.target
 
 [Service]
-ExecStart=/home/ubuntu/miniconda3/bin/uwsgi -i /srv/backend/.config/uwsgi/mysite.ini
+ExecStart=/home/ubuntu/miniconda3/envs/test/bin/uwsgi -i /srv/backend/.config/uwsgi/mysite.ini
 
 Restart=always
 KillSignal=SIGQUIT
