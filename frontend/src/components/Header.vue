@@ -56,7 +56,7 @@ const baseURL =
 export default {
   data() {
     return {
-      select: "",
+      select: [],
       userInfo: "",
       showAddrModal: false,
       seletedAddress: "",

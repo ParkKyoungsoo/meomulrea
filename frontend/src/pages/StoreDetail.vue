@@ -103,7 +103,7 @@ import party from "../components/party.vue";
 import axios from "axios";
 import KakaoMap from "../components/KakaoMap.vue";
 
-// const baseURL = "http://127.0.0.1:8000/api/";
+// const baseURL = "http://127.0.0.1:8000/";
 const baseURL =
   "http://ec2-54-180-109-206.ap-northeast-2.compute.amazonaws.com/";
 

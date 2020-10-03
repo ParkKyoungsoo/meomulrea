@@ -13,7 +13,7 @@ export default {
     category: null,
   },
   created() {
-    console.log("child", this.category);
+    console.log("child", this.storeData);
   },
   computed: {
     ...mapGetters("location", ["getLocation"]),
@@ -28,12 +28,12 @@ export default {
 
     initMap() {
       console.log("storeInfo", this.storeData);
-      var storeList = this.getShopList.shopList;
-      storeList.length = 0;
 
       var container = document.getElementById("map");
       var options = {
         center: new kakao.maps.LatLng(
+          console.log("lat", this.storeData.latitude),
+          console.log("lng", this.storeData.longitude),
           this.storeData.latitude,
           this.storeData.longitude
         ),
@@ -68,11 +68,6 @@ export default {
       //     storeList.push(all_store_encoding2.data[i]);
       //   }
       // }
-
-      console.log("storeList", storeList);
-      this.$store.commit("shopList/setShopList", {
-        shopList: storeList,
-      });
     },
     addScript() {
       const script = document.createElement("script");
