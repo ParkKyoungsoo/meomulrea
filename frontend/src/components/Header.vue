@@ -1,11 +1,14 @@
 <template>
   <v-app-bar app style="box-shadow:none;">
     <v-toolbar-title>
-      <router-link style="text-decoration: none; color: rgb(233,105,30); display:flex; align-items: center;" to="/home">
-        <img style="height:65px; width: 65px;" src="../assets/image/home.png">
+      <router-link
+        style="text-decoration: none; color: rgb(233,105,30); display:flex; align-items: center;"
+        to="/home"
+      >
+        <img style="height:65px; width: 65px;" src="../assets/image/home.png" />
       </router-link>
     </v-toolbar-title>
-    <v-spacer/>
+    <v-spacer />
     <v-toolbar-title>
       <v-col>
         <v-select
@@ -47,7 +50,8 @@ import * as firebase from "firebase";
 import axios from "axios";
 
 // const baseURL = "http://127.0.0.1:8000/";
-const baseURL = "http://j3b304.p.ssafy.io/";
+const baseURL =
+  "http://ec2-54-180-109-206.ap-northeast-2.compute.amazonaws.com/";
 
 export default {
   data() {
@@ -107,7 +111,7 @@ export default {
 
     getUserAddress() {
       axios
-        .post(baseURL + "accounts/user_order_list/", null, {
+        .post(baseURL + "api/accounts/user_order_list/", null, {
           headers: {
             Authorization: `Token ${this.$cookies.get("auth-token")}`,
           },

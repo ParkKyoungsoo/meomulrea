@@ -1,28 +1,39 @@
 <template>
   <v-main>
-    <Header/>
+    <Header />
     <div class="advertise" align="center" justify="center">
-      <Carousel :storeData="recommendedDate"/> 
+      <Carousel :storeData="recommendedDate" />
     </div>
     <v-container class="content">
       <div style="width: 80%;">
         <v-layout class="weather">
           <v-btn icon color="green" @click="getWeather">
-              <v-icon>mdi-cached</v-icon>
-            </v-btn>
-          오늘의 날씨(<img style="width:30px; height:30px;" :src="require('../assets/image/' + weatherimg)" :alt=weatherimg>)
-            
-            <v-flex>지역 : {{ this.getLocation.dong }} </v-flex>
-            <v-flex>기온 : {{ parseInt(locationData.main.temp - 273.15) }} &deg;C</v-flex>
-            <v-flex>습도 : {{ locationData.main.humidity }} %</v-flex>
-            <v-flex>구름 : {{ locationData.clouds.all + "%" }}</v-flex>
+            <v-icon>mdi-cached</v-icon>
+          </v-btn>
+          오늘의 날씨(<img
+            style="width:30px; height:30px;"
+            :src="require('../assets/image/' + weatherimg)"
+            :alt="weatherimg"
+          />)
+
+          <v-flex>지역 : {{ this.getLocation.dong }} </v-flex>
+          <v-flex
+            >기온 :
+            {{ parseInt(locationData.main.temp - 273.15) }} &deg;C</v-flex
+          >
+          <v-flex>습도 : {{ locationData.main.humidity }} %</v-flex>
+          <v-flex>구름 : {{ locationData.clouds.all + "%" }}</v-flex>
         </v-layout>
-      <v-layout>
-        <v-flex> 오늘은 뭐먹지? </v-flex>
-      </v-layout>
-      <div class="shopList">
-        <carousel-3d :controls-visible="true">
-          <slide v-for="(item, index) in recommendedDate" :key="index" :index="index">
+        <v-layout>
+          <v-flex> 오늘은 뭐먹지? </v-flex>
+        </v-layout>
+        <div class="shopList">
+          <carousel-3d :controls-visible="true">
+            <slide
+              v-for="(item, index) in recommendedDate"
+              :key="index"
+              :index="index"
+            >
               <figure>
                 <img :src="item.src" :alt="item[1]" />
                 <!-- <img src="../assets/image/background.jpg"> -->
@@ -49,8 +60,9 @@ import { mapMutations, mapGetters } from "vuex";
 import { EventBus } from "../utils/EventBus.js";
 import Header from "../components/Header.vue";
 
-const baseURL = "http://127.0.0.1:8000/api/";
-// const baseURL = "http://j3b304.p.ssafy.io/";
+// const baseURL = "http://127.0.0.1:8000/api/";
+const baseURL =
+  "http://ec2-54-180-109-206.ap-northeast-2.compute.amazonaws.com/";
 
 Vue.use(Carousel3d);
 
@@ -109,18 +121,17 @@ export default {
       })
         .then((response) => {
           this.locationData = response.data;
-          if(this.locationData.weather[0].main==='Clear')
-            this.weatherimg = 'Clear.png';
-          else if(this.locationData.weather[0].main==='Clouds'){
-            this.weatherimg = 'Clouds.png';
-          }
-          else if(this.locationData.weather[0].main==='wind')
-            this.weatherimg = 'wind.png';
-          else if(this.locationData.weather[0].main==='rain')
-            this.weatherimg = 'rain.png';
-          else if(this.locationData.weather[0].main==='snow')
-            this.weatherimg = 'snow.png';
-          console.log(this.weatherimg)
+          if (this.locationData.weather[0].main === "Clear")
+            this.weatherimg = "Clear.png";
+          else if (this.locationData.weather[0].main === "Clouds") {
+            this.weatherimg = "Clouds.png";
+          } else if (this.locationData.weather[0].main === "wind")
+            this.weatherimg = "wind.png";
+          else if (this.locationData.weather[0].main === "rain")
+            this.weatherimg = "rain.png";
+          else if (this.locationData.weather[0].main === "snow")
+            this.weatherimg = "snow.png";
+          console.log(this.weatherimg);
         })
         .catch(() => {
           // .catch((ex) => {
@@ -129,10 +140,10 @@ export default {
     },
 
     getCategory() {
-      console.log('getCategory')
+      console.log("getCategory");
       axios({
         method: "GET",
-        url: baseURL + "main/",
+        url: baseURL + "api/main/",
       })
         .then((response) => {
           console.log(response.data.data);
@@ -150,7 +161,6 @@ export default {
     },
 
     gotoShop(index) {
-      console.log("gotoShop : " + index);
       this.$router.push("/storelist/" + index);
     },
 

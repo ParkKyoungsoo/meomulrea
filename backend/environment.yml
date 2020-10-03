@@ -1,5 +1,6 @@
-name: kyoung
+name: base
 channels:
+  - conda-forge
   - defaults
 dependencies:
   - _ipyw_jlab_nb_ext_conf=0.1.0=py38_0
@@ -61,6 +62,7 @@ dependencies:
   - defusedxml=0.6.0=py_0
   - diff-match-patch=20200713=py_0
   - distributed=2.20.0=py38_0
+  - django-webpack-loader=0.7.0=pyh8c360ce_0
   - docutils=0.16=py38_1
   - entrypoints=0.3=py38_0
   - et_xmlfile=1.0.1=py_1001
@@ -123,6 +125,7 @@ dependencies:
   - libtiff=4.1.0=h56a325e_1
   - libxml2=2.9.10=h464c3ec_1
   - libxslt=1.1.34=he774522_0
+  - lightfm=1.15=py38hc8d92b1_1001
   - llvmlite=0.33.0=py38ha925a31_0
   - locket=0.2.0=py38_1
   - lxml=4.5.2=py38h1350720_0
@@ -188,6 +191,7 @@ dependencies:
   - ply=3.11=py38_0
   - powershell_shortcut=0.0.1=3
   - prometheus_client=0.8.0=py_0
+  - prompt-toolkit=3.0.5=py_0
   - prompt_toolkit=3.0.5=0
   - psutil=5.7.0=py38he774522_0
   - py=1.9.0=py_0
@@ -198,6 +202,7 @@ dependencies:
   - pycurl=7.43.0.5=py38h7a1dbc1_0
   - pydocstyle=5.0.2=py_0
   - pyflakes=2.2.0=py_0
+  - pygments=2.6.1=py_0
   - pylint=2.5.3=py38_0
   - pynacl=1.4.0=py38h62dcd97_1
   - pyodbc=4.0.30=py38ha925a31_0
@@ -259,6 +264,7 @@ dependencies:
   - spyder-kernels=1.9.2=py38_0
   - sqlalchemy=1.3.18=py38he774522_0
   - sqlite=3.32.3=h2a8f88b_0
+  - sqlparse=0.3.1=py_0
   - statsmodels=0.11.1=py38he774522_0
   - sympy=1.6.1=py38_0
   - tbb=2020.0=h74a9793_0
@@ -275,6 +281,7 @@ dependencies:
   - typing_extensions=3.7.4.2=py_0
   - ujson=1.35=py38he774522_0
   - unicodecsv=0.14.1=py38_0
+  - urllib3=1.25.9=py_0
   - vc=14.1=h0510ff6_4
   - vs2015_runtime=14.16.27012=hf0eaf9b_3
   - watchdog=0.10.3=py38_0
@@ -305,35 +312,31 @@ dependencies:
   - zope.interface=4.7.1=py38he774522_0
   - zstd=1.4.5=ha9fde0e_0
   - pip:
-      - appdirs==1.4.4
-      - asgiref==3.2.10
-      - auth==0.5.3
-      - blinker==1.4
-      - distlib==0.3.1
-      - django==3.1.1
-      - django-allauth==0.42.0
-      - django-cors-headers==3.5.0
-      - django-extensions==3.0.8
-      - django-rest-auth==0.9.5
-      - djangorestframework==3.11.1
-      - dnspython==1.16.0
-      - eventlet==0.27.0
-      - falcon==2.0.0
-      - gunicorn==20.0.4
-      - hyperopt==0.2.4
-      - jedi==0.17.2
-      - lightfm==1.15
-      - mongoengine==0.20.0
-      - monotonic==1.5
-      - mysqlclient==2.0.1
-      - oauthlib==3.1.0
-      - parso==0.7.1
-      - prompt-toolkit==3.0.7
-      - pygments==2.7.0
-      - pymongo==3.11.0
-      - python3-openid==3.2.0
-      - requests-oauthlib==1.3.0
-      - sqlparse==0.3.1
-      - urllib3==1.25.10
-      - virtualenv==20.0.31
-prefix: C:\ProgramData\Anaconda3
+    - appdirs==1.4.4
+    - asgiref==3.2.10
+    - auth==0.5.3
+    - blinker==1.4
+    - distlib==0.3.1
+    - django==3.1.1
+    - django-allauth==0.42.0
+    - django-cors-headers==3.5.0
+    - django-extensions==3.0.8
+    - django-rest-auth==0.9.5
+    - djangorestframework==3.11.1
+    - dnspython==1.16.0
+    - eventlet==0.27.0
+    - falcon==2.0.0
+    - gunicorn==20.0.4
+    - hyperopt==0.2.4
+    - jedi==0.17.2
+    - mongoengine==0.20.0
+    - monotonic==1.5
+    - mysqlclient==2.0.1
+    - oauthlib==3.1.0
+    - parso==0.7.1
+    - pymongo==3.11.0
+    - python-vuejs==1.0.9
+    - python3-openid==3.2.0
+    - requests-oauthlib==1.3.0
+prefix: C:\ProgramData\Anaconda3\envs\kyoung
+
