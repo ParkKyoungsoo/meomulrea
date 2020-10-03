@@ -5,8 +5,7 @@
       <h1>{{ this.storeInfo.store_name }}</h1>
       <v-card>
         <v-row>
-          <v-col :style="{backgroundImage:`url(`+imgUrl+`)`}" lg="2" md="2">
-              
+          <v-col style="background-size:200px 200px;" :style="{backgroundImage:`url(`+imgUrl+`)`}" lg="2" md="2">
           </v-col>
           <v-col
             style="background-color: rgb(132, 245, 132); text-align: left;"
@@ -100,7 +99,6 @@ export default {
   },
   created() {
     this.getStoreDetail();
-    this.imgUrl = require('../assets/image/storelist/'+this.storeInfo.store_name.replace(/(\s*)/g, "")+'.jpg')
   },
   methods: {
     changeStartTime(time) {
@@ -158,12 +156,12 @@ export default {
       if (day.sun == 1 ? this.days.push("일") : this.days.push(0));
     
       if (!this.days.includes(0)) {this.businessDay = "매일"}
-      for (var day in this.days) {
-        if (this.days[day] != 0) {
-          this.businessDay += this.days[day]
+      for (var d in this.days) {
+        if (this.days[d] != 0) {
+          this.businessDay += this.days[d]
           if (this.businessDay == "월화수목금") {this.businessDay = "평일"}
           else if (this.businessDay == "토일") {this.businessDay = "주말"}
-          else if (this.businessDay.length == 1) {this.businessDay = this.businessDay}
+          // else if (this.businessDay.length == 1) {this.businessDay = this.businessDay}
           // 월화일 추가
           else {this.businessDay = this.businessDay[0] + '-' + this.businessDay.slice(-1)[0]}
         }
@@ -180,6 +178,7 @@ export default {
         .then((res) => {
           console.log("res Data", res.data);
           this.storeInfo = res.data;
+          this.imgUrl = require('../assets/image/storelist/'+this.storeInfo.store_name.replace(/(\s*)/g, "")+'.jpg');
           this.changeStartTime(res.data.start_time)
           this.changeEndTime(res.data.end_time)
           this.getBusinessDay(res.data)
