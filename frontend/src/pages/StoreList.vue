@@ -4,14 +4,14 @@
     <v-main>
       <v-container>
         <v-row>
-        <v-flex>{{ $route.params.category }}</v-flex>
-        <v-flex>{{ this.getLocation.dong }}</v-flex>
-        <!-- <v-btn @click="getStoreInfo">버튼</v-btn> -->
+          <v-flex>{{ $route.params.category }}</v-flex>
+          <v-flex>{{ this.getLocation.dong }}</v-flex>
+          <!-- <v-btn @click="getStoreInfo">버튼</v-btn> -->
         </v-row>
         <!-- <kakaoMap :storeData="loc" :category="category" /> -->
         <v-row>
           <!-- <v-col class="shopList"> -->
-            <!-- <v-card
+          <!-- <v-card
               class="mx-auto"
               max-width="320"
               outlined
@@ -19,8 +19,8 @@
               :key="index"
               style="border: 1px solid grey"
             > -->
-            <Card/>
-              <!-- <v-col>
+          <Card />
+          <!-- <v-col>
                 <v-row justify="center">
                   <div>{{ item.store_name }}</div>
                 </v-row>
@@ -29,7 +29,7 @@
                 </v-row>
               </v-col> -->
 
-              <!-- <v-card-actions>
+          <!-- <v-card-actions>
                 <v-btn
                   depressed
                   color="primary"
@@ -37,12 +37,12 @@
                   >가게 보러가기</v-btn
                 >
               </v-card-actions> -->
-            <!-- </v-card> -->
+          <!-- </v-card> -->
           <!-- </v-col> -->
           <!-- <v-col> -->
         </v-row>
         <!-- <v-row> -->
-          <!-- </v-col> --> 
+        <!-- </v-col> -->
         <!-- </v-row> -->
       </v-container>
     </v-main>
@@ -56,8 +56,9 @@ import { mapGetters } from "vuex";
 import Header from "../components/Header.vue";
 import Card from "../components/Card.vue";
 
-const baseURL = "http://127.0.0.1:8000/api/";
-// const baseURL = "http://j3b304.p.ssafy.io/";
+// const baseURL = "http://127.0.0.1:8000/api/";
+const baseURL =
+  "http://ec2-54-180-109-206.ap-northeast-2.compute.amazonaws.com/";
 
 export default {
   data() {
@@ -72,7 +73,7 @@ export default {
   components: {
     // kakaoMap,
     Header,
-    Card
+    Card,
   },
 
   computed: {
@@ -91,7 +92,7 @@ export default {
       console.log(this.$cookies.get("auth-token"));
       axios
         .post(
-          baseURL + "stores/store_list/",
+          baseURL + "api/stores/store_list/",
           {
             category: this.category,
             user_location: this.getLocation.dong,
@@ -119,7 +120,7 @@ export default {
     showShopList: function() {
       axios
         .post(
-          baseURL + "stores/store_category/",
+          baseURL + "api/stores/store_category/",
           {
             category: this.$route.params.category,
           },

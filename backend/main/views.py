@@ -29,12 +29,12 @@ from rest_framework.decorators import api_view
 def recommend_food(request):
     
     # user_id = request.user.id
-    user_id = 68716
+    user_id = 148970
 
     embedding_filename = './saved_models/item_embeddings.pickle'
     item_embeddings = pickle.load(open(embedding_filename,'rb'))
     
-    model_filename = './saved_models/item_embeddings.pickle'
+    model_filename = './saved_models/model.pickle'
     model = pickle.load(open(model_filename,'rb'))
 
     def make_best_items_report(item_embeddings, src_store_id, num_search_items=10):
@@ -64,6 +64,7 @@ def recommend_food(request):
         return best_items
 
     user_visited_store = Review.objects.filter(userid=user_id)[0].storeid
+    print(user_id,"가 갔던 가게 ",user_visited_store," 와 비슷한 가게들")
     report1 = make_best_items_report(item_embeddings, user_visited_store, 10)
     report1 = report1.to_json(orient="split")
     parsed = json.loads(report1)
