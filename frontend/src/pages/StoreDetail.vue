@@ -54,7 +54,7 @@
             </div>
           </v-col>
           <v-col style="background-color: rgb(245, 183, 132);" lg="3" md="3">
-            지도표시구역
+            <KakaoMap :storeData="this.storeInfo" />
           </v-col>
         </v-row>
       </v-card>
@@ -98,10 +98,10 @@
 <script>
 // import StoreData from "../assets/datas/all_store_encoding2.json";
 import Header from "../components/Header.vue";
-// import KakaoMap from "../components/KakaoMap.vue";
 import review from "../components/review.vue";
 import party from "../components/party.vue";
 import axios from "axios";
+import KakaoMap from "../components/KakaoMap.vue";
 
 // const baseURL = "http://127.0.0.1:8000/api/";
 const baseURL =
@@ -110,7 +110,7 @@ const baseURL =
 export default {
   components: {
     Header,
-    // KakaoMap,
+    KakaoMap,
     review,
     party,
   },
