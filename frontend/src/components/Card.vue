@@ -9,7 +9,7 @@
                   </div>
                   <div class="back">
                     <h2>{{item.store_name}}</h2>
-                    <p>별점 : {{item.average_rating}}</p>
+                    <p>별점 : {{parseInt(item.average_rating)}}</p>
                     <v-btn @click="goToShopDetail(item.shopId)">가게보러가기</v-btn>
                   </div>
               </div>
@@ -21,7 +21,8 @@
 <script>
 import axios from "axios";
 import { mapGetters } from "vuex";
-const baseURL = "http://j3b304.p.ssafy.io/";
+// const baseURL = "http://j3b304.p.ssafy.io/";
+const baseURL = "ec2-54-180-109-206.ap-northeast-2.compute.amazonaws.com";
 export default {
     data() {
     return {

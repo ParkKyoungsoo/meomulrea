@@ -19,9 +19,11 @@
       <v-row>
         <h2 style="text-align:left;">리뷰({{ review_cnt }}개)</h2>
         <v-spacer></v-spacer>
-        <span @click="getReview()" style="cursor:pointer;">최신순 | </span> 
-        <span @click="getReviewHighScore()" style="cursor:pointer;"> 높은 평점순 | </span> 
-        <span @click="getReviewLowScore()" style="cursor:pointer;"> 낮은 평점순</span>
+        <span @click="getReview()" style="cursor:pointer;">최신순&nbsp;</span>
+
+        <span @click="getReviewHighScore()" style="cursor:pointer;">높은 평점순</span>
+
+        <span @click="getReviewLowScore()" style="cursor:pointer;">낮은 평점순</span>
       </v-row>
     </div>
     <div class="review-origin" v-for="review in reviews" :key="review.id">
@@ -31,8 +33,8 @@
               <h3 v-if="review.user===null" class="review-title" style="display: inline">{{ review.userid }}</h3>
               <h3 v-else class="review-title">{{ review.user.username }}</h3>
               <v-rating :value="review.score" readonly background-color="orange lighten-3" color="orange" dense="true" half-increments="true" small="true"></v-rating><br>
-              <p style="color: lightgray">{{ review.created_at.slice(0, 10) }}</p>
               <v-spacer></v-spacer>
+              <p style="color: lightgray">{{ review.created_at.slice(0, 10) }}</p>
               <p v-show="review.userid == userId" @click="clickedDeleteBtn(review.id)" style="cursor:pointer;"><img src="../assets/image/delete.png" style="width:15px;" alt=""></p>
             </v-row>
             <!-- <v-row>
@@ -189,9 +191,14 @@ export default {
   box-sizing: border-box;
   border: none;
 }
-
+h2, h3{
+  font-size: 1.0em;
+}
+span {
+  font-size: 0.8em;
+}
 p {
-  font-size: 0.9em;
+  font-size: 0.7em;
   color: #444;
   line-height: 1.3em;
 }

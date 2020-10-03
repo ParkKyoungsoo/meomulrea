@@ -26,7 +26,7 @@
               <figure>
                 <img :src="item.src" :alt="item[1]" />
                 <!-- <img src="../assets/image/background.jpg"> -->
-                <figcaption @click="gotoShop(item[1])">
+                <figcaption @click="gotoShop(item[1])" @mouseover="mouseOver()">
                   <h2>{{ index + 1 }}위</h2>
                 </figcaption>
               </figure>
@@ -153,6 +153,10 @@ export default {
       console.log("gotoShop : " + index);
       this.$router.push("/storelist/" + index);
     },
+
+    // mouseOver() {
+
+    // }
 
     // getLocation: function() {
     //   if (navigator.geolocation) {
