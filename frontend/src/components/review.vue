@@ -8,22 +8,27 @@
     <div class="review-write" style="border: 1px solid silver; margin-bottom:10px; border-radius: 0.4em">
       <div style="margin:10px">
         <v-rating v-model="rating" style="text-align:left" background-color="orange lighten-3" color="orange" dense="true" half-increments="true" hover="true"></v-rating><br>
-        <v-textarea solo name="input-7-4" label="리뷰를 남겨보세요." v-model="myReview"></v-textarea>
+        <v-textarea outlined color="orange" name="input-7-4" label="리뷰를 남겨보세요." v-model="myReview"></v-textarea>
         <div class="text-right">
-          <v-btn @click="registerReview()" color="orange">등록</v-btn>
+          <v-btn v-show="rating == 0 || myReview == 0" @click="msg()" color="gray" style="color:darkgray">등록</v-btn>
+          <v-btn v-show="rating > 0 && myReview != 0" @click="registerReview()" color="orange">등록</v-btn>
         </div>
         <hr>
       </div>
     </div>
     <div class="review-sort" style="display:inline;">
       <v-row>
-        <h2 style="text-align:left;">리뷰({{ review_cnt }}개)</h2>
+        <h2 style="text-align:left; width: fit-content;">리뷰({{ review_cnt }}개)</h2>
         <v-spacer></v-spacer>
-        <span @click="getReview()" style="cursor:pointer;">최신순&nbsp;</span>
-
-        <span @click="getReviewHighScore()" style="cursor:pointer;">높은 평점순</span>
-
-        <span @click="getReviewLowScore()" style="cursor:pointer;">낮은 평점순</span>
+        <v-bottom-navigation style="box-shadow:none; width: fit-content; height: fit-content;" :value="value" color="orange" >
+          <span><v-btn>최신순</v-btn></span>
+          <span style>|</span>
+          <!-- <span @click="getReviewHighScore()" style="cursor:pointer;">높은 평점순</span> -->
+          <span style="cursor:pointer;"><v-btn>높은 평점순</v-btn></span>
+          <span>|</span>
+          <span style="cursor:pointer;"><v-btn>낮은 평점순</v-btn></span>
+          <!-- <span @click="getReviewLowScore()" style="cursor:pointer;">낮은 평점순</span>   -->
+        </v-bottom-navigation>
       </v-row>
     </div>
     <div class="review-origin" v-for="review in reviews" :key="review.id">
@@ -62,6 +67,7 @@ export default {
       review_cnt: 0,
       myReview: "",
       flag: 1,
+      value: 1,
     }
   },
   created() {
@@ -70,7 +76,8 @@ export default {
 
   methods: {
     getReview() {
-      this.flag = 1
+      this.flag = 1;
+      this.value = 1;
       axios.post(baseURL + "reviews/store_review_list/", {
         storeid: this.$route.params.storeid
       },
@@ -89,16 +96,23 @@ export default {
       })
     },
 
-    registerReview() {
-      if (this.myReview.length == 0) {
+    msg () {
+      if (this.myReview.length == 0 && this.rating == 0) {
+        alert("평점과 리뷰를 평가해주세요.")
+      }
+      else if (this.myReview.length == 0) {
         alert("최소 한 글자 이상 작성해주세요.")
         return
       }
-      if (this.rating < 1) {
+      else if (this.rating == 0) {
         alert("평점을 매겨주세요.")
         return
       }
 
+    },
+
+    registerReview() {
+      this.value=2;
       axios.post(baseURL + "reviews/create_review/", {
         storeid: this.$route.params.storeid,
         content: this.myReview,
@@ -151,6 +165,7 @@ export default {
     },
 
     getReviewHighScore() {
+      this.value=3
       this.flag = 2
       axios.post(baseURL + "reviews/sort_review_high_score/", {
         storeid: this.$route.params.storeid,

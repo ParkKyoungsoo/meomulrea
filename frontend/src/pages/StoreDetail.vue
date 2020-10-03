@@ -8,7 +8,7 @@
           <v-col style="background-size:200px 200px;" :style="{backgroundImage:`url(`+imgUrl+`)`}" lg="2" md="2">
           </v-col>
           <v-col
-            style="background-color: rgb(132, 245, 132); text-align: left;"
+            style="text-align: left;"
             lg="7"
             md="7"
           >
@@ -16,16 +16,8 @@
             <div><img src="../assets/image/category.png" style="width:15px;" alt=""> {{ this.storeInfo.category }}</div>
             <div><img src="../assets/image/money.png" style="width:15px;" alt=""> {{ this.storeInfo.min_price  }}원</div>
             <div><img src="../assets/image/clock.png" style="width:15px;" alt=""> {{this.businessDay }} {{ this.startTime }} - {{ this.endTime }}</div>
-            <div>평점 : {{ this.storeInfo.average_rating }}</div>
+            <div><img src="../assets/image/star.png" style="width:15px;" alt=""> {{ this.storeInfo.average_rating }}</div>
             <div style="display: flex; justify-content: start;">
-              <!-- 영업일 : {{ this.businessDay }} -->
-              <!-- <div>{{ this.storeInfo.mon == 0 ? "월" : null }}</div>
-              <div>{{ this.storeInfo.tue == 0 ? "화" : null }}</div>
-              <div>{{ this.storeInfo.wen == 0 ? "수" : null }}</div>
-              <div>{{ this.storeInfo.thu == 0 ? "목" : null }}</div>
-              <div>{{ this.storeInfo.fri == 0 ? "금" : null }}</div>
-              <div>{{ this.storeInfo.sat == 0 ? "토" : null }}</div>
-              <div>{{ this.storeInfo.sun == 0 ? "일" : null }}</div> -->
             </div>
           </v-col>
           <v-col style="background-color: rgb(245, 183, 132);" lg="3" md="3">
@@ -161,12 +153,15 @@ export default {
         if (this.days[d] != 0) 
           this.businessDay += (this.days[d]+",")
       }
-      if (this.businessDay == "월,화,수,목,금")
+      if (this.businessDay == "월,화,수,목,금") {
         this.businessDay = "평일"
-      else if (this.businessDay == "토,일") 
+      }
+      else if (this.businessDay == "토,일") {
         this.businessDay = "주말"
-      else
+      } 
+      else {
         this.businessDay = this.businessDay.substring(0, this.businessDay.length-1);
+      }
     },
 
     getStoreDetail() {
