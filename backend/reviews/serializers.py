@@ -1,6 +1,10 @@
 from rest_framework import serializers
+<<<<<<< HEAD
 from .models import Review, Reply
 from accounts.serializers import UserProfileSerializer
+=======
+from .models import Review
+>>>>>>> 4439bf900e6e12304853cf4396b65d34d2566f43
 
 class WholeReviewSerializer(serializers.ModelSerializer):
     class Meta:
@@ -12,6 +16,15 @@ class StoreReviewSerializer(serializers.ModelSerializer):
     class Meta:
         model = Review
         fields = '__all__'
+<<<<<<< HEAD
+=======
+
+
+class ReviewDetailSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Review
+        fields = '__all__'
+>>>>>>> 4439bf900e6e12304853cf4396b65d34d2566f43
 
 class ReviewSerializer(serializers.ModelSerializer):
     class Meta:

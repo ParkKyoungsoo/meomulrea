@@ -1,27 +1,32 @@
 <template>
-  <div id="map">
-    <input v-model="address" />
-    <button @click="searchAddr">조회</button>
-    <div>{{ this.getLocation }}</div>
-    <div>{{ lat }} | {{ lng }}</div>
-  </div>
+  <div id="map"></div>
 </template>
 <script>
 import { mapGetters } from "vuex";
+import { EventBus } from "../utils/EventBus.js";
 
 export default {
   data() {
     return {
-      address: "유성구 구암동",
+      address: "",
       lat: 0,
       lng: 0,
     };
   },
+
   computed: {
     ...mapGetters("location", ["getLocation"]),
   },
+
   mounted() {
     window.kakao && window.kakao.maps ? null : this.addScript();
+  },
+
+  created() {
+    EventBus.$on("addressChange", (userAddress) => {
+      this.address = userAddress;
+      this.searchAddr();
+    });
   },
 
   methods: {
@@ -40,7 +45,7 @@ export default {
 
       geocoder.addressSearch(this.address, (result, status) => {
         if (status === kakao.maps.services.Status.OK) {
-          console.log(result);
+          console.log("result", result);
           this.$store.commit("location/setLocation", {
             lat: result[0].y,
             lng: result[0].x,

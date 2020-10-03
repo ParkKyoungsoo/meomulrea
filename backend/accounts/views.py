@@ -59,7 +59,7 @@ def profile(request, user_id):
         else:
             return Response({'message': '입력한 내용이 올바른지 확인해주세요'})
 
-
+from django.http import HttpResponse, JsonResponse
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
 def user_order_list(request):

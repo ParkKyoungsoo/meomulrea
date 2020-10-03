@@ -1,4 +1,5 @@
 <template>
+<v-main>
   <v-list subheader>
     <v-subheader>Your Chats</v-subheader>
     <v-list-item avatar v-for="(chat, index) in chats" v-bind:key="chat.name" :to="/chat/ + index">
@@ -10,6 +11,7 @@
       </v-list-item-action>
     </v-list-item>
   </v-list>
+</v-main>
 </template>
 
 <script>

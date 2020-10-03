@@ -7,20 +7,24 @@ import Login from "./pages/LogIn.vue";
 import Content from "./pages/Content.vue";
 import StoreList from "./pages/StoreList.vue";
 import StoreDetail from "./pages/StoreDetail.vue";
-import Chat from "./pages/Chat.vue";
+import Create from "./components/Chat/Create.vue";
+import Chat from "./components/Chat/Chat.vue";
+import ChatList from "./components/Chat/ChatList";
+import Signin from "@/components/User/Signin";
+import test from "@/components/test.vue"
 
 export default new Router({
   mode: "history",
   routes: [
     {
-      path: "/login",
-      name: "Login",
-      component: Login,
+      path: "/home",
+      name: "Home",
+      component: Content,
     },
     {
       path: "/",
-      name: "Home",
-      component: Content,
+      name: "Login",
+      component: Login,
     },
     {
       path: "/storelist/:category",
@@ -36,6 +40,32 @@ export default new Router({
       path: "/chat",
       name: "chat",
       component: Chat,
-    }
+    },
+    {
+      path: "/create",
+      name: "CreateChat",
+      component: Create,
+    },
+    {
+      path: "/chat/:id",
+      name: "Chat",
+      component: Chat,
+      props: true,
+    },
+    {
+      path: "/discover",
+      name: "JoinChat",
+      component: ChatList,
+    },
+    {
+      path: "/loginChat",
+      name: "Signin",
+      component: Signin,
+    },
+    {
+      path: "/test",
+      name: "test",
+      component: test,
+    },
   ],
 });
