@@ -87,10 +87,12 @@ export default {
 
   created() {
     this.pollData();
+
     // this.getLocation();
     EventBus.$on("addressChange", () => {
       this.getWeather();
     });
+
     this.getCategory();
   },
   computed: {
@@ -140,7 +142,8 @@ export default {
     },
 
     getCategory() {
-      console.log("getCategory");
+      console.log("getCategory!!!");
+
       axios({
         method: "GET",
         url: baseURL + "api/main/",

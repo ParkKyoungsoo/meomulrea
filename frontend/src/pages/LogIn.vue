@@ -31,7 +31,7 @@
               rounded
               color="rgb(233, 105, 30)"
               dark
-              @click="nm_login()"
+              @click="checkLogin()"
               :loading="loading"
               >로그인</v-btn
             >
@@ -126,7 +126,7 @@
             <v-text-field
               v-model="biz_email"
               ref="biz_email"
-              label="사업자이메일"
+              label="사업자번호"
             ></v-text-field>
             <v-text-field
               v-model="biz_password"
@@ -155,23 +155,16 @@
             </div>
             <v-text-field
               v-model="biz_email"
-              :messages="[error.biznumb]"
+              :messages="[error.bizemail]"
               ref="biz_email"
-              label="사업자이메일"
+              label="사업자번호"
             ></v-text-field>
+            <v-file-input accept="image/*" label="사진"></v-file-input>
             <v-text-field
               v-model="biz_name"
               ref="biz_name"
               label="업주명"
             ></v-text-field>
-            <v-text-field
-              v-model="biz_numb"
-              
-              :messages="[error.bizemail]"
-              ref="biz_numb"
-              label="사업자번호"
-            ></v-text-field>
-            <v-file-input v-model="biz_image" accept="image/*" label="사진"></v-file-input>
             <v-text-field
               v-model="biz_password"
               ref="biz_password"
@@ -182,7 +175,7 @@
               v-model="biz_password_confirm"
               ref="biz_password_confirm"
               :messages="[error.bizpwdconfirm]"
-              label="비밀번호확인"
+              label="비밀번호"
             ></v-text-field>
             <v-text-field
               v-model="biz_address"
@@ -231,20 +224,17 @@ export default {
       nm_check: false,
 
       biz_page: 0,
-      biz_numb: "",
-      biz_email:"",
+      biz_email: "",
       biz_name: "",
       biz_password: "",
       biz_password_confirm: "",
       biz_address: "",
-      biz_image: "",
 
       error: {
         email: "",
         pwd: "",
         pwdconfirm: "",
         bizemail: "",
-        biznumb:"",
         bizpwd: "",
         bizpwdconfirm: "",
       },
@@ -264,13 +254,20 @@ export default {
   },
   watch: {
     nm_email: function() {
+      var domain = ["@naver.com", "@daum.net", "@hanmail.net", "@gmail.com"];
       if (this.nm_email.length > 0) {
-        if (!this.rules[0].regex.test(this.nm_email)) {
+        for (var i = 0; i < domain.length; i++) {
+          if (this.nm_email.includes(domain[i])) {
+            this.nm_check = true;
+           break;
+          }
+          this.nm_check= false;
+        }
+        if(!this.nm_check){
           this.error.email = this.rules[0].message;
           return;
         }
-        this.error.email = "";
-      }
+        this.error.email = '';
       this.nm_nickname = this.nm_email;
       axios
         .post(baseURL + "api/accounts/user_email/", {
@@ -282,11 +279,12 @@ export default {
             this.error.email = "이미 존재하는 이메일입니다.";
           }
         });
+      }
     },
-    biz_numb: function() {
-      if (this.biz_numb.length > 0) {
-        if (this.biz_numb.length == 3 || this.biz_numb.length == 6)
-          this.biz_numb += "-";
+    biz_email: function() {
+      if (this.biz_email.length > 0) {
+        if (this.biz_email.length == 3 || this.biz_email.length == 6)
+          this.biz_email += "-";
         if (!this.checkBizEmail()) {
           this.error.bizemail = this.rules[0].message;
           return;
@@ -296,7 +294,7 @@ export default {
       this.biz_nickname = this.biz_name;
       axios
         .post(baseURL + "api/accounts/user_email/", {
-          email: this.biz_numb,
+          email: this.biz_email,
         })
         .then((res) => {
           console.log(res.data.message);
@@ -406,13 +404,12 @@ export default {
       }
     },
     checkBizHandler() {
-      console.log(this.biz_image)
       let err = true;
       let msg = "";
-      !this.biz_numb &&
+      !this.biz_email &&
         ((msg = "이메일을 입력해주세요!"),
         (err = false),
-        this.$refs.biz_numb.focus());
+        this.$refs.biz_email.focus());
       err &&
         !this.biz_name &&
         ((msg = "이름을 입력해주세요!"),
@@ -439,6 +436,7 @@ export default {
       }
     },
     checkLogin() {
+      console.log('a')
       let err = true;
       let msg = "";
       !this.nm_email &&
@@ -450,7 +448,11 @@ export default {
         ((msg = "비밀번호를 입력해주세요!"),
         (err = false),
         this.$refs.nm_password.focus());
-      if (err) this.nm_login();
+      if(err) {
+        console.log('nm_login 호출?')
+        this.nm_login();
+      }
+      console.log('b')
     },
     findAddress(check) {
       new daum.Postcode({
@@ -492,15 +494,6 @@ export default {
 
     nm_login() {
       // var nm_password = this.nm_password;
-      var domain = ["@naver.com", "@daum.net", "@hanmail.net", "@gmail.com"];
-      for (var i = 0; i < domain.length; i++) {
-        if (this.nm_check) break;
-        if (this.nm_email.includes(domain[i])) {
-          this.nm_check = true;
-          break;
-        }
-      }
-      if (this.nm_check) {
         axios
           .post(baseURL + "api/account/login/", {
             email: this.nm_email,
@@ -522,15 +515,14 @@ export default {
             console.log(err);
             alert("로그인 정보를 다시 확인하시지요");
           });
-      }
     },
     checkBizLogin() {
       let err = true;
       let msg = "";
-      !this.biz_numb &&
+      !this.biz_email &&
         ((msg = "이메일을 입력해주세요!"),
         (err = false),
-        this.$refs.biz_numb.focus());
+        this.$refs.biz_email.focus());
       err &&
         !this.biz_password &&
         ((msg = "비밀번호를 입력해주세요!"),
@@ -544,7 +536,7 @@ export default {
     },
 
     checkBizEmail() {
-      var valueMap = this.biz_numb
+      var valueMap = this.biz_email
         .replace(/-/gi, "")
         .split("")
         .map(function(item) {
@@ -583,11 +575,12 @@ export default {
           password2: this.nm_password_confirm,
         })
         .then((res) => {
-          console.log(res.data.key);
           axios
             .post(
               baseURL + "api/accounts/user_detail/",
               {
+                username: this.nm_nickname,
+                email: this.nm_email,
                 usertype: 1,
                 gender: this.nm_gender,
                 address: this.nm_address,
@@ -601,60 +594,26 @@ export default {
             ) // post > post
             .then((res) => {
               this.onSignup();
-              this.nm_page = 1;
-            }) // post > post > then
-            .catch((res) => {
+              this.reset(true);
+              this.$router.push("/")
+            }); // post > post > then
+        })
+        .catch((res) => {
           console.log(res);
+          // let token = res.data.key;
           console.log("res : " + res.data);
+          this.$store.dispatch("signUserUp", {
+            email: this.nm_email,
+            password: this.nm_password,
+            username: this.nm_nickname,
+          });
         })
-        .catch((err)=>{
-          console.log(err)
-        })
-      });
+        .catch((err) => {
+          console.log(err);
+        });
     },
     biz_signup() {
-      console.log(this.biz_name)
-      console.log(this.biz_email)
-      console.log(this.biz_password)
-      console.log(this.biz_password_confirm)
-      axios
-        .post(baseURL + "api/account/signup/", {
-          username: this.biz_name,
-          email: this.biz_email,
-          password1: this.biz_password,
-          password2: this.biz_password_confirm,
-        })  // post > then
-        .then((res) => {
-          console.log('there')
-          console.log(res.data.key);
-          axios
-            .post(
-              baseURL + "api/accounts/user_detail/",
-              {
-                bizname: this.biz_name,
-                usertype: 0,
-                bizaddress: this.biz_address,
-                bizimage: this.biz_image,
-                biznumber: this.biz_numb
-              },
-              {
-                headers: {
-                  Authorization: `Token ${res.data.key}`,
-                },
-              })
-            .then((res) => {
-              console.log('where')
-              this.biz_page = 1;
-            }) // post > post > then
-            .catch((err) => {
-              console.log('errerr')
-              console.log("res : " + err.data);
-            })
-          .catch((err)=>{
-            console.log('err')
-            console.log('err',err.data)
-          })
-        });
+      console.log("biz_signup() 악시오스 호출 then router push");
     },
     reset(nm) {
       if (nm) {
@@ -669,7 +628,7 @@ export default {
         this.nm_birthyear = "1990";
       } else {
         this.biz_page -= 1;
-        this.biz_numb = "";
+        this.biz_email = "";
         this.biz_name = "";
         this.biz_password = "";
         this.biz_password_confirm = "";
@@ -689,7 +648,7 @@ export default {
         this.nm_birthyear = "1990";
       } else {
         this.biz_page += 1;
-        this.biz_numb = "";
+        this.biz_email = "";
         this.biz_name = "";
         this.biz_password = "";
         this.biz_password_confirm = "";
