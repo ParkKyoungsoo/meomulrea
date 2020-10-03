@@ -56,8 +56,9 @@ import { mapGetters } from "vuex";
 import Header from "../components/Header.vue";
 import Card from "../components/Card.vue";
 
-const baseURL = "http://127.0.0.1:8000/api/";
-// const baseURL = "http://j3b304.p.ssafy.io/";
+// const baseURL = "http://127.0.0.1:8000/api/";
+const baseURL =
+  "http://ec2-54-180-109-206.ap-northeast-2.compute.amazonaws.com/";
 
 export default {
   data() {
@@ -91,7 +92,7 @@ export default {
       console.log(this.$cookies.get("auth-token"));
       axios
         .post(
-          baseURL + "stores/store_list/",
+          baseURL + "api/stores/store_list/",
           {
             category: this.category,
             user_location: this.getLocation.dong,
@@ -119,7 +120,7 @@ export default {
     showShopList: function() {
       axios
         .post(
-          baseURL + "stores/store_category/",
+          baseURL + "api/stores/store_category/",
           {
             category: this.$route.params.category,
           },

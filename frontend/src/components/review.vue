@@ -2,17 +2,34 @@
   <v-container fluid>
     <div class="review-top">
       <!-- <h3 style="text-align:left">리뷰({{ review_cnt }}개)</h3> -->
-      <hr>
-      <br>
+      <hr />
+      <br />
     </div>
-    <div class="review-write" style="border: 1px solid silver; margin-bottom:10px; border-radius: 0.4em">
+    <div
+      class="review-write"
+      style="border: 1px solid silver; margin-bottom:10px; border-radius: 0.4em"
+    >
       <div style="margin:10px">
-        <v-rating v-model="rating" style="text-align:left" background-color="orange lighten-3" color="orange" dense="true" half-increments="true" hover="true"></v-rating><br>
-        <v-textarea solo name="input-7-4" label="리뷰를 남겨보세요." v-model="myReview"></v-textarea>
+        <v-rating
+          v-model="rating"
+          style="text-align:left"
+          background-color="orange lighten-3"
+          color="orange"
+          dense="true"
+          half-increments="true"
+          hover="true"
+        ></v-rating
+        ><br />
+        <v-textarea
+          solo
+          name="input-7-4"
+          label="리뷰를 남겨보세요."
+          v-model="myReview"
+        ></v-textarea>
         <div class="text-right">
           <v-btn @click="registerReview()" color="orange">등록</v-btn>
         </div>
-        <hr>
+        <hr />
       </div>
     </div>
     <div class="review-sort" style="display:inline;">
@@ -21,166 +38,208 @@
         <v-spacer></v-spacer>
         <span @click="getReview()" style="cursor:pointer;">최신순&nbsp;</span>
 
-        <span @click="getReviewHighScore()" style="cursor:pointer;">높은 평점순</span>
+        <span @click="getReviewHighScore()" style="cursor:pointer;"
+          >높은 평점순</span
+        >
 
-        <span @click="getReviewLowScore()" style="cursor:pointer;">낮은 평점순</span>
+        <span @click="getReviewLowScore()" style="cursor:pointer;"
+          >낮은 평점순</span
+        >
       </v-row>
     </div>
     <div class="review-origin" v-for="review in reviews" :key="review.id">
       <div style="border: 1px solid silver; border-radius: 0.4em">
         <article class="review review-1">
-            <v-row>
-              <h3 v-if="review.user===null" class="review-title" style="display: inline">{{ review.userid }}</h3>
-              <h3 v-else class="review-title">{{ review.user.username }}</h3>
-              <v-rating :value="review.score" readonly background-color="orange lighten-3" color="orange" dense="true" half-increments="true" small="true"></v-rating><br>
-              <v-spacer></v-spacer>
-              <p style="color: lightgray">{{ review.created_at.slice(0, 10) }}</p>
-              <p v-show="review.userid == userId" @click="clickedDeleteBtn(review.id)" style="cursor:pointer;"><img src="../assets/image/delete.png" style="width:15px;" alt=""></p>
-            </v-row>
-            <!-- <v-row>
+          <v-row>
+            <h3
+              v-if="review.user === null"
+              class="review-title"
+              style="display: inline"
+            >
+              {{ review.userid }}
+            </h3>
+            <h3 v-else class="review-title">{{ review.user.username }}</h3>
+            <v-rating
+              :value="review.score"
+              readonly
+              background-color="orange lighten-3"
+              color="orange"
+              dense="true"
+              half-increments="true"
+              small="true"
+            ></v-rating
+            ><br />
+            <v-spacer></v-spacer>
+            <p style="color: lightgray">{{ review.created_at.slice(0, 10) }}</p>
+            <p
+              v-show="review.userid == userId"
+              @click="clickedDeleteBtn(review.id)"
+              style="cursor:pointer;"
+            >
+              <img
+                src="../assets/image/delete.png"
+                style="width:15px;"
+                alt=""
+              />
+            </p>
+          </v-row>
+          <!-- <v-row>
               <v-rating :value="review.score" readonly background-color="orange lighten-3" color="orange" dense="true" half-increments="true" small="true"></v-rating>({{ review.score }})<br>
             </v-row> -->
           <p class="review-excerpt">{{ review.content }}</p>
-      <!-- </h3> -->
+          <!-- </h3> -->
         </article>
       </div>
-      <br>
+      <br />
     </div>
   </v-container>
 </template>
 
 <script>
-import axios from 'axios';
-const baseURL = "http://127.0.0.1:8000/api/";
-// const baseURL = "http://j3b304.p.ssafy.io/";
+import axios from "axios";
+// const baseURL = "http://127.0.0.1:8000/api/";
+const baseURL =
+  "http://ec2-54-180-109-206.ap-northeast-2.compute.amazonaws.com/";
 
 export default {
-  data () {
+  data() {
     return {
       rating: 0,
       reviews: "",
       review_cnt: 0,
       myReview: "",
       flag: 1,
-    }
+    };
   },
   created() {
-    this.getReview()
+    this.getReview();
   },
 
   methods: {
     getReview() {
-      this.flag = 1
-      axios.post(baseURL + "reviews/store_review_list/", {
-        storeid: this.$route.params.storeid
-      },
-      {
-        headers: {
-          Authorization: `Token ${this.$cookies.get('auth-token')}`
-        }
-      })
-      .then(res => {
-        this.reviews = res.data
-        this.review_cnt = res.data.length
-        
-      })
-      .catch(err => {
-        console.log("리뷰 안온다" + err)
-      })
+      this.flag = 1;
+      axios
+        .post(
+          baseURL + "api/reviews/store_review_list/",
+          {
+            storeid: this.$route.params.storeid,
+          },
+          {
+            headers: {
+              Authorization: `Token ${this.$cookies.get("auth-token")}`,
+            },
+          }
+        )
+        .then((res) => {
+          this.reviews = res.data;
+          this.review_cnt = res.data.length;
+        })
+        .catch((err) => {
+          console.log("리뷰 안온다" + err);
+        });
     },
 
     registerReview() {
       if (this.myReview.length == 0) {
-        alert("최소 한 글자 이상 작성해주세요.")
-        return
+        alert("최소 한 글자 이상 작성해주세요.");
+        return;
       }
       if (this.rating < 1) {
-        alert("평점을 매겨주세요.")
-        return
+        alert("평점을 매겨주세요.");
+        return;
       }
 
-      axios.post(baseURL + "reviews/create_review/", {
-        storeid: this.$route.params.storeid,
-        content: this.myReview,
-        score: this.rating,
-      },
-      {
-        headers: {
-          Authorization: `Token ${this.$cookies.get('auth-token')}`
-        }
-      })
-      .then(res => {
-        console.log(res)
-        alert("리뷰가 등록되었습니다.")
-        this.getReview()
-
-      })
-      .catch(err => {
-        console.log(err)
-      })
-      this.myReview = ""
-      this.rating = 0
+      axios
+        .post(
+          baseURL + "api/reviews/create_review/",
+          {
+            storeid: this.$route.params.storeid,
+            content: this.myReview,
+            score: this.rating,
+          },
+          {
+            headers: {
+              Authorization: `Token ${this.$cookies.get("auth-token")}`,
+            },
+          }
+        )
+        .then((res) => {
+          console.log(res);
+          alert("리뷰가 등록되었습니다.");
+          this.getReview();
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+      this.myReview = "";
+      this.rating = 0;
     },
 
     clickedDeleteBtn(reviewId) {
       var answer = confirm("리뷰를 삭제하시겠습니까?");
-      if(answer) { // true
-        axios.delete(baseURL + `reviews/${reviewId}/`,
-          {
-              headers:{
-                Authorization: `Token ${this.$cookies.get('auth-token')}`
-              }
-          },
-        )
-        .then(res => {
+      if (answer) {
+        // true
+        axios
+          .delete(baseURL + `api/reviews/${reviewId}/`, {
+            headers: {
+              Authorization: `Token ${this.$cookies.get("auth-token")}`,
+            },
+          })
+          .then((res) => {
             alert("리뷰가 삭제 되었습니다.");
             if (this.flag == 1) {
-              this.getReview()
+              this.getReview();
+            } else if (this.flag == 2) {
+              this.getReviewHighScore();
+            } else {
+              this.getReviewLowScore();
             }
-            else if (this.flag == 2) {
-              this.getReviewHighScore()
-            }
-            else {
-              this.getReviewLowScore()
-            }
-        })
-        .catch(err => {
+          })
+          .catch((err) => {
             alert("리뷰 삭제 실패!");
-        });
+          });
       }
     },
 
     getReviewHighScore() {
-      this.flag = 2
-      axios.post(baseURL + "reviews/sort_review_high_score/", {
-        storeid: this.$route.params.storeid,
-      },
-      {
-        headers: {
-          Authorization: `Token ${this.$cookies.get('auth-token')}`
-        }
-      })
-      .then(res => {
-        this.reviews = res.data
-      })
+      this.flag = 2;
+      axios
+        .post(
+          baseURL + "api/reviews/sort_review_high_score/",
+          {
+            storeid: this.$route.params.storeid,
+          },
+          {
+            headers: {
+              Authorization: `Token ${this.$cookies.get("auth-token")}`,
+            },
+          }
+        )
+        .then((res) => {
+          this.reviews = res.data;
+        });
     },
 
     getReviewLowScore() {
-      this.flag = 3
-      axios.post(baseURL + "reviews/sort_review_low_score/", {
-        storeid: this.$route.params.storeid,
-      },
-      {
-        headers: {
-          Authorization: `Token ${this.$cookies.get('auth-token')}`
-        }
-      })
-      .then(res => {
-        this.reviews = res.data
-      })
+      this.flag = 3;
+      axios
+        .post(
+          baseURL + "api/reviews/sort_review_low_score/",
+          {
+            storeid: this.$route.params.storeid,
+          },
+          {
+            headers: {
+              Authorization: `Token ${this.$cookies.get("auth-token")}`,
+            },
+          }
+        )
+        .then((res) => {
+          this.reviews = res.data;
+        });
     },
   },
-}
+};
 </script>
 
 <style scoped>
@@ -191,8 +250,9 @@ export default {
   box-sizing: border-box;
   border: none;
 }
-h2, h3{
-  font-size: 1.0em;
+h2,
+h3 {
+  font-size: 1em;
 }
 span {
   font-size: 0.8em;
@@ -241,6 +301,4 @@ a {
 /* .review a {
   text-decoration: none;
 } */
-
-
 </style>

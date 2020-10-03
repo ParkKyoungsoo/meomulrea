@@ -103,8 +103,9 @@ import review from "../components/review.vue";
 import party from "../components/party.vue";
 import axios from "axios";
 
-const baseURL = "http://127.0.0.1:8000/api/";
-// const baseURL = "http://j3b304.p.ssafy.io/";
+// const baseURL = "http://127.0.0.1:8000/api/";
+const baseURL =
+  "http://ec2-54-180-109-206.ap-northeast-2.compute.amazonaws.com/";
 
 export default {
   components: {
@@ -203,7 +204,7 @@ export default {
 
     getStoreDetail() {
       axios
-        .post(baseURL + `stores/${this.$route.params.storeid}/`, null, {
+        .post(baseURL + `api/stores/${this.$route.params.storeid}/`, null, {
           headers: {
             Authorization: `Token ${this.$cookies.get("auth-token")}`,
           },

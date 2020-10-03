@@ -201,8 +201,9 @@
 import axios from "axios";
 import * as firebase from "firebase";
 
-const baseURL = "http://127.0.0.1:8000/api/";
-// const baseURL = "http://j3b304.p.ssafy.io/";
+// const baseURL = "http://127.0.0.1:8000/api/";
+const baseURL =
+  "http://ec2-54-180-109-206.ap-northeast-2.compute.amazonaws.com/";
 
 export default {
   name: "LogIn",
@@ -262,7 +263,7 @@ export default {
       }
       this.nm_nickname = this.nm_email;
       axios
-        .post(baseURL + "accounts/user_email/", {
+        .post(baseURL + "api/accounts/user_email/", {
           email: this.nm_email,
         })
         .then((res) => {
@@ -284,7 +285,7 @@ export default {
       }
       this.biz_nickname = this.biz_name;
       axios
-        .post(baseURL + "accounts/user_email/", {
+        .post(baseURL + "api/accounts/user_email/", {
           email: this.biz_email,
         })
         .then((res) => {
@@ -490,7 +491,7 @@ export default {
       }
       if (this.nm_check) {
         axios
-          .post(baseURL + "account/login/", {
+          .post(baseURL + "api/account/login/", {
             email: this.nm_email,
             password: this.nm_password,
           })
@@ -564,7 +565,7 @@ export default {
 
     nm_signup() {
       axios
-        .post(baseURL + "account/signup/", {
+        .post(baseURL + "api/account/signup/", {
           username: this.nm_nickname,
           email: this.nm_email,
           password1: this.nm_password,
@@ -574,7 +575,7 @@ export default {
           console.log(res.data.key);
           axios
             .post(
-              baseURL + "accounts/user_detail/",
+              baseURL + "api/accounts/user_detail/",
               {
                 username: this.nm_nickname,
                 email: this.nm_email,
