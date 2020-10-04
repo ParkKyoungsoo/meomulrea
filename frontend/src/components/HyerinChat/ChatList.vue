@@ -34,6 +34,11 @@
 </template>
 
 <script>
+import axios from "axios";
+const baseURL = "http://127.0.0.1:8000/";
+// const baseURL =
+//   "http://ec2-54-180-109-206.ap-northeast-2.compute.amazonaws.com/";
+
 export default {
   data() {
     return {
@@ -41,126 +46,47 @@ export default {
       loading: false,
     };
   },
-  mounted() {
-    this.loadRecentChats();
-  },
-  computed: {
-    user() {
-      console.log("userInfo", this.$store.getters.user);
-      return this.$store.getters.user;
-    },
-    chats() {
-      return this.loadedChats;
-    },
-  },
-  methods: {
-    loadRecentChats(lastKey) {
-      let that = this;
-      firebase
-        .database()
-        .ref("chats")
-        .orderByKey()
-        .limitToLast(20)
-        .once("value", function(snapshot) {
-          snapshot.forEach(function(childSnapshot) {
-            let chat = childSnapshot.val();
-            chat.key = childSnapshot.key;
-            that.getUserCountForChat(chat);
-            that.loadedChats.unshift(chat);
-          });
-        });
-    },
-    loadRecentChatsByLastKey(lastKey) {
-      let that = this;
-      that.loading = true;
-      firebase
-        .database()
-        .ref("chats")
-        .orderByKey()
-        .endAt(lastKey)
-        .limitToLast(20)
-        .once("value", function(snapshot) {
-          let tempArray = [];
-          snapshot.forEach(function(item) {
-            if (item.key != lastKey) {
-              let newChat = item.val();
-              newChat.key = item.key;
-              tempArray.push(newChat);
-            }
-          });
-          if (tempArray[0].key === tempArray[1].key) return;
-          tempArray.reverse();
-          tempArray.forEach(function(child) {
-            that.getUserCountForChat(child);
-            that.loadedChats.push(child);
-          });
-          that.loading = false;
-        });
-    },
-    enterChat(chat) { // 수정해야댐 
-      if (chat.isAlreadyJoined || chat.userCount == null) {
-        return;
-      }
 
-      let chatId = chat.key;
-      let time = new Date().valueOf();
-
-      let updates = {};
-      updates["/chat_members/" + chatId + "/users/" + this.user.id] = {
-        timestamp: time,
-      };
-      updates["users/" + this.user.id + "/chats/" + chatId] = {
-        timestamp: time,
-      };
-
-      let that = this;
-      firebase
-        .database()
-        .ref()
-        .update(updates)
-        .then(() => {
-          this.$router.push("/chat/" + chatId);
-        });
-    },
-    onScroll() {
-      if (
-        window.top.scrollY + window.innerHeight >=
-          document.body.scrollHeight - 100 &&
-        !this.loading
-      ) {
-        this.loadRecentChatsByLastKey(
-          this.loadedChats[this.loadedChats.length - 1].key
-        );
-      }
-    },
-    getUserCountForChat(chat) {
-      let that = this;
-      firebase
-        .database()
-        .ref("chat_members")
-        .child(chat.key)
-        .child("users")
-        .once("value", function(snapshot) {
-          that.$set(chat, "userCount", snapshot.numChildren());
-          snapshot.forEach((user) => {
-            if (user.key == that.user.id) {
-              that.$set(chat, "isAlreadyJoined", true);
-            }
-          });
-        });
-    },
-  },
-  created() {
+  created:async function(){
+    await this.getPartys();
     window.addEventListener("scroll", this.onScroll);
   },
-  destroyed() {
-    window.removeEventListener("scroll", this.onScroll);
-  },
-  watch: {
-    loadedChats: {
-      deep: true,
-      handler() {},
+
+  methods: {
+    async getPartys(){
+      await axios.post(
+        baseURL + "api/chatroom/store_chatroom_list/",
+        {
+          store_id : 15544
+        },
+        {
+            headers: {
+              Authorization: `Token ${this.$cookies.get("auth-token")}`,
+            },
+        }
+      )
+      .then((res)=>{
+        console.log(res.data);
+        this.chats = res.data;
+      })
+    },
+
+    enterChat(chat) { // 채팅방에 들어가기 - 수정해야댐 
+
+      this.$router.push("/hrchat/" + chat.store_id);
+     
+    },
+  
+    getUserCountForChat(chat) { // 채팅참여자 조회 
+      
     },
   },
+
+  destroyed() {
+
+    window.removeEventListener("scroll", this.onScroll);
+
+  },
+
 };
 </script>

@@ -88,7 +88,7 @@
       <v-row>
         <v-col>
           <review v-if="contentTrigger2" />
-          <party v-if="contentTrigger3" />
+          <party v-if="contentTrigger3" :storeInfo="storeInfo"/>
         </v-col>
       </v-row>
     </v-container>

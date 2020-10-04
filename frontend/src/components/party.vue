@@ -1,6 +1,6 @@
 <template>
   <div>
-    <v-btn text to="/create">
+    <v-btn @click='mvtopage()'>
       <v-icon left>mdi-forum</v-icon>
       <div class="hidden-xs-only">파티만들기</div>
     </v-btn>
@@ -14,12 +14,23 @@
   </div>
 </template>
 <script>
-// import ChatList from "./HyerinChat/ChatList.vue";
-import ChatList from "./Chat/ChatList.vue";
+// import ChatList from "./Chat/ChatList.vue";
+import ChatList from "./HyerinChat/ChatList.vue";
 
 export default {
+  props:{
+    storeInfo: []
+  },
+
   components: {
     ChatList,
   },
+  methods:{
+    mvtopage(){
+      console.log(this.storeInfo.store_id)
+      this.$router.push('/create/'+this.storeInfo.store_id)
+    }
+  }
+
 };
 </script>

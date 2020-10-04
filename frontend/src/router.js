@@ -7,7 +7,7 @@ import Login from "./pages/LogIn.vue";
 import Content from "./pages/Content.vue";
 import StoreList from "./pages/StoreList.vue";
 import StoreDetail from "./pages/StoreDetail.vue";
-import Create from "./components/Chat/Create.vue";
+import Create from "./components/HyerinChat/Create.vue";
 import Chat from "./components/Chat/Chat.vue";
 import ChatList from "./components/Chat/ChatList";
 import Signin from "@/components/User/Signin";
@@ -43,7 +43,7 @@ export default new Router({
       component: Chat,
     },
     {
-      path: "/create",
+      path: "/create/:storeid",
       name: "CreateChat",
       component: Create,
     },
