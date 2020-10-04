@@ -81,10 +81,6 @@ export default {
   },
 
   methods: {
-    test() {
-      console.log("this.shopList", this.storeList);
-      console.log("this.shopList", this.storeList[0]);
-    },
     getStoreInfo() {
       console.log(this.$cookies.get("auth-token"));
       axios
@@ -110,9 +106,6 @@ export default {
 
     goToShopDetail: function(shopId) {
       this.$router.push("/storedetail/" + shopId);
-    },
-    test: function() {
-      console.log("loc", this.loc);
     },
     showShopList: function() {
       axios
