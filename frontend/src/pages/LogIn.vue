@@ -215,9 +215,9 @@
 import axios from "axios";
 import * as firebase from "firebase";
 
-// const baseURL = "http://127.0.0.1:8000/api/";
-const baseURL =
-  "http://ec2-54-180-109-206.ap-northeast-2.compute.amazonaws.com/";
+const baseURL = "http://127.0.0.1:8000/";
+// const baseURL =
+//   "http://ec2-54-180-109-206.ap-northeast-2.compute.amazonaws.com/";
 
 export default {
   name: "LogIn",
@@ -588,10 +588,9 @@ export default {
       if (err) this.biz_login();
     },
     biz_login() {
-      // console.log("biz_login호출");
       axios
         .post(baseURL + "api/accounts/email_user_or_bizuser/", {
-          email: this.nm_email
+          email: this.biz_email
         }).then((res)=>{
           if(res.data.message==0){
             axios
