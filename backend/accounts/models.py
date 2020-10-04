@@ -21,7 +21,7 @@ class User(AbstractUser):
     birth_year = models.DecimalField(max_digits=4, decimal_places=0, null=True)
 
     # 사업자번호,상호명 , 사업 카테고리, 사업등록증 사본, 사업장 주소
-    biznumber = models.IntegerField(unique=True, null=True)
+    biznumber = models.CharField(max_length=15, null=True)
     bizname = models.CharField(max_length=50, null=True)
     bizcategory = models.CharField(max_length=20, null=True)
     bizimage = models.ImageField(default='media/bonobono.png', null=True, blank=True, upload_to='biz')

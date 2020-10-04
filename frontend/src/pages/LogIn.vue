@@ -220,8 +220,7 @@ import axios from "axios";
 import * as firebase from "firebase";
 
 // const baseURL = "http://127.0.0.1:8000/";
-const baseURL =
-  "http://ec2-54-180-109-206.ap-northeast-2.compute.amazonaws.com/";
+const baseURL = "ec2-54-180-109-206.ap-northeast-2.compute.amazonaws.com/";
 
 export default {
   name: "LogIn",
@@ -480,11 +479,10 @@ export default {
         alert(msg);
       } else if (!this.checkBizNumb()) {
         alert("사업자번호가 올바르지 않습니다.");
-      } else if (
-        !this.error.email &&
-        !this.error.password &&
-        !this.error.passwordConfirm
-      ) {
+      } else if (!this.checkBizNumb()) {
+        alert("사업자번호가 올바르지 않습니다.");
+      }
+      if (err) {
         this.biz_signup();
       }
     },
@@ -545,25 +543,36 @@ export default {
 
     nm_login() {
       axios
-        .post(baseURL + "api/account/login/", {
+        .post(baseURL + "api/accounts/email_user_or_bizuser/", {
           email: this.nm_email,
-          password: this.nm_password,
         })
         .then((res) => {
-          firebase
-            .auth()
-            .setPersistence(firebase.auth.Auth.Persistence.SESSION);
-          // .then(()=>{
-          firebase
-            .auth()
-            .signInWithEmailAndPassword(this.nm_email, this.nm_password);
-          this.setCookie(res.data.key);
-          this.$router.push("/home");
-          // })
+          if (res.data.message == 1) {
+            axios
+              .post(baseURL + "api/account/login/", {
+                email: this.nm_email,
+                password: this.nm_password,
+              })
+              .then((res) => {
+                firebase
+                  .auth()
+                  .setPersistence(firebase.auth.Auth.Persistence.SESSION);
+                firebase
+                  .auth()
+                  .signInWithEmailAndPassword(this.nm_email, this.nm_password);
+                this.setCookie(res.data.key);
+                this.$router.push("/home");
+              })
+              .catch((err) => {
+                console.log(err);
+                alert("로그인 정보를 다시 확인하시지요");
+              });
+          } else {
+            alert("존재하지 않는 회원 정보입니다.");
+          }
         })
         .catch((err) => {
           console.log(err);
-          alert("로그인 정보를 다시 확인하시지요");
         });
     },
     checkBizLogin() {
@@ -581,26 +590,38 @@ export default {
       if (err) this.biz_login();
     },
     biz_login() {
-      console.log("biz_login호출");
       axios
-        .post(baseURL + "api/account/login/", {
+        .post(baseURL + "api/accounts/email_user_or_bizuser/", {
           email: this.biz_email,
-          password: this.biz_password,
         })
         .then((res) => {
-          // firebase
-          //   .auth()
-          //   .setPersistence(firebase.auth.Auth.Persistence.SESSION);
-          // // .then(()=>{
-          // firebase
-          //   .auth()
-          //   .signInWithEmailAndPassword(this.nm_email, this.nm_password);
-          this.setCookie(res.data.key);
-          this.$router.push("/home");
-          // })
+          if (res.data.message == 0) {
+            axios
+              .post(baseURL + "api/account/login/", {
+                email: this.biz_email,
+                password: this.biz_password,
+              })
+              .then((res) => {
+                // firebase
+                //   .auth()
+                //   .setPersistence(firebase.auth.Auth.Persistence.SESSION);
+                // // .then(()=>{
+                // firebase
+                //   .auth()
+                //   .signInWithEmailAndPassword(this.nm_email, this.nm_password);
+                this.setCookie(res.data.key);
+                this.$router.push("/home");
+                // })
+              })
+              .catch((err) => {
+                alert("아이디 또는 비밀번호를 확인해주세요.");
+              });
+          } else {
+            alert("존재하지 않는 회원 정보입니다.");
+          }
         })
         .catch((err) => {
-          alert("아이디 또는 비밀번호를 확인해주세요.");
+          console.log(err);
         });
     },
 
@@ -682,7 +703,6 @@ export default {
         });
     },
     biz_signup() {
-      console.log("biz_signup()");
       axios
         .post(baseURL + "api/account/signup/", {
           username: this.biz_name,
@@ -691,15 +711,27 @@ export default {
           password2: this.biz_password_confirm,
         })
         .then((res) => {
+          console.log(res.data.key);
+          console.log(
+            this.biz_numb,
+            "\n",
+            this.biz_name,
+            "\n",
+            this.biz_address,
+            "\n",
+            this.biz_image.name,
+            "\n"
+          );
           axios
             .post(
               baseURL + "api/accounts/user_detail/",
               {
+                email: this.biz_email,
+                username: this.biz_name,
                 usertype: 0,
                 biznumber: this.biz_numb,
                 bizname: this.biz_name,
                 bizaddress: this.biz_address,
-                bizimage: this.biz_image,
               },
               {
                 headers: {
@@ -708,23 +740,29 @@ export default {
               }
             ) // post > post
             .then((res) => {
-              this.onSignup();
-              this.reset(true);
+              console.log("여기는 올까몰라");
+              this.reset(false);
               this.$router.push("/");
-            }); // post > post > then
-        })
-        .catch((res) => {
-          console.log(res);
-          // let token = res.data.key;
-          console.log("res : " + res.data);
-          this.$store.dispatch("signUserUp", {
-            email: this.nm_email,
-            password: this.nm_password,
-            username: this.nm_nickname,
-          });
+            })
+            .catch((err) => {
+              // err.response
+              console.log("여기는 안왔으면 좋겠는데");
+              console.log(err.response);
+              // let token = res.data.key;
+              console.log("res : " + res.data);
+              // this.$store.dispatch("signUserUp", {
+              //   email: this.nm_email,
+              //   password: this.nm_password,
+              //   username: this.nm_nickname,
+              // });
+            });
         })
         .catch((err) => {
+          console.log("여기일리가 없지 그치");
           console.log(err);
+          console.log(err.response);
+          console.log(err.data);
+          console.log(err.message);
         });
     },
     reset(nm) {
