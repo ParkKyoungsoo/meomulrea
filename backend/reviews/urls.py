@@ -9,4 +9,9 @@ urlpatterns = [
     path('store_review_list/', views.store_review_list),
     path('<int:review_pk>/', views.review_detail),
     path('create_review/', views.create_review),
+    path('user_review_list/', views.user_review_list),
+    path('<int:review_pk>/create_reply/', views.create_reply),
+    path('sort_review_latest/', views.sort_review_latest),
+    path('sort_review_high_score/', views.sort_review_high_score),
+    path('sort_review_low_score/', views.sort_review_low_score),
 ]

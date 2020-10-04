@@ -1,28 +1,51 @@
 <template>
   <v-main>
-    <Header/>
+    <Header />
     <div class="advertise" align="center" justify="center">
-      <Carousel :storeData="recommendedDate"/> 
+      <!-- <Carousel :storeData="recommendedDate" /> -->
+      <v-carousel
+        cycle
+        height="30vh"
+        hide-delimiter-background
+        show-arrows-on-hover
+      >
+        <v-carousel-item v-for="(slide, i) in recommendedDate" :key="i">
+          <v-sheet>
+            <div>{{ slide }} Slide</div>
+          </v-sheet>
+        </v-carousel-item>
+      </v-carousel>
     </div>
     <v-container class="content">
       <div style="width: 80%;">
         <v-layout class="weather">
-          오늘의 날씨
-            <v-btn icon color="green" @click="getWeather">
-              <v-icon>mdi-cached</v-icon>
-            </v-btn>
-            <v-flex>지역 : {{ this.getLocation.dong }} </v-flex>
-            <v-flex>기온 : {{ parseInt(locationData.main.temp - 273.15) }} &deg;C</v-flex>
-            <v-flex>습도 : {{ locationData.main.humidity }} %</v-flex>
-            <v-flex>날씨 : <img style="width:25px; height:25px;" :src="require('../assets/image/' + weatherimg)" :alt=weatherimg></v-flex>
-            <v-flex>구름 : {{ locationData.clouds.all + "%" }}</v-flex>
+          <v-btn icon color="green" @click="getWeather">
+            <v-icon>mdi-cached</v-icon>
+          </v-btn>
+          오늘의 날씨(<img
+            style="width:30px; height:30px;"
+            :src="require('../assets/image/' + weatherimg)"
+            :alt="weatherimg"
+          />)
+
+          <v-flex>지역 : {{ this.getLocation.dong }} </v-flex>
+          <v-flex
+            >기온 :
+            {{ parseInt(locationData.main.temp - 273.15) }} &deg;C</v-flex
+          >
+          <v-flex>습도 : {{ locationData.main.humidity }} %</v-flex>
+          <v-flex>구름 : {{ locationData.clouds.all + "%" }}</v-flex>
         </v-layout>
-      <v-layout>
-        <v-flex> 오늘은 뭐먹지? </v-flex>
-      </v-layout>
-      <div class="shopList">
-        <carousel-3d :controls-visible="true">
-          <slide v-for="(item, index) in recommendedDate" :key="index" :index="index">
+        <v-layout>
+          <v-flex> 오늘은 뭐먹지? </v-flex>
+        </v-layout>
+        <v-layout md="12" xs="12">
+          <carousel-3d :controls-visible="true">
+            <slide
+              v-for="(item, index) in recommendedDate"
+              :key="index"
+              :index="index"
+            >
               <figure>
                 <img :src="item.src" :alt="item[1]" />
                 <!-- <img src="../assets/image/background.jpg"> -->
@@ -32,7 +55,7 @@
               </figure>
             </slide>
           </carousel-3d>
-        </div>
+        </v-layout>
       </div>
     </v-container>
   </v-main>
@@ -40,7 +63,7 @@
 
 <script>
 import Vue from "vue";
-import Carousel from "../components/Carousel";
+// import Carousel from "../components/Carousel";
 import { Carousel3d, Slide } from "vue-carousel-3d";
 import axios from "axios";
 import recommendedDate from "../assets/datas/recommend_result_1.json";
@@ -49,14 +72,15 @@ import { mapMutations, mapGetters } from "vuex";
 import { EventBus } from "../utils/EventBus.js";
 import Header from "../components/Header.vue";
 
-// const baseURL = "http://127.0.0.1:8000/";
-const baseURL = "http://j3b304.p.ssafy.io/";
+// const baseURL = "http://127.0.0.1:8000/api/";
+const baseURL =
+  "http://ec2-54-180-109-206.ap-northeast-2.compute.amazonaws.com/";
 
 Vue.use(Carousel3d);
 
 export default {
   components: {
-    Carousel,
+    // Carousel,
     Header,
     Carousel3d,
     Slide,
@@ -68,18 +92,30 @@ export default {
       lat: 0,
       lng: 0,
       locationData: "",
-      recommendedDate: "",
+      recommendedDate: [],
       weatherimg: "",
     };
   },
 
   created() {
     this.pollData();
+
     // this.getLocation();
     EventBus.$on("addressChange", () => {
       this.getWeather();
     });
-    this.getCategory();
+    // this.getCategory();
+    axios({
+      method: "GET",
+      url: baseURL + "api/main/",
+    })
+      .then((response) => {
+        console.log(response.data.data);
+        this.recommendedDate = response.data.data;
+      })
+      .catch((ex) => {
+        console.log(ex);
+      });
   },
   computed: {
     ...mapGetters("location", ["getLocation"]),
@@ -109,18 +145,17 @@ export default {
       })
         .then((response) => {
           this.locationData = response.data;
-          if(this.locationData.weather[0].main==='Clear')
-            this.weatherimg = 'Clear.png';
-          else if(this.locationData.weather[0].main==='Clouds'){
-            this.weatherimg = 'Clouds.png';
-          }
-          else if(this.locationData.weather[0].main==='wind')
-            this.weatherimg = 'wind.png';
-          else if(this.locationData.weather[0].main==='rain')
-            this.weatherimg = 'rain.png';
-          else if(this.locationData.weather[0].main==='snow')
-            this.weatherimg = 'snow.png';
-          console.log(this.weatherimg)
+          if (this.locationData.weather[0].main === "Clear")
+            this.weatherimg = "Clear.png";
+          else if (this.locationData.weather[0].main === "Clouds") {
+            this.weatherimg = "Clouds.png";
+          } else if (this.locationData.weather[0].main === "wind")
+            this.weatherimg = "wind.png";
+          else if (this.locationData.weather[0].main === "rain")
+            this.weatherimg = "rain.png";
+          else if (this.locationData.weather[0].main === "snow")
+            this.weatherimg = "snow.png";
+          console.log(this.weatherimg);
         })
         .catch(() => {
           // .catch((ex) => {
@@ -129,10 +164,11 @@ export default {
     },
 
     getCategory() {
-      console.log('getCategory')
+      console.log("getCategory!!!");
+
       axios({
         method: "GET",
-        url: baseURL + "main/",
+        url: baseURL + "api/main/",
       })
         .then((response) => {
           console.log(response.data.data);
@@ -150,9 +186,12 @@ export default {
     },
 
     gotoShop(index) {
-      console.log("gotoShop : " + index);
       this.$router.push("/storelist/" + index);
     },
+
+    // mouseOver() {
+
+    // }
 
     // getLocation: function() {
     //   if (navigator.geolocation) {

@@ -2,10 +2,10 @@
   <v-app-bar app style="box-shadow:none;">
     <v-toolbar-title>
       <router-link
-        style="text-decoration: none; color: rgb(233,105,30);"
+        style="text-decoration: none; color: rgb(233,105,30); display:flex; align-items: center;"
         to="/home"
       >
-        Home
+        <img style="height:65px; width: 65px;" src="../assets/image/home.png" />
       </router-link>
     </v-toolbar-title>
     <v-spacer />
@@ -23,8 +23,7 @@
         />
       </v-col>
     </v-toolbar-title>
-    <button @click="showAddrModal = true">추가하기</button>
-    <button @click="test">버어튼</button>
+    <button @click="findAddress(true)">추가하기</button>
     <v-spacer />
     <v-toolbar-title>
       <div
@@ -33,14 +32,17 @@
             $cookies.get('auth-token') === ''
         "
       >
-        <button @click="login()">login</button>
+        <button @click="login()"><h2>login</h2></button>
       </div>
       <div v-else>
-        <button @click="logout()">logout</button>
+        <button @click="logout()"><h2>logout</h2></button>
       </div>
     </v-toolbar-title>
   </v-app-bar>
 </template>
+
+<script src="http://dmaps.daum.net/map_js_init/postcode.v2.js"></script>
+<script src="//dapi.kakao.com/v2/maps/sdk.js?appkey=48cbffa8392e1a7acffc1975347ec0d3&libraries=services"></script>
 
 <script>
 import user from "../assets/datas/user.json";
@@ -50,22 +52,30 @@ import * as firebase from "firebase";
 import axios from "axios";
 
 // const baseURL = "http://127.0.0.1:8000/";
-const baseURL = "http://j3b304.p.ssafy.io/";
+const baseURL =
+  "http://ec2-54-180-109-206.ap-northeast-2.compute.amazonaws.com/";
 
 export default {
   data() {
     return {
-      select: "",
+      select: [],
       userInfo: "",
       showAddrModal: false,
       seletedAddress: "",
       isLogined: false,
+      newAddress: "",
     };
   },
   components: {},
   computed: {
     ...mapGetters("location", ["getLocation"]),
     ...mapGetters("userInfo", ["getUserInfo"]),
+  },
+
+  watch: {
+    newAddress: function(newVal, oldVal) {
+      console.lof("watch", newVal);
+    },
   },
 
   created() {
@@ -85,6 +95,28 @@ export default {
 
     ...mapMutations(("location", ["setLocation"])),
     ...mapMutations(("userInfo", ["setUserInfo"])),
+
+    addAddress: function() {
+      console.log("addAddr Func", this.newAddress);
+      axios
+        .post(
+          baseURL + "api/accounts/user_order/",
+          {
+            location: this.newAddress,
+          },
+          {
+            headers: {
+              Authorization: `Token ${this.$cookies.get("auth-token")}`,
+            },
+          }
+        ) // post > post
+        .then((res) => {
+          console.log(res.data);
+        })
+        .catch((res) => {
+          console.log(res);
+        }); // post > post > then
+    },
 
     changeAddress: function() {
       // EventBus.$emit("addressChange", this.select.location);
@@ -110,7 +142,7 @@ export default {
 
     getUserAddress() {
       axios
-        .post(baseURL + "accounts/user_order_list/", null, {
+        .post(baseURL + "api/accounts/user_order_list/", null, {
           headers: {
             Authorization: `Token ${this.$cookies.get("auth-token")}`,
           },
@@ -149,6 +181,31 @@ export default {
     },
     login() {
       this.$router.push("/");
+    },
+
+    findAddress() {
+      new daum.Postcode({
+        oncomplete: (data) => {
+          var fullAddr = data.address;
+          var extraAddr = "";
+
+          if (data.addressType === "R") {
+            if (data.bname !== "") {
+              extraAddr += data.bname;
+              console.log("bname : " + extraAddr);
+            }
+            if (data.buildingName !== "") {
+              extraAddr +=
+                extraAddr !== "" ? ", " + data.buildingName : data.buildingName;
+              console.log("buildingName : " + extraAddr);
+            }
+            fullAddr += extraAddr !== "" ? " (" + extraAddr + ")" : "";
+            this.newAddress = fullAddr;
+          }
+        },
+      }).open();
+      console.log("new Address is ", this.newAddress);
+      this.addAddress();
     },
   },
 
