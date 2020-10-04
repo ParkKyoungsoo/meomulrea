@@ -13,7 +13,7 @@
 <script>
 import axios from "axios";
 import { mapGetters } from "vuex";
-// const baseURL = "http://j3b304.p.ssafy.io/";
+// const baseURL = "http://127.0.0.1:8000/";
 const baseURL =
   "http://ec2-54-180-109-206.ap-northeast-2.compute.amazonaws.com/";
 

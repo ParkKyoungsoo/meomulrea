@@ -171,10 +171,6 @@ export default {
           // this.imgUrl = require("../assets/image/storelist/" +
           //   this.storeInfo.store_name.replace(/(\s*)/g, "") +
           //   ".jpg");
-<<<<<<< HEAD
-=======
-          this.imgUrl = require("../assets/image/storelist/default.jpg");
->>>>>>> 60e2dd5725c99f1b292f9b4682f5d966ee622d90
           this.changeEndTime(res.data.end_time);
           this.getBusinessDay(res.data);
         })

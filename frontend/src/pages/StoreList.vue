@@ -81,13 +81,6 @@ export default {
   },
 
   methods: {
-<<<<<<< HEAD
-=======
-    // test() {
-    //   console.log("this.shopList", this.storeList);
-    //   console.log("this.shopList", this.storeList[0]);
-    // },
->>>>>>> 60e2dd5725c99f1b292f9b4682f5d966ee622d90
     getStoreInfo() {
       console.log(this.$cookies.get("auth-token"));
       axios
@@ -114,12 +107,6 @@ export default {
     goToShopDetail: function(shopId) {
       this.$router.push("/storedetail/" + shopId);
     },
-<<<<<<< HEAD
-=======
-    // test: function() {
-    //   console.log("loc", this.loc);
-    // },
->>>>>>> 60e2dd5725c99f1b292f9b4682f5d966ee622d90
     showShopList: function() {
       axios
         .post(
