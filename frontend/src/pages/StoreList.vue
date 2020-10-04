@@ -50,9 +50,9 @@ import { mapGetters } from "vuex";
 import Header from "../components/Header.vue";
 import Card from "../components/Card.vue";
 
-const baseURL = "http://127.0.0.1:8000/";
-// const baseURL =
-//   "http://ec2-54-180-109-206.ap-northeast-2.compute.amazonaws.com/";
+// const baseURL = "http://127.0.0.1:8000/";
+const baseURL =
+  "http://ec2-54-180-109-206.ap-northeast-2.compute.amazonaws.com/";
 
 export default {
   data() {
