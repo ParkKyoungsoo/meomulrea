@@ -22,18 +22,19 @@ from django.views.generic import TemplateView
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('accounts/', include('accounts.urls')),
+    path('api/accounts/', include('accounts.urls')),
 
     # path('account/signin/', include('rest_auth.urls')),
-    path('account/', include('rest_auth.urls')),
+    path('api/account/', include('rest_auth.urls')),
     # path('account/bizsignin/', include('rest_auth.urls')),
 
-    path('account/signup/', include('rest_auth.registration.urls')),
+    path('api/account/signup/', include('rest_auth.registration.urls')),
     # path('account/bizsignup/', include('rest_auth.registration.urls')),
 
-    path('reviews/', include('reviews.urls')),
-    path('stores/', include('stores.urls')),
-    path('deliveries/', include('deliveries.urls')),
-    path('main/', include('main.urls')),
-    path('calc/', include('calcembedding.urls')),
+    path('api/reviews/', include('reviews.urls')),
+    path('api/stores/', include('stores.urls')),
+    path('api/deliveries/', include('deliveries.urls')),
+    path('api/main/', include('main.urls')),
+    path('api/calc/', include('calcembedding.urls')),
+    path('api/advertisements/', include('advertisements.urls')),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

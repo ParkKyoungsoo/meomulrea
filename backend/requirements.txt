@@ -56,6 +56,7 @@ django-allauth==0.42.0
 django-cors-headers==3.5.0
 django-extensions==3.0.8
 django-rest-auth==0.9.5
+django-webpack-loader==0.7.0
 djangorestframework==3.11.1
 dnspython==1.16.0
 docutils==0.16
@@ -157,7 +158,7 @@ pkginfo==1.5.0.1
 pluggy==0.13.1
 ply==3.11
 prometheus-client==0.8.0
-prompt-toolkit==3.0.7
+prompt-toolkit==3.0.5
 psutil==5.7.0
 py @ file:///tmp/build/80754af9/py_1593446248552/work
 pycodestyle==2.6.0
@@ -166,7 +167,7 @@ pycparser @ file:///tmp/build/80754af9/pycparser_1594388511720/work
 pycurl==7.43.0.5
 pydocstyle @ file:///tmp/build/80754af9/pydocstyle_1592848020240/work
 pyflakes==2.2.0
-Pygments==2.7.0
+Pygments==2.6.1
 pylint @ file:///C:/ci/pylint_1592482039483/work
 pymongo==3.11.0
 PyNaCl @ file:///C:/ci/pynacl_1595000047588/work
@@ -180,6 +181,7 @@ pytest==5.4.3
 python-dateutil==2.8.1
 python-jsonrpc-server @ file:///tmp/build/80754af9/python-jsonrpc-server_1594397536060/work
 python-language-server @ file:///C:/ci/python-language-server_1594162130238/work
+python-vuejs==1.0.9
 python3-openid==3.2.0
 pytz==2020.1
 PyWavelets==1.1.1
@@ -238,8 +240,7 @@ traitlets==4.3.3
 typing-extensions @ file:///tmp/build/80754af9/typing_extensions_1592847887441/work
 ujson==1.35
 unicodecsv==0.14.1
-urllib3==1.25.10
-virtualenv==20.0.31
+urllib3==1.25.9
 watchdog @ file:///C:/ci/watchdog_1593447437088/work
 wcwidth @ file:///tmp/build/80754af9/wcwidth_1593447189090/work
 webencodings==0.5.1

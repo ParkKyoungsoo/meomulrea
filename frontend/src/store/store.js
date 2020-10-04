@@ -11,8 +11,6 @@ import ChatModule from "./ChatModule";
 import * as firebase from "firebase";
 
 Vue.use(Vuex);
-//
-//
 export const store = new Vuex.Store({
   modules: {
     location: Location,

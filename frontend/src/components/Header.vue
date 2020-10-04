@@ -1,8 +1,11 @@
 <template>
-  <v-app-bar app color="rgb(233, 105, 30)" dark>
+  <v-app-bar app style="box-shadow:none;">
     <v-toolbar-title>
-      <router-link style="text-decoration: none; color: white;" to="/home">
-        Home
+      <router-link
+        style="text-decoration: none; color: rgb(233,105,30); display:flex; align-items: center;"
+        to="/home"
+      >
+        <img style="height:65px; width: 65px;" src="../assets/image/home.png" />
       </router-link>
     </v-toolbar-title>
     <v-spacer />
@@ -14,8 +17,9 @@
           :items="userInfo"
           item-text="location"
           return-object
-          dense
-          solo
+          style="margin:10px; margin-top:25px; width:250px;"
+          color="rgb(233,105,30)"
+          item-color="none"
         />
       </v-col>
     </v-toolbar-title>
@@ -29,11 +33,11 @@
             $cookies.get('auth-token') === ''
         "
       >
-        <router-link style="text-decoration: none; color: white;" to="/">
-          Login
-        </router-link>
+        <button @click="login()"><h2>login</h2></button>
       </div>
-      <button @click="logout()">logout</button>
+      <div v-else>
+        <button @click="logout()"><h2>logout</h2></button>
+      </div>
     </v-toolbar-title>
   </v-app-bar>
 </template>
@@ -45,12 +49,14 @@ import { EventBus } from "../utils/EventBus.js";
 import * as firebase from "firebase";
 import axios from "axios";
 
-const baseURL = "http://127.0.0.1:8000/";
+// const baseURL = "http://127.0.0.1:8000/";
+const baseURL =
+  "http://ec2-54-180-109-206.ap-northeast-2.compute.amazonaws.com/";
 
 export default {
   data() {
     return {
-      select: "",
+      select: [],
       userInfo: "",
       showAddrModal: false,
       seletedAddress: "",
@@ -105,7 +111,7 @@ export default {
 
     getUserAddress() {
       axios
-        .post(baseURL + "accounts/user_order_list/", null, {
+        .post(baseURL + "api/accounts/user_order_list/", null, {
           headers: {
             Authorization: `Token ${this.$cookies.get("auth-token")}`,
           },
@@ -142,6 +148,9 @@ export default {
         }
       });
     },
+    login() {
+      this.$router.push("/");
+    },
   },
 
   watch() {},
@@ -150,5 +159,8 @@ export default {
 <style>
 .address {
   margin-top: 25px;
+}
+button {
+  color: rgb(233, 105, 30);
 }
 </style>

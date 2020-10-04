@@ -25,13 +25,14 @@ from .serializers import StoreSerializer, StoreDetailSerializer
 #     return
 
 def save_stores(request):
-    json_data = open('stores/all_store.json').read()
+    json_data = open('stores/bigcategory_stores.json').read()
     json_d = json.loads(json_data)
     for i in range(len(json_d['data'])):
         store = Store()
         store.store_id = json_d['data'][i]['store_id']
         store.store_name = json_d['data'][i]['store_name']
         store.category = json_d['data'][i]['category']
+        store.bigcategory = json_d['data'][i]['bigcategory']
         store.address = json_d['data'][i]['address']
         store.latitude = json_d['data'][i]['latitude']
         store.longitude = json_d['data'][i]['longitude']
@@ -47,7 +48,7 @@ def save_stores(request):
         store.sun = json_d['data'][i]['sun']
         store.min_price = json_d['data'][i]['min_price']
         store.save()
-    return
+    return Response({'message': 'store데이터 입력 완료'})
 
 
 @api_view(['POST'])
@@ -92,3 +93,12 @@ def store_detail(request, storeid):
     store = get_object_or_404(Store, store_id=storeid)
     serializer = StoreDetailSerializer(store)
     return Response(serializer.data)
+
+
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def add_store(request):
+    serializer = StoreSerializer(data=request.data)
+    if serializer.is_valid(raise_exception=True):
+        serializer.save(user=request.user)
+        return Response(serializer.data)

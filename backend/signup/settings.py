@@ -10,6 +10,7 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/2.2/ref/settings/
 """
 
+import signup.my_settings as my_settings
 import os
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
@@ -25,26 +26,29 @@ SECRET_KEY = '&x3o%nc7@5qx(5nt*5y2l$u@m^an5cs1it55_*j*-!tt8p@uyh'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+# ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ["ec2-54-180-109-206.ap-northeast-2.compute.amazonaws.com"]
 
 
 # Application definition
 
 INSTALLED_APPS = [
+
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    
+
     'accounts',
     'stores',
     'deliveries',
     'main',
     'reviews',
     'calcembedding',
-    
+    'advertisements',
+
     'django_extensions',
 
     'rest_framework',
@@ -101,7 +105,6 @@ WSGI_APPLICATION = 'signup.wsgi.application'
 #         'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
 #     }
 # }
-import signup.my_settings as my_settings
 DATABASES = my_settings.DATABASES
 
 # Password validation
@@ -170,3 +173,5 @@ ACCOUNT_AUTHENTICATION_METHOD = 'email'
 # ACCOUNT_EMAIL_CONFIRMATION_AUTHENTICATED_REDIRECT_URL = '/?verification=1'
 
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+
+STATIC_ROOT = os.path.join(BASE_DIR, 'static')
