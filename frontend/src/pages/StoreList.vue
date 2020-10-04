@@ -50,9 +50,9 @@ import { mapGetters } from "vuex";
 import Header from "../components/Header.vue";
 import Card from "../components/Card.vue";
 
-// const baseURL = "http://127.0.0.1:8000/api/";
-const baseURL =
-  "http://ec2-54-180-109-206.ap-northeast-2.compute.amazonaws.com/";
+const baseURL = "http://127.0.0.1:8000/";
+// const baseURL =
+//   "http://ec2-54-180-109-206.ap-northeast-2.compute.amazonaws.com/";
 
 export default {
   data() {
@@ -110,6 +110,26 @@ export default {
 
     goToShopDetail: function(shopId) {
       this.$router.push("/storedetail/" + shopId);
+    },
+    showShopList: function() {
+      axios
+        .post(
+          baseURL + "stores/store_category/",
+          {
+            category: this.$route.params.category,
+          },
+          {
+            headers: {
+              Authorization: `Token ${this.$cookies.get("auth-token")}`,
+            },
+          }
+        ) // post > post
+        .then((res) => {
+          this.userInfo = res.data;
+        })
+        .catch((res) => {
+          console.log("user Address error", res);
+        });
     },
   },
 };

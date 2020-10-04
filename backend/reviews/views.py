@@ -1,6 +1,8 @@
 from django.shortcuts import render
 from django.shortcuts import get_object_or_404
 from .models import Review
+from stores.models import Store
+from stores.serializers import StoreSerializer
 import json
 from collections import defaultdict
 import re
@@ -52,7 +54,7 @@ def whole_review_list(request):
 @permission_classes([IsAuthenticated])
 def store_review_list(request):
     reviews = Review.objects.filter(storeid=request.data['storeid']).order_by('-pk')
-    serializer = StoreReviewSerializer(reviews, many=True)
+    serializer = ReviewDetailSerializer(reviews, many=True)
     return Response(serializer.data)
 
 
@@ -125,7 +127,7 @@ def create_reply(request, review_pk):
 @permission_classes([IsAuthenticated])
 def sort_review_latest(request):
     reviews = Review.objects.filter(storeid=request.data['storeid']).order_by('-pk')
-    serializer = StoreReviewSerializer(reviews, many=True)
+    serializer = ReviewDetailSerializer(reviews, many=True)
     return Response(serializer.data)
 
 
@@ -133,7 +135,7 @@ def sort_review_latest(request):
 @permission_classes([IsAuthenticated])
 def sort_review_high_score(request):
     reviews = Review.objects.filter(storeid=request.data['storeid']).order_by('-score')
-    serializer = StoreReviewSerializer(reviews, many=True)
+    serializer = ReviewDetailSerializer(reviews, many=True)
     return Response(serializer.data)
 
 
@@ -141,5 +143,5 @@ def sort_review_high_score(request):
 @permission_classes([IsAuthenticated])
 def sort_review_low_score(request):
     reviews = Review.objects.filter(storeid=request.data['storeid']).order_by('score')
-    serializer = StoreReviewSerializer(reviews, many=True)
+    serializer = ReviewDetailSerializer(reviews, many=True)
     return Response(serializer.data)

@@ -37,15 +37,14 @@ export default {
     //   this.storeData.store_name.replace(/(\s*)/g, "") +
     //   ".jpg");
     // console.log(this.imgUrl);
-    
+    this.imgUrl = require("../assets/image/storelist/default.jpg");
     console.log("created!!", this.storeData.store_id);
   },
 
   methods: {
-    
     goToShopDetail() {
-      this.storeId = this.storeData.store_id
-      this.$router.push("/storedetail/" + this.storeId);
+      // console.log("this.storeData.store_id", this.storeData.store_id);
+      this.$router.push("/storedetail/" + this.storeData.store_id);
     },
     showShopList: function() {
       axios
