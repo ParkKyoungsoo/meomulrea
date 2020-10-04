@@ -10,6 +10,7 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/2.2/ref/settings/
 """
 
+import signup.my_settings as my_settings
 import os
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
@@ -39,7 +40,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    
+
     'accounts',
     'stores',
     'deliveries',
@@ -47,7 +48,7 @@ INSTALLED_APPS = [
     'reviews',
     'calcembedding',
     'advertisements',
-    
+
     'django_extensions',
 
     'rest_framework',
@@ -104,7 +105,6 @@ WSGI_APPLICATION = 'signup.wsgi.application'
 #         'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
 #     }
 # }
-import signup.my_settings as my_settings
 DATABASES = my_settings.DATABASES
 
 # Password validation

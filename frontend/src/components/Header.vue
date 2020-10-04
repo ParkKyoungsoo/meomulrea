@@ -23,8 +23,7 @@
         />
       </v-col>
     </v-toolbar-title>
-    <button @click="showAddrModal = true">추가하기</button>
-    <button @click="test">버어튼</button>
+    <button @click="findAddress(true)">추가하기</button>
     <v-spacer />
     <v-toolbar-title>
       <div
@@ -42,6 +41,9 @@
   </v-app-bar>
 </template>
 
+<script src="http://dmaps.daum.net/map_js_init/postcode.v2.js"></script>
+<script src="//dapi.kakao.com/v2/maps/sdk.js?appkey=48cbffa8392e1a7acffc1975347ec0d3&libraries=services"></script>
+
 <script>
 import user from "../assets/datas/user.json";
 import { mapGetters, mapMutations } from "vuex";
@@ -56,17 +58,24 @@ const baseURL =
 export default {
   data() {
     return {
-      select: "",
+      select: [],
       userInfo: "",
       showAddrModal: false,
       seletedAddress: "",
       isLogined: false,
+      newAddress: "",
     };
   },
   components: {},
   computed: {
     ...mapGetters("location", ["getLocation"]),
     ...mapGetters("userInfo", ["getUserInfo"]),
+  },
+
+  watch: {
+    newAddress: function(newVal, oldVal) {
+      console.lof("watch", newVal);
+    },
   },
 
   created() {
@@ -86,6 +95,28 @@ export default {
 
     ...mapMutations(("location", ["setLocation"])),
     ...mapMutations(("userInfo", ["setUserInfo"])),
+
+    addAddress: function() {
+      console.log("addAddr Func", this.newAddress);
+      axios
+        .post(
+          baseURL + "api/accounts/user_order/",
+          {
+            location: this.newAddress,
+          },
+          {
+            headers: {
+              Authorization: `Token ${this.$cookies.get("auth-token")}`,
+            },
+          }
+        ) // post > post
+        .then((res) => {
+          console.log(res.data);
+        })
+        .catch((res) => {
+          console.log(res);
+        }); // post > post > then
+    },
 
     changeAddress: function() {
       // EventBus.$emit("addressChange", this.select.location);
@@ -150,6 +181,31 @@ export default {
     },
     login() {
       this.$router.push("/");
+    },
+
+    findAddress() {
+      new daum.Postcode({
+        oncomplete: (data) => {
+          var fullAddr = data.address;
+          var extraAddr = "";
+
+          if (data.addressType === "R") {
+            if (data.bname !== "") {
+              extraAddr += data.bname;
+              console.log("bname : " + extraAddr);
+            }
+            if (data.buildingName !== "") {
+              extraAddr +=
+                extraAddr !== "" ? ", " + data.buildingName : data.buildingName;
+              console.log("buildingName : " + extraAddr);
+            }
+            fullAddr += extraAddr !== "" ? " (" + extraAddr + ")" : "";
+            this.newAddress = fullAddr;
+          }
+        },
+      }).open();
+      console.log("new Address is ", this.newAddress);
+      this.addAddress();
     },
   },
 

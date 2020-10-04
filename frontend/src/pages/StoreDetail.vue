@@ -52,7 +52,7 @@
             <div style="display: flex; justify-content: start;">
             </div>
           </v-col>
-          <v-col style="background-color: rgb(245, 183, 132);" lg="3" md="3">
+          <v-col lg="3" md="3">
             <KakaoMap :storeData="this.storeInfo" />
           </v-col>
         </v-row>
@@ -169,9 +169,16 @@ export default {
         .then((res) => {
           console.log("res Data", res.data);
           this.storeInfo = res.data;
-          this.imgUrl = require("../assets/image/storelist/" +
-            this.storeInfo.store_name.replace(/(\s*)/g, "") +
-            ".jpg");
+          // this.imgUrl = require("../assets/image/storelist/" +
+          //   this.storeInfo.store_name.replace(/(\s*)/g, "") +
+          //   ".jpg");
+
+
+          // this.imgUrl = require("../assets/image/storelist/" +
+          //   this.storeInfo.store_name.replace(/(\s*)/g, "") +
+          //   ".jpg");
+
+
           this.changeEndTime(res.data.end_time);
           this.getBusinessDay(res.data);
         })

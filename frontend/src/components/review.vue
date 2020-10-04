@@ -100,25 +100,24 @@
           <v-row justify="center">
             <v-expansion-panels inset>
               <v-expansion-panel>
-                <v-expansion-panel-header>댓글 달기</v-expansion-panel-header>
+                <v-expansion-panel-header>답글 달기</v-expansion-panel-header>
                 <v-expansion-panel-content>
-                  <!-- <div class="message other-message float-right"> -->
                   <v-textarea
                     outlined
                     name="input-7-4"
-                    label="댓글을 남겨보세요." 
-                    v-model="myComment"
+                    label="답글을 남겨보세요." 
+                    :value="myComment"
                     color="orange"
                   ></v-textarea>
                   <div class="text-right">
-                    <v-btn v-show="myComment == 0" @click="msgComment()" color="gray" style="color:darkgray">등록</v-btn>
-                    <v-btn v-show="myComment != 0" @click="registerComment(review.id)" color="orange">등록</v-btn>
+                    <!-- <v-btn v-show="myComment == 0" @click="msgComment(myComment)" color="gray" style="color:darkgray">등록</v-btn> -->
+                    <v-btn @click="registerComment(review.id)" color="orange">등록</v-btn>
                   </div>
-                  <!-- </div>                 -->
                 </v-expansion-panel-content>
               </v-expansion-panel>
             </v-expansion-panels>
           </v-row>
+
           <!-- </h3> -->
         </article>
       </div>
@@ -229,7 +228,7 @@ export default {
     },
 
     msgComment() {
-      alert("댓글을 남겨주세요.")
+      alert("답글을 남겨주세요.")
     },
 
     registerReview() {

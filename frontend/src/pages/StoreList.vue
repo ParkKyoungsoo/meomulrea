@@ -6,20 +6,14 @@
         <v-row>
           <v-flex>{{ $route.params.category }}</v-flex>
           <v-flex>{{ this.getLocation.dong }}</v-flex>
-          <!-- <v-btn @click="getStoreInfo">버튼</v-btn> -->
         </v-row>
-        <!-- <kakaoMap :storeData="loc" :category="category" /> -->
-        <v-row>
-          <!-- <v-col class="shopList"> -->
-          <!-- <v-card
-              class="mx-auto"
-              max-width="320"
-              outlined
-              v-for="(item, index) in this.getShopList.shopList"
-              :key="index"
-              style="border: 1px solid grey"
-            > -->
-          <Card />
+
+        <v-row style="display: flex; align-items: center; text-align: center;">
+          <div v-for="(item, index) in storeList" :key="index" :index="index">
+            <v-row style="margin: 10px; width: fit-content;">
+              <Card :storeData="item" />
+            </v-row>
+          </div>
           <!-- <v-col>
                 <v-row justify="center">
                   <div>{{ item.store_name }}</div>
@@ -63,10 +57,10 @@ const baseURL = "http://127.0.0.1:8000/";
 export default {
   data() {
     return {
+      storeList: "",
       data: {
         loc: 0,
         category: "",
-        shopList: "",
       },
     };
   },
@@ -78,16 +72,19 @@ export default {
 
   computed: {
     ...mapGetters("location", ["getLocation"]),
-    ...mapGetters("shopList", ["getShopList"]),
   },
 
   created: function() {
     this.loc = this.getLocation;
     this.category = this.$route.params.category;
-    this.shopList = this.getShopList;
+    this.getStoreInfo();
   },
 
   methods: {
+    // test() {
+    //   console.log("this.shopList", this.storeList);
+    //   console.log("this.shopList", this.storeList[0]);
+    // },
     getStoreInfo() {
       console.log(this.$cookies.get("auth-token"));
       axios
@@ -104,7 +101,7 @@ export default {
           }
         ) // post > post
         .then((res) => {
-          console.log(res.data);
+          this.storeList = res.data;
         })
         .catch((res) => {
           console.log(res);
@@ -114,13 +111,13 @@ export default {
     goToShopDetail: function(shopId) {
       this.$router.push("/storedetail/" + shopId);
     },
-    test: function() {
-      console.log("loc", this.loc);
-    },
+    // test: function() {
+    //   console.log("loc", this.loc);
+    // },
     showShopList: function() {
       axios
         .post(
-          baseURL + "api/stores/store_category/",
+          baseURL + "stores/store_category/",
           {
             category: this.$route.params.category,
           },
@@ -135,7 +132,7 @@ export default {
         })
         .catch((res) => {
           console.log("user Address error", res);
-        }); // post > post > then
+        });
     },
   },
 };
