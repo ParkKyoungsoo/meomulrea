@@ -23,9 +23,9 @@
             <v-text-field
               v-model="nm_password"
               label="비밀번호"
-              :append-icon="show2 ? 'mdi-eye' : 'mdi-eye-off'"
-              :type="show2 ? 'text' : 'password'"
-              @click:append="show2 = !show2"
+              :append-icon="showpassword ? 'mdi-eye' : 'mdi-eye-off'"
+              :type="showpassword ? 'text' : 'password'"
+              @click:append="showpassword = !showpassword"
             ></v-text-field>
             <v-btn
               rounded
@@ -61,18 +61,18 @@
               :messages="[error.pwd]"
               label="비밀번호"
               ref="nm_password"
-              :append-icon="show3 ? 'mdi-eye' : 'mdi-eye-off'"
-              :type="show3 ? 'text' : 'password'"
-              @click:append="show3 = !show3"
+              :append-icon="showpassword ? 'mdi-eye' : 'mdi-eye-off'"
+              :type="showpassword ? 'text' : 'password'"
+              @click:append="showpassword = !showpassword"
             ></v-text-field>
             <v-text-field
               v-model="nm_password_confirm"
               :messages="[error.pwdconfirm]"
               label="비밀번호 확인"
               ref="nm_password_confirm"
-              :append-icon="show4 ? 'mdi-eye' : 'mdi-eye-off'"
-              :type="show4 ? 'text' : 'password'"
-              @click:append="show4 = !show4"
+              :append-icon="showpasswordConfirm ? 'mdi-eye' : 'mdi-eye-off'"
+              :type="showpasswordConfirm ? 'text' : 'password'"
+              @click:append="showpasswordConfirm = !showpasswordConfirm"
             ></v-text-field>
             <v-text-field
               label="주소"
@@ -126,12 +126,15 @@
             <v-text-field
               v-model="biz_email"
               ref="biz_email"
-              label="사업자번호"
+              label="사업자이메일"
             ></v-text-field>
             <v-text-field
               v-model="biz_password"
               ref="biz_password"
               label="비밀번호"
+              :append-icon="showbizpassword ? 'mdi-eye' : 'mdi-eye-off'"
+              :type="showbizpassword ? 'text' : 'password'"
+              @click:append="showbizpassword = !showbizpassword"
             ></v-text-field>
             <v-btn
               rounded
@@ -157,9 +160,14 @@
               v-model="biz_email"
               :messages="[error.bizemail]"
               ref="biz_email"
+              label="사업자이메일"
+            ></v-text-field>
+            <v-text-field
+              v-model="biz_numb"
+              ref="biz_numb"
               label="사업자번호"
             ></v-text-field>
-            <v-file-input accept="image/*" label="사진"></v-file-input>
+            <v-file-input accept="image/*" label="사업자등록사본" v-model="biz_image"></v-file-input>
             <v-text-field
               v-model="biz_name"
               ref="biz_name"
@@ -170,12 +178,18 @@
               ref="biz_password"
               :messages="[error.bizpwd]"
               label="비밀번호"
+              :append-icon="showbizpassword ? 'mdi-eye' : 'mdi-eye-off'"
+              :type="showbizpassword ? 'text' : 'password'"
+              @click:append="showbizpassword = !showbizpassword"
             ></v-text-field>
             <v-text-field
               v-model="biz_password_confirm"
               ref="biz_password_confirm"
               :messages="[error.bizpwdconfirm]"
-              label="비밀번호"
+              label="비밀번호 확인"
+              :append-icon="showbizpasswordConfirm ? 'mdi-eye' : 'mdi-eye-off'"
+              :type="showbizpasswordConfirm ? 'text' : 'password'"
+              @click:append="showbizpasswordConfirm = !showbizpasswordConfirm"
             ></v-text-field>
             <v-text-field
               v-model="biz_address"
@@ -209,9 +223,8 @@ export default {
   name: "LogIn",
   data() {
     return {
-      show2: false,
-      show3: false,
-      show4: false,
+      showpassword: false,
+      showpasswordConfirm: false,
       nm_page: 0,
       nm_email: "",
       nm_name: "",
@@ -223,17 +236,22 @@ export default {
       nm_birthyear: 1990,
       nm_check: false,
 
+      showbizpassword:false,
+      showbizpasswordConfirm:false,
       biz_page: 0,
+      biz_numb:"",
       biz_email: "",
       biz_name: "",
       biz_password: "",
       biz_password_confirm: "",
       biz_address: "",
+      biz_image:"",
 
       error: {
         email: "",
         pwd: "",
         pwdconfirm: "",
+        biznumb:"",
         bizemail: "",
         bizpwd: "",
         bizpwdconfirm: "",
@@ -281,17 +299,36 @@ export default {
         });
       }
     },
+    biz_numb: function() {
+      if (this.biz_numb.length > 0) {
+        if(this.biz_numb.length > 12){
+          this.bizlen();
+          return;
+        }
+        if (this.biz_numb.length == 3 || this.biz_numb.length == 6)
+          this.biz_numb += "-";
+        if (!this.checkBizNumb()) {
+          this.error.biznumb = '존재하지 않는 사업자번호입니다.';
+          return;
+        }
+        this.error.biznumb = "";
+      }
+    },
     biz_email: function() {
+      var domain = ["@naver.com", "@daum.net", "@hanmail.net", "@gmail.com"];
       if (this.biz_email.length > 0) {
-        if (this.biz_email.length == 3 || this.biz_email.length == 6)
-          this.biz_email += "-";
-        if (!this.checkBizEmail()) {
+        for (var i = 0; i < domain.length; i++) {
+          if (this.biz_email.includes(domain[i])) {
+            this.biz_check = true;
+           break;
+          }
+          this.biz_check= false;
+        }
+        if(!this.biz_check){
           this.error.bizemail = this.rules[0].message;
           return;
         }
-        this.error.bizemail = "";
-      }
-      this.biz_nickname = this.biz_name;
+        this.error.bizemail = '';
       axios
         .post(baseURL + "api/accounts/user_email/", {
           email: this.biz_email,
@@ -302,8 +339,8 @@ export default {
             this.error.bizemail = "이미 존재하는 이메일입니다.";
           }
         });
+      }
     },
-
     nm_password: function() {
       var temp = ["qwert", "asdfg", "zxcvb"];
       var nm_password = this.nm_password;
@@ -376,6 +413,11 @@ export default {
   },
 
   methods: {
+    bizlen(){
+      var temp = this.biz_numb.substring(0,12);
+      this.biz_numb = temp;
+      return this.biz_numb;
+    },
     checkHandler() {
       let err = true;
       let msg = "";
@@ -411,6 +453,11 @@ export default {
         (err = false),
         this.$refs.biz_email.focus());
       err &&
+        !this.biz_numb &&
+        ((msg = "사업자번호를 입력해주세요!"),
+        (err = false),
+        this.$refs.biz_numb.focus());
+      err &&
         !this.biz_name &&
         ((msg = "이름을 입력해주세요!"),
         (err = false),
@@ -428,6 +475,9 @@ export default {
       if (!err) {
         alert(msg);
       } else if (
+        !this.checkBizNumb()){
+          alert('사업자번호가 올바르지 않습니다.')
+      }  else if(
         !this.error.email &&
         !this.error.password &&
         !this.error.passwordConfirm
@@ -436,7 +486,6 @@ export default {
       }
     },
     checkLogin() {
-      console.log('a')
       let err = true;
       let msg = "";
       !this.nm_email &&
@@ -449,10 +498,8 @@ export default {
         (err = false),
         this.$refs.nm_password.focus());
       if(err) {
-        console.log('nm_login 호출?')
         this.nm_login();
       }
-      console.log('b')
     },
     findAddress(check) {
       new daum.Postcode({
@@ -493,7 +540,6 @@ export default {
     },
 
     nm_login() {
-      // var nm_password = this.nm_password;
         axios
           .post(baseURL + "api/account/login/", {
             email: this.nm_email,
@@ -531,12 +577,31 @@ export default {
       if (err) this.biz_login();
     },
     biz_login() {
-      // axios.post().then((res)=>{});
       console.log("biz_login호출");
+      axios
+          .post(baseURL + "api/account/login/", {
+            email: this.biz_email,
+            password: this.biz_password,
+          })
+          .then((res) => {
+            // firebase
+            //   .auth()
+            //   .setPersistence(firebase.auth.Auth.Persistence.SESSION);
+            // // .then(()=>{
+            // firebase
+            //   .auth()
+            //   .signInWithEmailAndPassword(this.nm_email, this.nm_password);
+            this.setCookie(res.data.key);
+            this.$router.push("/home");
+            // })
+          })
+          .catch((err) => {
+            alert('아이디 또는 비밀번호를 확인해주세요.')
+          });
     },
 
-    checkBizEmail() {
-      var valueMap = this.biz_email
+    checkBizNumb() {
+      var valueMap = this.biz_numb
         .replace(/-/gi, "")
         .split("")
         .map(function(item) {
@@ -613,7 +678,50 @@ export default {
         });
     },
     biz_signup() {
-      console.log("biz_signup() 악시오스 호출 then router push");
+      console.log("biz_signup()");
+      axios
+        .post(baseURL + "api/account/signup/", {
+          username: this.biz_name,
+          email: this.biz_email,
+          password1: this.biz_password,
+          password2: this.biz_password_confirm,
+        })
+        .then((res) => {
+          axios
+            .post(
+              baseURL + "api/accounts/user_detail/",
+              {
+                usertype: 0,
+                biznumber: this.biz_numb,
+                bizname: this.biz_name,
+                bizaddress: this.biz_address,
+                bizimage: this.biz_image
+              },
+              {
+                headers: {
+                  Authorization: `Token ${res.data.key}`,
+                },
+              }
+            ) // post > post
+            .then((res) => {
+              this.onSignup();
+              this.reset(true);
+              this.$router.push("/")
+            }); // post > post > then
+        })
+        .catch((res) => {
+          console.log(res);
+          // let token = res.data.key;
+          console.log("res : " + res.data);
+          this.$store.dispatch("signUserUp", {
+            email: this.nm_email,
+            password: this.nm_password,
+            username: this.nm_nickname,
+          });
+        })
+        .catch((err) => {
+          console.log(err);
+        });
     },
     reset(nm) {
       if (nm) {
@@ -626,6 +734,8 @@ export default {
         this.nm_address = "";
         this.nm_gender = "";
         this.nm_birthyear = "1990";
+        this.showpassword=false;
+        this.showpasswordConfirm=false;
       } else {
         this.biz_page -= 1;
         this.biz_email = "";
@@ -633,7 +743,17 @@ export default {
         this.biz_password = "";
         this.biz_password_confirm = "";
         this.biz_address = "";
+        this.showbizpassword=false;
+        this.showbizpasswordConfirm=false;
       }
+      this.error= {
+        email: "",
+        pwd: "",
+        pwdconfirm: "",
+        bizemail: "",
+        bizpwd: "",
+        bizpwdconfirm: "",
+      };
     },
     mvpage(nm) {
       if (nm) {
@@ -646,6 +766,8 @@ export default {
         this.nm_address = "";
         this.nm_gender = "";
         this.nm_birthyear = "1990";
+        this.showpassword=false;
+        this.showpasswordConfirm=false;
       } else {
         this.biz_page += 1;
         this.biz_email = "";
@@ -653,7 +775,17 @@ export default {
         this.biz_password = "";
         this.biz_password_confirm = "";
         this.biz_address = "";
+        this.showbizpassword=false;
+        this.showbizpasswordConfirm=false;
       }
+      this.error= {
+        email: "",
+        pwd: "",
+        pwdconfirm: "",
+        bizemail: "",
+        bizpwd: "",
+        bizpwdconfirm: "",
+      };
     },
   },
 };
