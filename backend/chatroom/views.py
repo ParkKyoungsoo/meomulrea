@@ -19,7 +19,7 @@ def create_chatroom(request): # 채팅방 생성
     user = User.objects.get(email=request.user)
     user_id = user.id
     print(user_id)
-    key = str(store_id) + str(user_id)
+    key = str(store_id) +"_"+ str(user_id)
     print(key)
     
     if serializer.is_valid(raise_exception=True):
