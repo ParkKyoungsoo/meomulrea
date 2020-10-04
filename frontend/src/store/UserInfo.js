@@ -4,12 +4,14 @@ const state = {
 
 const getters = {
   getUserInfo: function(state) {
+    console.log("userInfo getter!!");
     return state;
   },
 };
 
 const mutations = {
   setUserInfo: function(state, payload) {
+    console.log("userInfo setter!!");
     state.userAddress = payload.userAddress;
   },
 };

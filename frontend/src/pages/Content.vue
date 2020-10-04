@@ -57,6 +57,40 @@
           </carousel-3d>
         </v-layout>
       </div>
+      <v-sheet class="mx-auto" max-width="80vw">
+        <v-slide-group v-model="model" class="pa-4" show-arrows>
+          <v-slide-item
+            v-for="n in 15"
+            :key="n"
+            v-slot:default="{ active, toggle }"
+          >
+            <v-btn
+              :color="active ? 'primary' : 'grey lighten-1'"
+              class="ma-4"
+              @click="toggle"
+              >{{ n }}
+              <v-row class="fill-height" align="center" justify="center">
+                <v-scale-transition>
+                  <v-icon
+                    v-if="active"
+                    color="white"
+                    size="48"
+                    v-text="'mdi-close-circle-outline'"
+                  ></v-icon>
+                </v-scale-transition>
+              </v-row>
+            </v-btn>
+          </v-slide-item>
+        </v-slide-group>
+
+        <v-expand-transition>
+          <v-sheet v-if="model != null" height="40vh" tile>
+            <v-row class="fill-height" align="center" justify="center">
+              <h3 class="title">Selected {{ model }}</h3>
+            </v-row>
+          </v-sheet>
+        </v-expand-transition>
+      </v-sheet>
     </v-container>
   </v-main>
 </template>

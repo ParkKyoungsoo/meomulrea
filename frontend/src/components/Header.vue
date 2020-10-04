@@ -23,7 +23,8 @@
         />
       </v-col>
     </v-toolbar-title>
-    <button @click="findAddress(true)">추가하기</button>
+    <button @click="findAddress()">추가하기</button>
+    <button @click="test()">버어튼</button>
     <v-spacer />
     <v-toolbar-title>
       <div
@@ -64,6 +65,7 @@ export default {
       seletedAddress: "",
       isLogined: false,
       newAddress: "",
+      AddrTrigger: false,
     };
   },
   components: {},
@@ -72,16 +74,11 @@ export default {
     ...mapGetters("userInfo", ["getUserInfo"]),
   },
 
-  watch: {
-    newAddress: function(newVal, oldVal) {
-      console.lof("watch", newVal);
-    },
-  },
-
   created() {
     this.getUserAddress();
     console.log("Token ", this.$cookies.get("auth-token"));
-    this.select = this.getUserInfo.location;
+    console.log("created", this.getUserInfo.userAddress);
+    this.select = this.getUserInfo.userAddress;
   },
 
   mounted() {
@@ -89,10 +86,6 @@ export default {
   },
 
   methods: {
-    test() {
-      console.log("test console", this.userInfo[0].location);
-    },
-
     ...mapMutations(("location", ["setLocation"])),
     ...mapMutations(("userInfo", ["setUserInfo"])),
 
@@ -128,6 +121,8 @@ export default {
       this.$store.commit("userInfo/setUserInfo", {
         userAddress: this.select.location,
       });
+
+      console.log("seleced Addr is", this.select.location);
     },
 
     logout() {
@@ -179,11 +174,13 @@ export default {
         }
       });
     },
+
     login() {
       this.$router.push("/");
     },
 
     findAddress() {
+      console.log("trigger", this.AddrTrigger);
       new daum.Postcode({
         oncomplete: (data) => {
           var fullAddr = data.address;
@@ -192,20 +189,39 @@ export default {
           if (data.addressType === "R") {
             if (data.bname !== "") {
               extraAddr += data.bname;
-              console.log("bname : " + extraAddr);
             }
             if (data.buildingName !== "") {
               extraAddr +=
                 extraAddr !== "" ? ", " + data.buildingName : data.buildingName;
-              console.log("buildingName : " + extraAddr);
             }
             fullAddr += extraAddr !== "" ? " (" + extraAddr + ")" : "";
-            this.newAddress = fullAddr;
           }
+
+          axios
+            .post(
+              baseURL + "api/accounts/user_order/",
+              {
+                location: fullAddr,
+              },
+              {
+                headers: {
+                  Authorization: `Token ${this.$cookies.get("auth-token")}`,
+                },
+              }
+            ) // post > post
+            .then((res) => {
+              location.reload();
+            })
+            .catch((res) => {
+              console.log(res);
+            }); // post > post > then
         },
-      }).open();
-      console.log("new Address is ", this.newAddress);
-      this.addAddress();
+      }).open({});
+      console.log("newAddress", this.newAddress);
+    },
+
+    test() {
+      console.log("new Address", this.newAddress);
     },
   },
 
