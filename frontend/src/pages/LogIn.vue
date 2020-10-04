@@ -172,6 +172,19 @@
               label="사업자등록사본"
               v-model="biz_image"
             ></v-file-input>
+            <!-- <picture-input
+              @change="onChanged"
+              @remove="onRemoved"
+              :width="500"
+              :removable="true"
+              removeButtonClass="ui red button"
+              :height="500"
+              accept="image/jpeg, image/png, image/gif, image/jpg"
+              buttonClass="ui button primary"
+              :customStrings="{
+              upload: '<h1>Upload it!</h1>',
+              drag: 'Drag and drop your image here'}">
+            </picture-input>   -->
             <v-text-field
               v-model="biz_name"
               ref="biz_name"
@@ -220,7 +233,8 @@ import axios from "axios";
 import * as firebase from "firebase";
 
 // const baseURL = "http://127.0.0.1:8000/";
-const baseURL = "ec2-54-180-109-206.ap-northeast-2.compute.amazonaws.com/";
+const baseURL =
+  "http://ec2-54-180-109-206.ap-northeast-2.compute.amazonaws.com/";
 
 export default {
   name: "LogIn",
@@ -703,6 +717,7 @@ export default {
         });
     },
     biz_signup() {
+      console.log(this.biz_image);
       axios
         .post(baseURL + "api/account/signup/", {
           username: this.biz_name,
@@ -711,34 +726,19 @@ export default {
           password2: this.biz_password_confirm,
         })
         .then((res) => {
-          console.log(res.data.key);
-          console.log(
-            this.biz_numb,
-            "\n",
-            this.biz_name,
-            "\n",
-            this.biz_address,
-            "\n",
-            this.biz_image.name,
-            "\n"
-          );
+          const formData = new FormData();
+          formData.append("email", this.biz_email);
+          formData.append("username", this.biz_name);
+          formData.append("usertype", 0);
+          formData.append("bizname", this.biz_name);
+          formData.append("bizaddress", this.biz_address);
+          formData.append("bizimage", this.biz_image);
           axios
-            .post(
-              baseURL + "api/accounts/user_detail/",
-              {
-                email: this.biz_email,
-                username: this.biz_name,
-                usertype: 0,
-                biznumber: this.biz_numb,
-                bizname: this.biz_name,
-                bizaddress: this.biz_address,
+            .post(baseURL + "api/accounts/user_detail/", formData, {
+              headers: {
+                Authorization: `Token ${res.data.key}`,
               },
-              {
-                headers: {
-                  Authorization: `Token ${res.data.key}`,
-                },
-              }
-            ) // post > post
+            }) // post > post
             .then((res) => {
               console.log("여기는 올까몰라");
               this.reset(false);
