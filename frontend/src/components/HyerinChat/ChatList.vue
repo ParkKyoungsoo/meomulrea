@@ -34,8 +34,6 @@
 </template>
 
 <script>
-import * as firebase from "firebase";
-
 export default {
   data() {
     return {
@@ -71,7 +69,6 @@ export default {
             that.loadedChats.unshift(chat);
           });
         });
-        console.log(this.loadedChats);
     },
     loadRecentChatsByLastKey(lastKey) {
       let that = this;
@@ -100,7 +97,7 @@ export default {
           that.loading = false;
         });
     },
-    enterChat(chat) {
+    enterChat(chat) { // 수정해야댐 
       if (chat.isAlreadyJoined || chat.userCount == null) {
         return;
       }

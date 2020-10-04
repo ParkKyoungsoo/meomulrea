@@ -6,7 +6,8 @@
     <div class="back">
       <h2>{{ this.storeData.store_name }}</h2>
       <p>별점 : {{ parseInt(this.storeData.average_rating) }}</p>
-      <v-btn @click="goToShopDetail()">가게보러가기</v-btn>
+      <v-btn @click="goToShopDetail()"
+        >가게보러가기</v-btn>
     </div>
   </div>
 </template>

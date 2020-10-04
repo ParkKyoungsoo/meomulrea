@@ -11,7 +11,7 @@
         <v-row style="display: flex; align-items: center; text-align: center;">
           <div v-for="(item, index) in storeList" :key="index" :index="index">
             <v-row style="margin: 10px; width: fit-content;">
-              <Card :storeData="item" />
+              <Card v-bind:storeData="item" />
             </v-row>
           </div>
           <!-- <v-col>
@@ -74,16 +74,20 @@ export default {
     ...mapGetters("location", ["getLocation"]),
   },
 
-  created: function() {
+  created: async function() {
     this.loc = this.getLocation;
     this.category = this.$route.params.category;
-    this.getStoreInfo();
+    await this.getStoreInfo();
   },
 
   methods: {
-    getStoreInfo() {
+    test() {
+      console.log("this.shopList", this.storeList);
+      console.log("this.shopList", this.storeList[0]);
+    },
+    async getStoreInfo() {
       console.log(this.$cookies.get("auth-token"));
-      axios
+      await axios
         .post(
           baseURL + "api/stores/store_list/",
           {
