@@ -12,11 +12,12 @@
             md="2"
           >
           </v-col>
-          <v-col
-            style="background-color: rgb(132, 245, 132); text-align: left;"
-            lg="7"
-            md="7"
-          >
+          <v-col style="text-align: left;" lg="7" md="7">
+            <!-- <div><img src="../assets/image/placeholder.png" style="width:15px;" alt=""> {{ this.storeInfo.address }}</div>
+            <div><img src="../assets/image/category.png" style="width:15px;" alt=""> {{ this.storeInfo.category }}</div>
+            <div><img src="../assets/image/money.png" style="width:15px;" alt=""> {{ this.storeInfo.min_price  }}원</div>
+            <div><img src="../assets/image/clock.png" style="width:15px;" alt=""> {{this.businessDay }} {{ this.startTime }} - {{ this.endTime }}</div>
+            <div><img src="../assets/image/star.png" style="width:15px;" alt=""> {{ this.storeInfo.average_rating }}</div> -->
             <div>
               <img
                 src="../assets/image/placeholder.png"
@@ -39,19 +40,15 @@
             </div>
             <div>
               <img src="../assets/image/clock.png" style="width:15px;" alt="" />
-              {{ this.businessDay }} {{ this.startTime }} - {{ this.endTime }}
+              {{ this.businessDay }}
+              {{ this.storeInfo.start_time.substring(0, 5) }} -
+              {{ this.endTime }}
             </div>
-            <div>평점 : {{ this.storeInfo.average_rating }}</div>
-            <div style="display: flex; justify-content: start;">
-              <!-- 영업일 : {{ this.businessDay }} -->
-              <!-- <div>{{ this.storeInfo.mon == 0 ? "월" : null }}</div>
-              <div>{{ this.storeInfo.tue == 0 ? "화" : null }}</div>
-              <div>{{ this.storeInfo.wen == 0 ? "수" : null }}</div>
-              <div>{{ this.storeInfo.thu == 0 ? "목" : null }}</div>
-              <div>{{ this.storeInfo.fri == 0 ? "금" : null }}</div>
-              <div>{{ this.storeInfo.sat == 0 ? "토" : null }}</div>
-              <div>{{ this.storeInfo.sun == 0 ? "일" : null }}</div> -->
+            <div>
+              <img src="../assets/image/star.png" style="width:15px;" alt="" />
+              {{ this.storeInfo.average_rating }}
             </div>
+            <div style="display: flex; justify-content: start;"></div>
           </v-col>
           <v-col lg="3" md="3">
             <KakaoMap :storeData="this.storeInfo" />
@@ -120,7 +117,6 @@ export default {
       contentTrigger1: true,
       contentTrigger2: false,
       contentTrigger3: false,
-      startTime: "",
       endTime: "",
       days: [],
       businessDay: "",
@@ -131,50 +127,8 @@ export default {
     this.getStoreDetail();
   },
   methods: {
-    changeStartTime(time) {
-      // P0DT0H~
-      if (time[5] == "H") {
-        // P0DT0H0M~
-        if (time[7] == "M") {
-          this.startTime =
-            "0" + time.substring(4, 5) + ":" + time.substring(6, 7) + "0";
-        }
-        // P0DT0H00M~
-        else {
-          this.startTime = time.substring(4, 5) + ":" + time.substring(6, 8);
-        }
-      }
-      // P0DT00H~
-      else {
-        // P0DT00H0M~
-        if (time[8] == "M") {
-          this.startTime =
-            time.substring(4, 6) + ":" + time.substring(7, 8) + "0";
-        }
-        // P0DT00H00M~
-        else {
-          this.startTime = time.substring(4, 6) + ":" + time.substring(7, 9);
-        }
-      }
-    },
-
     changeEndTime(time) {
-      if (time[5] == "H") {
-        if (time[7] == "M") {
-          this.endTime =
-            "0" + time.substring(4, 5) + ":" + time.substring(6, 7) + "0";
-        } else {
-          this.endTime = time.substring(4, 5) + ":" + time.substring(6, 8);
-        }
-      } else {
-        if (time[8] == "M") {
-          this.endTime =
-            time.substring(4, 6) + ":" + time.substring(7, 8) + "0";
-        } else {
-          this.endTime = time.substring(4, 6) + ":" + time.substring(7, 9);
-        }
-      }
-      if (this.endTime == "00:00") this.endTime = "24:00";
+      if (time == "00:00:00") this.endTime = "24:00";
     },
 
     getBusinessDay(day) {
@@ -187,14 +141,16 @@ export default {
       if (day.sat == 1 ? this.days.push("토") : this.days.push(0));
       if (day.sun == 1 ? this.days.push("일") : this.days.push(0));
 
-      if (!this.days.includes(0)) {
-        this.businessDay = "매일";
-      }
+      // if (!this.days.includes(0)) {
+      //   this.businessDay = "매일";
+      // }
       for (var d in this.days) {
         if (this.days[d] != 0) this.businessDay += this.days[d] + ",";
       }
-      if (this.businessDay == "월,화,수,목,금") this.businessDay = "평일";
-      else if (this.businessDay == "토,일") this.businessDay = "주말";
+      if (this.businessDay == "월,화,수,목,금,") this.businessDay = "평일";
+      else if (this.businessDay == "월,화,수,목,금,토,일,")
+        this.businessDay = "매일";
+      else if (this.businessDay == "토,일,") this.businessDay = "주말";
       else
         this.businessDay = this.businessDay.substring(
           0,
@@ -212,10 +168,9 @@ export default {
         .then((res) => {
           console.log("res Data", res.data);
           this.storeInfo = res.data;
-          // this.imgUrl = require("../assets/image/storelist/" +
-          //   this.storeInfo.store_name.replace(/(\s*)/g, "") +
-          //   ".jpg");
-          this.changeStartTime(res.data.start_time);
+          this.imgUrl = require("../assets/image/storelist/" +
+            this.storeInfo.store_name.replace(/(\s*)/g, "") +
+            ".jpg");
           this.changeEndTime(res.data.end_time);
           this.getBusinessDay(res.data);
         })
