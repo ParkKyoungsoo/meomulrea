@@ -125,7 +125,7 @@ def create_reply(request, review_pk):
 @permission_classes([IsAuthenticated])
 def sort_review_latest(request):
     reviews = Review.objects.filter(storeid=request.data['storeid']).order_by('-pk')
-    serializer = StoreReviewSerializer(reviews, many=True)
+    serializer = ReviewDetailSerializer(reviews, many=True)
     return Response(serializer.data)
 
 
@@ -133,7 +133,7 @@ def sort_review_latest(request):
 @permission_classes([IsAuthenticated])
 def sort_review_high_score(request):
     reviews = Review.objects.filter(storeid=request.data['storeid']).order_by('-score')
-    serializer = StoreReviewSerializer(reviews, many=True)
+    serializer = ReviewDetailSerializer(reviews, many=True)
     return Response(serializer.data)
 
 
@@ -141,5 +141,5 @@ def sort_review_high_score(request):
 @permission_classes([IsAuthenticated])
 def sort_review_low_score(request):
     reviews = Review.objects.filter(storeid=request.data['storeid']).order_by('score')
-    serializer = StoreReviewSerializer(reviews, many=True)
+    serializer = ReviewDetailSerializer(reviews, many=True)
     return Response(serializer.data)

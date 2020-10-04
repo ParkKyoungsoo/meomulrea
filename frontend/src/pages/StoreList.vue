@@ -111,6 +111,29 @@ export default {
     goToShopDetail: function(shopId) {
       this.$router.push("/storedetail/" + shopId);
     },
+    test: function() {
+      console.log("loc", this.loc);
+    },
+    showShopList: function() {
+      axios
+        .post(
+          baseURL + "stores/store_category/",
+          {
+            category: this.$route.params.category,
+          },
+          {
+            headers: {
+              Authorization: `Token ${this.$cookies.get("auth-token")}`,
+            },
+          }
+        ) // post > post
+        .then((res) => {
+          this.userInfo = res.data;
+        })
+        .catch((res) => {
+          console.log("user Address error", res);
+        });
+    },
   },
 };
 </script>

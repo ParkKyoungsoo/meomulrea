@@ -32,6 +32,16 @@ def user_email(request):
 # res.data.message로 프론트에서 받으면 된다.
 
 
+@api_view(['POST'])
+def email_user_or_bizuser(request):
+    User = get_user_model()
+    user = User.objects.get(email=request.data.get('email'))
+    if user.usertype == 1:
+        return Response({'message': 1})
+    else:
+        return Response({'message': 0})
+
+
 # user 모델 추가사항들 저장
 # 프론트는 headers에 Token 값 담아서 보내야함
 @api_view(['POST'])
