@@ -36,11 +36,8 @@ export default {
     //   this.storeData.store_name.replace(/(\s*)/g, "") +
     //   ".jpg");
     // console.log(this.imgUrl);
-<<<<<<< HEAD
-=======
-    this.imgUrl = require('../assets/image/storelist/default.jpg');
+    this.imgUrl = require("../assets/image/storelist/default.jpg");
     console.log("created!!", this.storeData.store_id);
->>>>>>> a4867a55ed944a37b29ed9e9c0939315c95ec42a
   },
 
   methods: {
