@@ -86,7 +86,7 @@
       <v-row>
         <v-col>
           <review v-if="contentTrigger2" />
-          <party v-if="contentTrigger3" />
+          <party v-if="contentTrigger3" :storeInfo="storeInfo" />
         </v-col>
       </v-row>
     </v-container>
@@ -100,9 +100,9 @@ import party from "../components/party.vue";
 import axios from "axios";
 import KakaoMap from "../components/KakaoMap.vue";
 
-// const baseURL = "http://127.0.0.1:8000/";
-const baseURL =
-  "http://ec2-54-180-109-206.ap-northeast-2.compute.amazonaws.com/";
+const baseURL = "http://127.0.0.1:8000/";
+// const baseURL =
+//   "http://ec2-54-180-109-206.ap-northeast-2.compute.amazonaws.com/";
 
 export default {
   components: {

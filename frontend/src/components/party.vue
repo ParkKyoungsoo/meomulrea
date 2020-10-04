@@ -1,6 +1,6 @@
 <template>
   <div>
-    <v-btn text to="/create">
+    <v-btn @click='mvtopage()'>
       <v-icon left>mdi-forum</v-icon>
       <div class="hidden-xs-only">파티만들기</div>
     </v-btn>
@@ -18,8 +18,16 @@
 import ChatList from "./Chat/ChatList.vue";
 
 export default {
+  props:{
+    storeInfo: []
+  },
   components: {
     ChatList,
   },
+  methods:{
+    mvtopage(){
+      this.$router.push('/create/'+this.storeInfo.store_id)
+    }
+  }
 };
 </script>
