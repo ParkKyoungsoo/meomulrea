@@ -57,7 +57,7 @@
         >
       </v-row>
     </div>
-    <div class="review-origin" v-for="review in reviews" :key="review.id">
+    <div class="review-origin" v-for="(review, index) in reviews" :key="review.id">
       <div style="border: 1px solid silver; border-radius: 0.4em">
         <article class="review review-1">
           <v-row>
@@ -96,9 +96,10 @@
           <!-- <v-row>
               <v-rating :value="review.score" readonly background-color="orange lighten-3" color="orange" dense="true" half-increments="true" small="true"></v-rating>({{ review.score }})<br>
             </v-row> -->
-          <p class="review-excerpt">{{ review.content }}</p>
+          <p class="review-excerpt">{{ review.content }} {{index}} {{review.id}}</p>
+          <!-- <Comment @comment="registerComment()" :comment="comment"/> -->
           <v-row justify="center">
-            <v-expansion-panels inset>
+            <v-expansion-panels>
               <v-expansion-panel>
                 <v-expansion-panel-header>답글 달기</v-expansion-panel-header>
                 <v-expansion-panel-content>
@@ -106,12 +107,11 @@
                     outlined
                     name="input-7-4"
                     label="답글을 남겨보세요." 
-                    :value="myComment"
                     color="orange"
                   ></v-textarea>
                   <div class="text-right">
                     <!-- <v-btn v-show="myComment == 0" @click="msgComment(myComment)" color="gray" style="color:darkgray">등록</v-btn> -->
-                    <v-btn @click="registerComment(review.id)" color="orange">등록</v-btn>
+                    <v-btn id ="comm" color="orange">등록</v-btn>
                   </div>
                 </v-expansion-panel-content>
               </v-expansion-panel>
@@ -132,7 +132,13 @@ const baseURL = "http://127.0.0.1:8000/";
 // const baseURL =
 //   "http://ec2-54-180-109-206.ap-northeast-2.compute.amazonaws.com/";
 
+window.onload=function() {
+  document.getElementById("comm").onclick=registerComm;
+}
 export default {
+  // components: {
+  //   Comment,
+  // },
   data() {
     return {
       rating: 0,
@@ -141,6 +147,7 @@ export default {
       myReview: "",
       flag: 1,
       myComment: "",
+      message: "",
     }
   },
   created() {
@@ -148,6 +155,12 @@ export default {
   },
 
   methods: {
+    getUsertype() {
+      // axios.post(baseURL + "api/accounts/email_user_or_bizuser/"), {
+
+      // }
+    },
+
     getReview() {
       this.flag = 1;
       // this.value = 1;
@@ -290,10 +303,9 @@ export default {
 
     registerComment(idx) {
       console.log("idx" , idx)
-      console.log("내 유저타입은?")
-      console.log(this.myComment)
+      console.log(this.message)
       axios.post(baseURL + `api/reviews/${idx}/create_reply/`, {
-        content: this.myComment,
+        content: this.message,
       },
       {
         headers: {
@@ -308,6 +320,23 @@ export default {
         console.log('답글ㄴㄴ', err.response)
       })
     },
+    registerComm() {
+      axios.post(baseURL + `api/reviews/${idx}/create_reply/`, {
+        content: this.message,
+      },
+      {
+        headers: {
+          Authorization: `Token ${this.$cookies.get("auth-token")}`,
+        },
+      })
+      .then(res => {
+        console.log("사장님 댓글", res.data)
+      })
+      .catch(err => 
+      {
+        console.log('답글ㄴㄴ', err.response)
+      })
+    }
   },
 };
 </script>

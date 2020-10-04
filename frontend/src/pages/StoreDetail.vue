@@ -44,7 +44,7 @@
             </div>
             <div>
               <img src="../assets/image/clock.png" style="width:15px;" alt="" />
-              {{ this.businessDay }} {{ this.storeInfo.start_time.substring(0,5) }} - {{ this.endTime }}
+              {{ this.businessDay }} {{ this.startTime }} - {{ this.endTime }}
             </div>
             <div>
               <img src="../assets/image/star.png" style="width:15px;" alt="">
@@ -119,6 +119,7 @@ export default {
       contentTrigger1: true,
       contentTrigger2: false,
       contentTrigger3: false,
+      startTime: "",
       endTime: "",
       days: [],
       businessDay: "",
@@ -129,8 +130,14 @@ export default {
     this.getStoreDetail();
   },
   methods: {
+    
     changeEndTime(time) {
-      if (time == "00:00:00") this.endTime = "24:00";
+      if (time == "00:00:00") {
+        this.endTime = "24:00";
+      }
+      else {
+        this.endTime = time.substring(0, 5)
+      }
     },
 
     getBusinessDay(day) {
@@ -173,6 +180,7 @@ export default {
           //   this.storeInfo.store_name.replace(/(\s*)/g, "") +
           //   ".jpg");
           this.imgUrl = require("../assets/image/storelist/default.jpg");
+          this.startTime = res.data.start_time.substring(0, 5);
           this.changeEndTime(res.data.end_time);
           this.getBusinessDay(res.data);
         })
