@@ -48,10 +48,9 @@ def email_user_or_bizuser(request):
 @permission_classes([IsAuthenticated])
 def user_detail(request):
     serializer = UserDetailSerializer(data=request.data, instance=request.user)
-    print(request.data.get('address'))
     if serializer.is_valid(raise_exception=True):
         serializer.save()
-    return Response(serializer.data)
+        return Response(serializer.data)
 
 
 # user 프로필 가져오기 or 수정
