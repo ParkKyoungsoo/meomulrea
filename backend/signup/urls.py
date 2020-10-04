@@ -24,7 +24,7 @@ from django.conf.urls import include as include2
 
 urlpatterns = [
     path('chat/', include2('chat.urls')),
-    path('chatroom/',include('chatroom.urls')),
+    path('api/chatroom/',include('chatroom.urls')),
     path('admin/', admin.site.urls),
     path('api/accounts/', include('accounts.urls')),
 

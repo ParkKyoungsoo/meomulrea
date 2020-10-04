@@ -14,8 +14,8 @@
   </div>
 </template>
 <script>
-// import ChatList from "./HyerinChat/ChatList.vue";
-import ChatList from "./Chat/ChatList.vue";
+// import ChatList from "./Chat/ChatList.vue";
+import ChatList from "./HyerinChat/ChatList.vue";
 
 export default {
   props:{

@@ -5,7 +5,7 @@ import json
 import pandas as pd
 import numpy as np
 import os
-import pickle
+import pickle5 as pickle
 # from lightfm import LightFM
 
 from rest_framework.response import Response
