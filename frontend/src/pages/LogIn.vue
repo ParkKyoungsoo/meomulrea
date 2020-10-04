@@ -540,7 +540,12 @@ export default {
     },
 
     nm_login() {
-        axios
+      axios
+        .post(baseURL + "api/accounts/email_user_or_bizuser/", {
+          email: this.nm_email
+        }).then((res)=>{
+          if(res.data.message==1){
+           axios
           .post(baseURL + "api/account/login/", {
             email: this.nm_email,
             password: this.nm_password,
@@ -549,18 +554,24 @@ export default {
             firebase
               .auth()
               .setPersistence(firebase.auth.Auth.Persistence.SESSION);
-            // .then(()=>{
             firebase
               .auth()
               .signInWithEmailAndPassword(this.nm_email, this.nm_password);
             this.setCookie(res.data.key);
             this.$router.push("/home");
-            // })
           })
           .catch((err) => {
             console.log(err);
             alert("로그인 정보를 다시 확인하시지요");
-          });
+          }); 
+          }
+          else{
+            alert('존재하지 않는 회원 정보입니다.')
+          }
+        })
+        .catch((err)=>{
+          console.log(err)
+        });
     },
     checkBizLogin() {
       let err = true;
@@ -577,27 +588,40 @@ export default {
       if (err) this.biz_login();
     },
     biz_login() {
-      console.log("biz_login호출");
+      // console.log("biz_login호출");
       axios
-          .post(baseURL + "api/account/login/", {
-            email: this.biz_email,
-            password: this.biz_password,
-          })
-          .then((res) => {
-            // firebase
-            //   .auth()
-            //   .setPersistence(firebase.auth.Auth.Persistence.SESSION);
-            // // .then(()=>{
-            // firebase
-            //   .auth()
-            //   .signInWithEmailAndPassword(this.nm_email, this.nm_password);
-            this.setCookie(res.data.key);
-            this.$router.push("/home");
-            // })
-          })
-          .catch((err) => {
-            alert('아이디 또는 비밀번호를 확인해주세요.')
-          });
+        .post(baseURL + "api/accounts/email_user_or_bizuser/", {
+          email: this.nm_email
+        }).then((res)=>{
+          if(res.data.message==0){
+            axios
+                .post(baseURL + "api/account/login/", {
+                  email: this.biz_email,
+                  password: this.biz_password,
+                })
+                .then((res) => {
+                  // firebase
+                  //   .auth()
+                  //   .setPersistence(firebase.auth.Auth.Persistence.SESSION);
+                  // // .then(()=>{
+                  // firebase
+                  //   .auth()
+                  //   .signInWithEmailAndPassword(this.nm_email, this.nm_password);
+                  this.setCookie(res.data.key);
+                  this.$router.push("/home");
+                  // })
+                })
+                .catch((err) => {
+                  alert('아이디 또는 비밀번호를 확인해주세요.')
+                });
+          }
+          else{
+            alert('존재하지 않는 회원 정보입니다.')
+          }
+        })
+        .catch((err)=>{
+          console.log(err)
+        });
     },
 
     checkBizNumb() {
