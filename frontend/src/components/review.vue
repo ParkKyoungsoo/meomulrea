@@ -107,7 +107,7 @@
                     outlined
                     name="input-7-4"
                     label="댓글을 남겨보세요." 
-                    value
+                    v-model="myComment"
                     color="orange"
                   ></v-textarea>
                   <div class="text-right">
@@ -129,9 +129,9 @@
 
 <script>
 import axios from "axios";
-// const baseURL = "http://127.0.0.1:8000/";
-const baseURL =
-  "http://ec2-54-180-109-206.ap-northeast-2.compute.amazonaws.com/";
+const baseURL = "http://127.0.0.1:8000/";
+// const baseURL =
+//   "http://ec2-54-180-109-206.ap-northeast-2.compute.amazonaws.com/";
 
 export default {
   data() {
@@ -291,8 +291,9 @@ export default {
 
     registerComment(idx) {
       console.log("idx" , idx)
+      console.log("내 유저타입은?")
       axios.post(baseURL + `api/reviews/${idx}/create_reply/`, {
-        content: this.Comment,
+        content: this.myComment,
       },
       {
         headers: {
