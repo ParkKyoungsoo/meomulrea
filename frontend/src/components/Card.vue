@@ -6,9 +6,7 @@
     <div class="back">
       <h2>{{ this.storeData.store_name }}</h2>
       <p>별점 : {{ parseInt(this.storeData.average_rating) }}</p>
-      <!-- <v-btn @click="goToShopDetail(this.storeData.store_id)"
-        >가게보러가기</v-btn
-      > -->
+      <v-btn @click="goToShopDetail()">가게보러가기</v-btn>
     </div>
   </div>
 </template>
@@ -38,14 +36,14 @@ export default {
     //   this.storeData.store_name.replace(/(\s*)/g, "") +
     //   ".jpg");
     // console.log(this.imgUrl);
-    this.imgUrl = require('../assets/image/storelist/default.jpg');
+    this.imgUrl = require("../assets/image/storelist/default.jpg");
     console.log("created!!", this.storeData.store_id);
   },
 
   methods: {
-    goToShopDetail(shopId) {
-      console.log("shopId", shopId);
-      // this.$router.push("/storedetail/" + shopId);
+    goToShopDetail() {
+      // console.log("this.storeData.store_id", this.storeData.store_id);
+      this.$router.push("/storedetail/" + this.storeData.store_id);
     },
     showShopList: function() {
       axios
