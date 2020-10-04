@@ -477,11 +477,8 @@ export default {
       } else if (
         !this.checkBizNumb()){
           alert('사업자번호가 올바르지 않습니다.')
-      }  else if(
-        !this.error.email &&
-        !this.error.password &&
-        !this.error.passwordConfirm
-      ) {
+      }
+      if(err){
         this.biz_signup();
       }
     },
@@ -588,10 +585,9 @@ export default {
       if (err) this.biz_login();
     },
     biz_login() {
-      // console.log("biz_login호출");
       axios
         .post(baseURL + "api/accounts/email_user_or_bizuser/", {
-          email: this.nm_email
+          email: this.biz_email
         }).then((res)=>{
           if(res.data.message==0){
             axios
@@ -702,7 +698,6 @@ export default {
         });
     },
     biz_signup() {
-      console.log("biz_signup()");
       axios
         .post(baseURL + "api/account/signup/", {
           username: this.biz_name,
@@ -711,40 +706,49 @@ export default {
           password2: this.biz_password_confirm,
         })
         .then((res) => {
+          console.log(res.data.key)
+          console.log(this.biz_numb,'\n',this.biz_name,'\n',this.biz_address,'\n',this.biz_image.name,'\n')
           axios
             .post(
               baseURL + "api/accounts/user_detail/",
               {
+                email: this.biz_email,
+                username: this.biz_name,
                 usertype: 0,
                 biznumber: this.biz_numb,
                 bizname: this.biz_name,
-                bizaddress: this.biz_address,
-                bizimage: this.biz_image
+                bizaddress: this.biz_address
               },
               {
                 headers: {
                   Authorization: `Token ${res.data.key}`,
-                },
+                }
               }
             ) // post > post
             .then((res) => {
-              this.onSignup();
-              this.reset(true);
+              console.log('여기는 올까몰라')
+              this.reset(false);
               this.$router.push("/")
-            }); // post > post > then
-        })
-        .catch((res) => {
-          console.log(res);
-          // let token = res.data.key;
-          console.log("res : " + res.data);
-          this.$store.dispatch("signUserUp", {
-            email: this.nm_email,
-            password: this.nm_password,
-            username: this.nm_nickname,
-          });
+            })
+            .catch((err) => {
+              // err.response
+              console.log('여기는 안왔으면 좋겠는데')
+              console.log(err.response);
+              // let token = res.data.key;
+              console.log("res : " + res.data);
+              // this.$store.dispatch("signUserUp", {
+              //   email: this.nm_email,
+              //   password: this.nm_password,
+              //   username: this.nm_nickname,
+              // });
+          })
         })
         .catch((err) => {
-          console.log(err);
+          console.log('여기일리가 없지 그치')
+          console.log(err)
+          console.log(err.response)
+          console.log(err.data)
+          console.log(err.message)
         });
     },
     reset(nm) {

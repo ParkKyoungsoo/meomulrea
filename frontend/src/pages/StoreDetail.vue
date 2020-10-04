@@ -172,13 +172,7 @@ export default {
           // this.imgUrl = require("../assets/image/storelist/" +
           //   this.storeInfo.store_name.replace(/(\s*)/g, "") +
           //   ".jpg");
-
-
-          // this.imgUrl = require("../assets/image/storelist/" +
-          //   this.storeInfo.store_name.replace(/(\s*)/g, "") +
-          //   ".jpg");
-
-
+          this.imgUrl = require("../assets/image/storelist/default.jpg");
           this.changeEndTime(res.data.end_time);
           this.getBusinessDay(res.data);
         })
