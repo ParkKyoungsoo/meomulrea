@@ -291,6 +291,7 @@ export default {
     registerComment(idx) {
       console.log("idx" , idx)
       console.log("내 유저타입은?")
+      console.log(this.myComment)
       axios.post(baseURL + `api/reviews/${idx}/create_reply/`, {
         content: this.myComment,
       },
@@ -301,7 +302,10 @@ export default {
       })
       .then(res => {
         console.log("사장님 댓글", res.data)
-        // this.myComment = res.data
+      })
+      .catch(err => 
+      {
+        console.log('답글ㄴㄴ', err.response)
       })
     },
   },
