@@ -6,7 +6,9 @@
         <div v-if="nm_page === 0" class="start">
           <div>
             <h1>일반회원</h1>
-            <v-btn rounded color="rgb(0,0,0)" dark @click="mvpage(true)">시작하기</v-btn>
+            <v-btn rounded color="rgb(0,0,0)" dark @click="mvpage(true)"
+              >시작하기</v-btn
+            >
           </div>
         </div>
         <div v-if="nm_page === 1" class="start">
@@ -18,10 +20,24 @@
               <h1>일반회원</h1>
             </div>
             <v-text-field v-model="nm_email" label="이메일"></v-text-field>
-            <v-text-field v-model="nm_password" label="비밀번호" :append-icon="show2 ? 'mdi-eye' : 'mdi-eye-off'" :type="show2 ? 'text' : 'password'"
-              @click:append="show2 = !show2"></v-text-field>
-            <v-btn rounded color="rgb(233, 105, 30)" dark @click="nm_login()" :loading="loading">로그인</v-btn>
-            <v-btn rounded color="rgb(0,0,0)" dark @click="mvpage(true)">회원등록</v-btn>
+            <v-text-field
+              v-model="nm_password"
+              label="비밀번호"
+              :append-icon="show2 ? 'mdi-eye' : 'mdi-eye-off'"
+              :type="show2 ? 'text' : 'password'"
+              @click:append="show2 = !show2"
+            ></v-text-field>
+            <v-btn
+              rounded
+              color="rgb(233, 105, 30)"
+              dark
+              @click="nm_login()"
+              :loading="loading"
+              >로그인</v-btn
+            >
+            <v-btn rounded color="rgb(0,0,0)" dark @click="mvpage(true)"
+              >회원등록</v-btn
+            >
           </div>
         </div>
         <div v-if="nm_page === 2" class="start">
@@ -32,7 +48,7 @@
               </button>
               <h1>일반회원</h1>
             </div>
-            <v-text-field 
+            <v-text-field
               v-model="nm_email"
               :messages="[error.email]"
               label="이메일"
@@ -107,12 +123,21 @@
               </button>
               <h1>사업자회원</h1>
             </div>
-            <v-text-field v-model="biz_email" ref="biz_email" label="사업자번호"></v-text-field>
             <v-text-field
-              v-model="biz_password" ref="biz_password"
+              v-model="biz_email"
+              ref="biz_email"
+              label="사업자번호"
+            ></v-text-field>
+            <v-text-field
+              v-model="biz_password"
+              ref="biz_password"
               label="비밀번호"
             ></v-text-field>
-            <v-btn rounded color="rgb(233, 105, 30)" dark @click="checkBizLogin()"
+            <v-btn
+              rounded
+              color="rgb(233, 105, 30)"
+              dark
+              @click="checkBizLogin()"
               >로그인</v-btn
             >
             <v-btn rounded color="rgb(0,0,0)" dark @click="mvpage(false)"
@@ -128,9 +153,18 @@
               </button>
               <h1>사업자회원</h1>
             </div>
-            <v-text-field v-model="biz_email" :messages="[error.bizemail]" ref="biz_email" label="사업자번호"></v-text-field>
+            <v-text-field
+              v-model="biz_email"
+              :messages="[error.bizemail]"
+              ref="biz_email"
+              label="사업자번호"
+            ></v-text-field>
             <v-file-input accept="image/*" label="사진"></v-file-input>
-            <v-text-field v-model="biz_name" ref="biz_name" label="업주명"></v-text-field>
+            <v-text-field
+              v-model="biz_name"
+              ref="biz_name"
+              label="업주명"
+            ></v-text-field>
             <v-text-field
               v-model="biz_password"
               ref="biz_password"
@@ -167,8 +201,9 @@
 import axios from "axios";
 import * as firebase from "firebase";
 
-const baseURL = "http://127.0.0.1:8000/api/";
-// const baseURL = "http://j3b304.p.ssafy.io/";
+// const baseURL = "http://127.0.0.1:8000/api/";
+const baseURL =
+  "http://ec2-54-180-109-206.ap-northeast-2.compute.amazonaws.com/";
 
 export default {
   name: "LogIn",
@@ -185,7 +220,7 @@ export default {
       nm_password_confirm: "",
       nm_address: "",
       nm_gender: "",
-      nm_birthyear: 0,
+      nm_birthyear: 1990,
       nm_check: false,
 
       biz_page: 0,
@@ -199,9 +234,9 @@ export default {
         email: "",
         pwd: "",
         pwdconfirm: "",
-        bizemail:"",
-        bizpwd:"",
-        bizpwdconfirm:""
+        bizemail: "",
+        bizpwd: "",
+        bizpwdconfirm: "",
       },
       password: "password",
 
@@ -228,7 +263,7 @@ export default {
       }
       this.nm_nickname = this.nm_email;
       axios
-        .post(baseURL + "accounts/user_email/", {
+        .post(baseURL + "api/accounts/user_email/", {
           email: this.nm_email,
         })
         .then((res) => {
@@ -240,6 +275,8 @@ export default {
     },
     biz_email: function() {
       if (this.biz_email.length > 0) {
+        if (this.biz_email.length == 3 || this.biz_email.length == 6)
+          this.biz_email += "-";
         if (!this.checkBizEmail()) {
           this.error.bizemail = this.rules[0].message;
           return;
@@ -248,7 +285,7 @@ export default {
       }
       this.biz_nickname = this.biz_name;
       axios
-        .post(baseURL + "accounts/user_email/", {
+        .post(baseURL + "api/accounts/user_email/", {
           email: this.biz_email,
         })
         .then((res) => {
@@ -314,6 +351,7 @@ export default {
       }
     },
   },
+
   computed: {
     // comparePasswords () {
     //     return this.password !== this.confirmPassword ? 'Passwords do not match.' : true
@@ -328,6 +366,7 @@ export default {
       return this.$store.getters.loading;
     },
   },
+
   methods: {
     checkHandler() {
       let err = true;
@@ -356,7 +395,7 @@ export default {
         this.nm_signup();
       }
     },
-    checkBizHandler(){
+    checkBizHandler() {
       let err = true;
       let msg = "";
       !this.biz_email &&
@@ -364,10 +403,10 @@ export default {
         (err = false),
         this.$refs.biz_email.focus());
       err &&
-      !this.biz_name &&
-      ((msg = "이름을 입력해주세요!"),
-      (err = false),
-      this.$refs.biz_name.focus());
+        !this.biz_name &&
+        ((msg = "이름을 입력해주세요!"),
+        (err = false),
+        this.$refs.biz_name.focus());
       err &&
         !this.biz_password &&
         ((msg = "비밀번호를 입력해주세요!"),
@@ -420,10 +459,8 @@ export default {
               console.log("buildingName : " + extraAddr);
             }
             fullAddr += extraAddr !== "" ? " (" + extraAddr + ")" : "";
-            if(check)
-              this.nm_address = fullAddr;
-            else
-              this.biz_address = fullAddr;
+            if (check) this.nm_address = fullAddr;
+            else this.biz_address = fullAddr;
             console.log("fullADDR : " + fullAddr);
           }
         },
@@ -434,6 +471,7 @@ export default {
       this.$cookies.set("auth-token", token);
       this.isLoggedIn = true;
     },
+
     onSignin() {
       this.$store.dispatch("signUserIn", {
         email: this.nm_email,
@@ -453,14 +491,18 @@ export default {
       }
       if (this.nm_check) {
         axios
-          .post(baseURL + "account/login/", {
+          .post(baseURL + "api/account/login/", {
             email: this.nm_email,
             password: this.nm_password,
           })
           .then((res) => {
-            // firebase.auth().setPersistence(firebase.auth.Auth.Persistence.SESSION)
+            firebase
+              .auth()
+              .setPersistence(firebase.auth.Auth.Persistence.SESSION);
             // .then(()=>{
-            // firebase.auth().signInWithEmailAndPassword(this.nm_email, this.nm_password)
+            firebase
+              .auth()
+              .signInWithEmailAndPassword(this.nm_email, this.nm_password);
             this.setCookie(res.data.key);
             this.$router.push("/home");
             // })
@@ -485,29 +527,32 @@ export default {
         this.$refs.biz_password.focus());
       if (err) this.biz_login();
     },
-    biz_login(){
-        // axios.post().then((res)=>{});
-        console.log('biz_login호출')
+    biz_login() {
+      // axios.post().then((res)=>{});
+      console.log("biz_login호출");
     },
 
-    checkBizEmail(){
-      var valueMap = this.biz_email.replace(/-/gi, '').split('').map(function(item) {
-        return parseInt(item, 10);
-    });
+    checkBizEmail() {
+      var valueMap = this.biz_email
+        .replace(/-/gi, "")
+        .split("")
+        .map(function(item) {
+          return parseInt(item, 10);
+        });
 
-    if (valueMap.length === 10) {
+      if (valueMap.length === 10) {
         var multiply = new Array(1, 3, 7, 1, 3, 7, 1, 3, 5);
         var checkSum = 0;
 
         for (var i = 0; i < multiply.length; ++i) {
-            checkSum += multiply[i] * valueMap[i];
+          checkSum += multiply[i] * valueMap[i];
         }
 
         checkSum += parseInt((multiply[8] * valueMap[8]) / 10, 10);
-        return Math.floor(valueMap[9]) === (10 - (checkSum % 10));
-    }
+        return Math.floor(valueMap[9]) === 10 - (checkSum % 10);
+      }
 
-    return false;
+      return false;
     },
 
     onSignup() {
@@ -520,7 +565,7 @@ export default {
 
     nm_signup() {
       axios
-        .post(baseURL + "account/signup/", {
+        .post(baseURL + "api/account/signup/", {
           username: this.nm_nickname,
           email: this.nm_email,
           password1: this.nm_password,
@@ -530,7 +575,7 @@ export default {
           console.log(res.data.key);
           axios
             .post(
-              baseURL + "accounts/user_detail/",
+              baseURL + "api/accounts/user_detail/",
               {
                 username: this.nm_nickname,
                 email: this.nm_email,
@@ -571,8 +616,8 @@ export default {
           console.log("이 에러라고");
         });
     },
-    biz_signup(){
-      console.log('biz_signup() 악시오스 호출 then router push')
+    biz_signup() {
+      console.log("biz_signup() 악시오스 호출 then router push");
     },
     reset(nm) {
       if (nm) {
@@ -584,6 +629,7 @@ export default {
         this.nm_password_confirm = "";
         this.nm_address = "";
         this.nm_gender = "";
+        this.nm_birthyear = "1990";
       } else {
         this.biz_page -= 1;
         this.biz_email = "";
@@ -603,6 +649,7 @@ export default {
         this.nm_password_confirm = "";
         this.nm_address = "";
         this.nm_gender = "";
+        this.nm_birthyear = "1990";
       } else {
         this.biz_page += 1;
         this.biz_email = "";

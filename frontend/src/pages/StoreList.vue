@@ -4,23 +4,17 @@
     <v-main>
       <v-container>
         <v-row>
-        <v-flex>{{ $route.params.category }}</v-flex>
-        <v-flex>{{ this.getLocation.dong }}</v-flex>
-        <!-- <v-btn @click="getStoreInfo">버튼</v-btn> -->
+          <v-flex>{{ $route.params.category }}</v-flex>
+          <v-flex>{{ this.getLocation.dong }}</v-flex>
         </v-row>
-        <!-- <kakaoMap :storeData="loc" :category="category" /> -->
-        <v-row>
-          <!-- <v-col class="shopList"> -->
-            <!-- <v-card
-              class="mx-auto"
-              max-width="320"
-              outlined
-              v-for="(item, index) in this.getShopList.shopList"
-              :key="index"
-              style="border: 1px solid grey"
-            > -->
-            <Card/>
-              <!-- <v-col>
+
+        <v-row style="display: flex; align-items: center; text-align: center;">
+          <div v-for="(item, index) in storeList" :key="index" :index="index">
+            <v-row style="margin: 10px; width: fit-content;">
+              <Card v-bind:storeData="item" />
+            </v-row>
+          </div>
+          <!-- <v-col>
                 <v-row justify="center">
                   <div>{{ item.store_name }}</div>
                 </v-row>
@@ -29,7 +23,7 @@
                 </v-row>
               </v-col> -->
 
-              <!-- <v-card-actions>
+          <!-- <v-card-actions>
                 <v-btn
                   depressed
                   color="primary"
@@ -37,12 +31,12 @@
                   >가게 보러가기</v-btn
                 >
               </v-card-actions> -->
-            <!-- </v-card> -->
+          <!-- </v-card> -->
           <!-- </v-col> -->
           <!-- <v-col> -->
         </v-row>
         <!-- <v-row> -->
-          <!-- </v-col> --> 
+        <!-- </v-col> -->
         <!-- </v-row> -->
       </v-container>
     </v-main>
@@ -56,42 +50,46 @@ import { mapGetters } from "vuex";
 import Header from "../components/Header.vue";
 import Card from "../components/Card.vue";
 
-const baseURL = "http://127.0.0.1:8000/api/";
-// const baseURL = "http://j3b304.p.ssafy.io/";
+// const baseURL = "http://127.0.0.1:8000/api/";
+const baseURL =
+  "http://ec2-54-180-109-206.ap-northeast-2.compute.amazonaws.com/";
 
 export default {
   data() {
     return {
+      storeList: "",
       data: {
         loc: 0,
         category: "",
-        shopList: "",
       },
     };
   },
   components: {
     // kakaoMap,
     Header,
-    Card
+    Card,
   },
 
   computed: {
     ...mapGetters("location", ["getLocation"]),
-    ...mapGetters("shopList", ["getShopList"]),
   },
 
-  created: function() {
+  created: async function() {
     this.loc = this.getLocation;
     this.category = this.$route.params.category;
-    this.shopList = this.getShopList;
+    await this.getStoreInfo();
   },
 
   methods: {
-    getStoreInfo() {
+    test() {
+      console.log("this.shopList", this.storeList);
+      console.log("this.shopList", this.storeList[0]);
+    },
+    async getStoreInfo() {
       console.log(this.$cookies.get("auth-token"));
-      axios
+      await axios
         .post(
-          baseURL + "stores/store_list/",
+          baseURL + "api/stores/store_list/",
           {
             category: this.category,
             user_location: this.getLocation.dong,
@@ -103,7 +101,7 @@ export default {
           }
         ) // post > post
         .then((res) => {
-          console.log(res.data);
+          this.storeList = res.data;
         })
         .catch((res) => {
           console.log(res);
@@ -112,29 +110,6 @@ export default {
 
     goToShopDetail: function(shopId) {
       this.$router.push("/storedetail/" + shopId);
-    },
-    test: function() {
-      console.log("loc", this.loc);
-    },
-    showShopList: function() {
-      axios
-        .post(
-          baseURL + "stores/store_category/",
-          {
-            category: this.$route.params.category,
-          },
-          {
-            headers: {
-              Authorization: `Token ${this.$cookies.get("auth-token")}`,
-            },
-          }
-        ) // post > post
-        .then((res) => {
-          this.userInfo = res.data;
-        })
-        .catch((res) => {
-          console.log("user Address error", res);
-        }); // post > post > then
     },
   },
 };

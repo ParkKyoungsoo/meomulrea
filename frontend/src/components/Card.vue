@@ -1,86 +1,56 @@
 <template>
-<v-container>
-    <v-row style="display: flex; align-items: center; text-align: center;">
-        <div v-for="(item, index) in this.getShopList.shopList" :key="index" :index="index">
-            <v-row style="margin: 10px; width: fit-content;">
-                <div class="flip">
-                  <div class="front" :style="{ backgroundImage: `url(`+imgUrl[index]+`)` }">
-                      <h1 class="text-shadow">{{item.store_name}}</h1>
-                  </div>
-                  <div class="back">
-                    <h2>{{item.store_name}}</h2>
-                    <p>별점 : {{parseInt(item.average_rating)}}</p>
-                    <v-btn @click="goToShopDetail(item.shopId)">가게보러가기</v-btn>
-                  </div>
-              </div>
-            </v-row>
-        </div>
-    </v-row>
-</v-container>
+  <div class="flip">
+    <div class="front" :style="{ backgroundImage: `url(` + imgUrl + `)` }">
+      <h1 class="text-shadow">{{ this.storeData.store_name }}</h1>
+    </div>
+    <div class="back">
+      <h2>{{ this.storeData.store_name }}</h2>
+      <p>별점 : {{ parseInt(this.storeData.average_rating) }}</p>
+      <v-btn @click="goToShopDetail()"
+        >가게보러가기</v-btn>
+    </div>
+  </div>
 </template>
 <script>
 import axios from "axios";
 import { mapGetters } from "vuex";
 // const baseURL = "http://j3b304.p.ssafy.io/";
-const baseURL = "ec2-54-180-109-206.ap-northeast-2.compute.amazonaws.com";
+const baseURL =
+  "http://ec2-54-180-109-206.ap-northeast-2.compute.amazonaws.com/";
+
 export default {
-    data() {
+  props: {
+    storeData: {},
+  },
+  data() {
     return {
-      imgUrl: [],
+      imgUrl: "",
       data: {
         category: "",
-        shopList: "",
       },
+      storeId: "",
     };
   },
-  components: {
-  },
-
-  computed: {
-    ...mapGetters("shopList", ["getShopList"]),
-  },
+  components: {},
   created: function() {
-    // this.loc = this.getLocation;
-    // this.category = this.$route.params.category;
-    this.shopList = this.getShopList;
-    for(var i=0;i<this.shopList.shopList.length;i++){
-      this.imgUrl.push(require('../assets/image/storelist/'+this.shopList.shopList[i].store_name.replace(/(\s*)/g, "")+'.jpg'));
-      // this.imgUrl.push('../assets/image/storelist/',this.shopList[i].store_name.replace(/(\s*)/g, ""),'.jpg');
-    }
-    console.log(this.imgUrl)
+    // this.imgUrl = require("../assets/image/storelist/" +
+    //   this.storeData.store_name.replace(/(\s*)/g, "") +
+    //   ".jpg");
+    // console.log(this.imgUrl);
+    
+    console.log("created!!", this.storeData.store_id);
   },
 
   methods: {
-    getStoreInfo() {
-      console.log(this.$cookies.get("auth-token"));
-      axios
-        .post(
-          baseURL + "stores/store_list/",
-          {
-            category: this.category,
-            user_location: this.getLocation.dong,
-          },
-          {
-            headers: {
-              Authorization: `Token ${this.$cookies.get("auth-token")}`,
-            },
-          }
-        ) // post > post
-        .then((res) => {
-          console.log(res.data);
-        })
-        .catch((res) => {
-          console.log(res);
-        }); // post > post > then
-    },
-
-    goToShopDetail: function(shopId) {
-      this.$router.push("/storedetail/" + shopId);
+    
+    goToShopDetail() {
+      this.storeId = this.storeData.store_id
+      this.$router.push("/storedetail/" + this.storeId);
     },
     showShopList: function() {
       axios
         .post(
-          baseURL + "stores/store_category/",
+          baseURL + "api/stores/store_category/",
           {
             category: this.$route.params.category,
           },
@@ -98,8 +68,7 @@ export default {
         }); // post > post > then
     },
   },
-}
+};
 </script>
 
-<style lang="scss" scoped src="../assets/css/Card.scss">
-</style>>
+<style lang="scss" scoped src="../assets/css/Card.scss"></style>>

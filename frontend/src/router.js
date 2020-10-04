@@ -12,6 +12,7 @@ import Chat from "./components/Chat/Chat.vue";
 import ChatList from "./components/Chat/ChatList";
 import Signin from "@/components/User/Signin";
 import test from "@/components/test.vue"
+import HyerinChat from "./pages/HyerinChat.vue";
 
 export default new Router({
   mode: "history",
@@ -66,6 +67,11 @@ export default new Router({
       path: "/test",
       name: "test",
       component: test,
+    },
+    {
+      path: "/hrchat/:roomName",
+      name: "HyerinChat",
+      component: HyerinChat,
     },
   ],
 });

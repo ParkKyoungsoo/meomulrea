@@ -71,6 +71,7 @@ export default {
             that.loadedChats.unshift(chat);
           });
         });
+        console.log(this.loadedChats);
     },
     loadRecentChatsByLastKey(lastKey) {
       let that = this;
