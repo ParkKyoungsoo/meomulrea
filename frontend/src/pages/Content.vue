@@ -2,7 +2,19 @@
   <v-main>
     <Header />
     <div class="advertise" align="center" justify="center">
-      <Carousel :storeData="recommendedDate" />
+      <!-- <Carousel :storeData="recommendedDate" /> -->
+      <v-carousel
+        cycle
+        height="30vh"
+        hide-delimiter-background
+        show-arrows-on-hover
+      >
+        <v-carousel-item v-for="(slide, i) in recommendedDate" :key="i">
+          <v-sheet>
+            <div>{{ slide }} Slide</div>
+          </v-sheet>
+        </v-carousel-item>
+      </v-carousel>
     </div>
     <v-container class="content">
       <div style="width: 80%;">
@@ -27,7 +39,7 @@
         <v-layout>
           <v-flex> 오늘은 뭐먹지? </v-flex>
         </v-layout>
-        <div class="shopList">
+        <v-layout md="12" xs="12">
           <carousel-3d :controls-visible="true">
             <slide
               v-for="(item, index) in recommendedDate"
@@ -37,13 +49,13 @@
               <figure>
                 <img :src="item.src" :alt="item[1]" />
                 <!-- <img src="../assets/image/background.jpg"> -->
-                <figcaption @click="gotoShop(item[1])" @mouseover="mouseOver()">
+                <figcaption @click="gotoShop(item[1])">
                   <h2>{{ index + 1 }}위</h2>
                 </figcaption>
               </figure>
             </slide>
           </carousel-3d>
-        </div>
+        </v-layout>
       </div>
     </v-container>
   </v-main>
@@ -51,7 +63,7 @@
 
 <script>
 import Vue from "vue";
-import Carousel from "../components/Carousel";
+// import Carousel from "../components/Carousel";
 import { Carousel3d, Slide } from "vue-carousel-3d";
 import axios from "axios";
 import recommendedDate from "../assets/datas/recommend_result_1.json";
@@ -68,7 +80,7 @@ Vue.use(Carousel3d);
 
 export default {
   components: {
-    Carousel,
+    // Carousel,
     Header,
     Carousel3d,
     Slide,
@@ -80,7 +92,7 @@ export default {
       lat: 0,
       lng: 0,
       locationData: "",
-      recommendedDate: "",
+      recommendedDate: [],
       weatherimg: "",
     };
   },
@@ -92,8 +104,18 @@ export default {
     EventBus.$on("addressChange", () => {
       this.getWeather();
     });
-
-    this.getCategory();
+    // this.getCategory();
+    axios({
+      method: "GET",
+      url: baseURL + "api/main/",
+    })
+      .then((response) => {
+        console.log(response.data.data);
+        this.recommendedDate = response.data.data;
+      })
+      .catch((ex) => {
+        console.log(ex);
+      });
   },
   computed: {
     ...mapGetters("location", ["getLocation"]),
