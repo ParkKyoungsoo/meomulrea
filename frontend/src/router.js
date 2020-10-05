@@ -63,7 +63,7 @@ export default new Router({
       component: test,
     },
     {
-      path: "/hrchat/:roomName",
+      path: "/hrchat/:roomNumber/:roomName",
       name: "HyerinChat",
       component: HyerinChat,
     },

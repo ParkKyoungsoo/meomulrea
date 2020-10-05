@@ -43,6 +43,9 @@ import axios from "axios";
 const baseURL = "http://127.0.0.1:8000/";
 
 export default {
+  props:{
+    store_id: []
+  },
   data() {
     return {
       chatList: [],
@@ -53,12 +56,12 @@ export default {
       // 여기서 ldj_loadChats 호출
       this.ldj_loadChats()
   },
-  computed: {
-    user() {
-      console.log("userInfo", this.$store.getters.user);
-      return this.$store.getters.user;
-    }
-  },
+  // computed: {
+  //   user() {
+  //     console.log("userInfo", this.$store.getters.user);
+  //     return this.$store.getters.user;
+  //   }
+  // },
   methods: {
     ldj_loadChats(){
       // backend 요청
@@ -66,7 +69,7 @@ export default {
       axios.post(
         baseURL + "api/chatroom/store_chatroom_list/",
         {
-          store_id : 15544
+          store_id : this.store_id
         },
         {
             headers: {
@@ -91,7 +94,7 @@ export default {
     },
     ldj_enterChat(chat){
       const key = chat.store_id +"_" +  chat.user
-      this.$router.push("/hrchat/" + key);
+      this.$router.push("/hrchat/" + key + '/' +chat.room_name);
     },
     onScroll() {
       if (window.top.scrollY + window.innerHeight >=document.body.scrollHeight - 100 && !this.loading) {
