@@ -1,14 +1,9 @@
 <template>
-<<<<<<< HEAD
-  <!-- <div>
-=======
   <div>
     <button> 나가기 </button>
->>>>>>> c36c6dbc50cf475353d9a35307c778a5b252a84d
     <textarea class="ldj" id="chat-log" cols="100" rows="20"></textarea><br>
     <input class="ldj" id="chat-message-input" type="text" size="100"><br>
     <input class="ldj" id="chat-message-submit" @click="yhr()" v-on:keyup.enter="yhr()" type="button" value="Send">
-  </div> -->
   <div>
     <v-col>
         <Header/>
