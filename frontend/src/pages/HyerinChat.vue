@@ -1,6 +1,6 @@
 <template>
   <div>
-  <v-container>  
+      <v-main>
   <!-- <div> -->
     <v-col>
         <Header/>
@@ -11,7 +11,6 @@
     <input class="ldj" id="chat-message-submit" @click="yhr()" v-on:keyup.enter="yhr()" type="button" value="Send">
     </v-col> -->
   <!-- <v-col style="border: 1px solid red;"> -->
-    <v-col><button @click="exit()"> 나가기 </button></v-col>
     <!-- <div class="chat">
         <ul>
             <li><img src="http://maxme-life.ru/tests/img2.jpg">
@@ -34,11 +33,15 @@
         <input type="text" placeholder="Написать сообщение" /><button>Отправить</button>
     </div> -->
     <v-col>
+          
         <div class="chat">
+            <div style="float: left;">
             <div class="chat_header">
                 <!-- <img class="chat_avatar" src="http://www.naturaloil.ph/wp-content/uploads/2015/11/John_Doe.jpg"/>채팅방이름 -->
                 <!-- <div class="chat_status">ONLINE</div> -->
                 {{roomName}}
+            </div>
+            <button @click="exit()"> 나가기 </button> 
             </div>
             <div class="chat_s">
                 <div v-for="(chatting,index) in chattings" :key="index">
@@ -68,7 +71,7 @@
             </div>
         </div>
     </v-col>
-    </v-container>
+    </v-main>
 </div>
 </template>
 
