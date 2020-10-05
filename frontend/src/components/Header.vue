@@ -53,8 +53,8 @@ import * as firebase from "firebase";
 import axios from "axios";
 
 // const baseURL = "http://127.0.0.1:8000/";
-const baseURL =
-  "http://ec2-54-180-109-206.ap-northeast-2.compute.amazonaws.com/";
+// const baseURL =
+//   "http://ec2-54-180-109-206.ap-northeast-2.compute.amazonaws.com/";
 
 export default {
   data() {
@@ -72,12 +72,11 @@ export default {
   computed: {
     ...mapGetters("location", ["getLocation"]),
     ...mapGetters("userInfo", ["getUserInfo"]),
+    ...mapGetters("server", ["getBaseURL"]),
   },
 
   created() {
     this.getUserAddress();
-    console.log("Token ", this.$cookies.get("auth-token"));
-    console.log("created", this.getUserInfo.userAddress);
     this.select = this.getUserInfo.userAddress;
   },
 
@@ -90,10 +89,9 @@ export default {
     ...mapMutations(("userInfo", ["setUserInfo"])),
 
     addAddress: function() {
-      console.log("addAddr Func", this.newAddress);
       axios
         .post(
-          baseURL + "api/accounts/user_order/",
+          this.getBaseURL.baseURL + "api/accounts/user_order/",
           {
             location: this.newAddress,
           },
@@ -104,7 +102,7 @@ export default {
           }
         ) // post > post
         .then((res) => {
-          console.log(res.data);
+          // console.log(res.data);
         })
         .catch((res) => {
           console.log(res);
@@ -121,8 +119,6 @@ export default {
       this.$store.commit("userInfo/setUserInfo", {
         userAddress: this.select.location,
       });
-
-      console.log("seleced Addr is", this.select.location);
     },
 
     logout() {
@@ -133,17 +129,22 @@ export default {
           this.$cookies.remove("auth-token");
           this.$router.push("/");
         });
+
+      this.$store.commit("userInfo/setUserInfo", {
+        userAddress: "",
+      });
     },
 
     getUserAddress() {
       axios
-        .post(baseURL + "api/accounts/user_order_list/", null, {
+        .post(this.getBaseURL.baseURL + "api/accounts/user_order_list/", null, {
           headers: {
             Authorization: `Token ${this.$cookies.get("auth-token")}`,
           },
         }) // post > post
         .then((res) => {
           this.userInfo = res.data;
+          this.select = res.data.location;
         })
         .catch((res) => {
           console.log("user Address error", res);
@@ -165,7 +166,6 @@ export default {
 
       geocoder.addressSearch(this.select.location, (result, status) => {
         if (status === kakao.maps.services.Status.OK) {
-          console.log("result", result);
           this.$store.commit("location/setLocation", {
             lat: result[0].y,
             lng: result[0].x,
@@ -199,7 +199,7 @@ export default {
 
           axios
             .post(
-              baseURL + "api/accounts/user_order/",
+              this.getBaseURL.baseURL + "api/accounts/user_order/",
               {
                 location: fullAddr,
               },
@@ -217,11 +217,6 @@ export default {
             }); // post > post > then
         },
       }).open({});
-      console.log("newAddress", this.newAddress);
-    },
-
-    test() {
-      console.log("new Address", this.newAddress);
     },
   },
 

@@ -231,9 +231,10 @@
 <script>
 import axios from "axios";
 import * as firebase from "firebase";
+import { mapMutations, mapGetters } from "vuex";
 
-const baseURL = "http://127.0.0.1:8000/";
-// const baseURL =
+// const this.getBaseURL.baseURL = "http://127.0.0.1:8000/";
+// const this.getBaseURL.baseURL =
 //   "http://ec2-54-180-109-206.ap-northeast-2.compute.amazonaws.com/";
 
 export default {
@@ -305,11 +306,10 @@ export default {
         this.error.email = "";
         this.nm_nickname = this.nm_email;
         axios
-          .post(baseURL + "api/accounts/user_email/", {
+          .post(this.getBaseURL.baseURL + "api/accounts/user_email/", {
             email: this.nm_email,
           })
           .then((res) => {
-            console.log(res.data.message);
             if (res.data.message === "이미 존재하는 이메일입니다.") {
               this.error.email = "이미 존재하는 이메일입니다.";
             }
@@ -347,11 +347,10 @@ export default {
         }
         this.error.bizemail = "";
         axios
-          .post(baseURL + "api/accounts/user_email/", {
+          .post(this.getBaseURL.baseURL + "api/accounts/user_email/", {
             email: this.biz_email,
           })
           .then((res) => {
-            console.log(res.data.message);
             if (res.data.message === "이미 존재하는 이메일입니다.") {
               this.error.bizemail = "이미 존재하는 이메일입니다.";
             }
@@ -359,7 +358,7 @@ export default {
       }
     },
     nm_password: function() {
-      var temp = ["qwert", "asdfg", "zxcvb","1234"];
+      var temp = ["qwert", "asdfg", "zxcvb", "1234"];
       var nm_password = this.nm_password;
       if (this.nm_password.length > 0) {
         for (var t in temp) {
@@ -414,7 +413,15 @@ export default {
     },
   },
 
+  computed: {
+    // comparePasswords () {
+    //     return this.password !== this.confirmPassword ? 'Passwords do not match.' : true
+    //   },
+    ...mapGetters("server", ["getBaseURL"]),
+  },
+
   methods: {
+    ...mapMutations(("userInfo", ["setUserInfo"])),
     bizlen() {
       var temp = this.biz_numb.substring(0, 12);
       this.biz_numb = temp;
@@ -506,23 +513,22 @@ export default {
       new daum.Postcode({
         oncomplete: (data) => {
           var fullAddr = data.address;
-          console.log(data.address);
           var extraAddr = "";
 
           if (data.addressType === "R") {
             if (data.bname !== "") {
               extraAddr += data.bname;
-              console.log("bname : " + extraAddr);
             }
             if (data.buildingName !== "") {
               extraAddr +=
                 extraAddr !== "" ? ", " + data.buildingName : data.buildingName;
-              console.log("buildingName : " + extraAddr);
             }
             fullAddr += extraAddr !== "" ? " (" + extraAddr + ")" : "";
             if (check) this.nm_address = fullAddr;
             else this.biz_address = fullAddr;
-            console.log("fullADDR : " + fullAddr);
+          } else {
+            if (check) this.nm_address = fullAddr;
+            else this.biz_address = fullAddr;
           }
         },
       }).open();
@@ -531,7 +537,7 @@ export default {
     setCookie(token) {
       this.$cookies.set("auth-token", token);
     },
-    setCookie(token, nickname){
+    setCookie(token, nickname) {
       this.$cookies.set("auth-token", token);
       this.$cookies.set("nickname", nickname);
     },
@@ -545,38 +551,42 @@ export default {
 
     nm_login() {
       axios
-        .post(baseURL + "api/accounts/email_user_or_bizuser/", {
-          email: this.nm_email
-        }).then((res)=>{
-          if(res.data.message==1){
-           axios
-          .post(baseURL + "api/account/login/", {
-            email: this.nm_email,
-            password: this.nm_password,
-          })
-          .then((res) => {
-              this.setCookie(res.data.key);
-              axios
-              .post(baseURL + "api/accounts/user_nickname/", null, {
-                headers: {
-                  Authorization: `Token ${res.data.key}`,
-                }
+        .post(this.getBaseURL.baseURL + "api/accounts/email_user_or_bizuser/", {
+          email: this.nm_email,
+        })
+        .then((res) => {
+          if (res.data.message == 1) {
+            axios
+              .post(this.getBaseURL.baseURL + "api/account/login/", {
+                email: this.nm_email,
+                password: this.nm_password,
               })
-              .then((res)=>{
-                  this.$cookies.set("nickname", res.data.nickname);
-                  this.$router.push("/home");
+              .then((res) => {
+                this.setCookie(res.data.key);
+                axios
+                  .post(
+                    this.getBaseURL.baseURL + "api/accounts/user_nickname/",
+                    null,
+                    {
+                      headers: {
+                        Authorization: `Token ${res.data.key}`,
+                      },
+                    }
+                  )
+                  .then((res) => {
+                    this.$cookies.set("nickname", res.data.nickname);
+                    this.$router.push("/home");
+                  })
+                  .catch((err) => {
+                    console.log(err.response);
+                  });
               })
-              .catch((err)=>{
-                  console.log(err.response)
-              })
-          })
-          .catch((err) => {
-            console.log(err);
-            alert("로그인 정보를 다시 확인하시지요");
-          }); 
-          }
-          else{
-            alert('존재하지 않는 회원 정보입니다.')
+              .catch((err) => {
+                console.log(err);
+                alert("로그인 정보를 다시 확인하시지요");
+              });
+          } else {
+            alert("존재하지 않는 회원 정보입니다.");
           }
         })
         .catch((err) => {
@@ -599,13 +609,13 @@ export default {
     },
     biz_login() {
       axios
-        .post(baseURL + "api/accounts/email_user_or_bizuser/", {
+        .post(this.getBaseURL.baseURL + "api/accounts/email_user_or_bizuser/", {
           email: this.biz_email,
         })
         .then((res) => {
           if (res.data.message == 0) {
             axios
-              .post(baseURL + "api/account/login/", {
+              .post(this.getBaseURL.baseURL + "api/account/login/", {
                 email: this.biz_email,
                 password: this.biz_password,
               })
@@ -657,17 +667,23 @@ export default {
     },
 
     nm_signup() {
+      var tmpToken = "";
+
       axios
-        .post(baseURL + "api/account/signup/", {
+        .post(this.getBaseURL.baseURL + "api/account/signup/", {
           username: this.nm_nickname,
           email: this.nm_email,
           password1: this.nm_password,
           password2: this.nm_password_confirm,
         })
         .then((res) => {
+          // post > then
+          tmpToken = res.data.key;
+
           axios
             .post(
-              baseURL + "api/accounts/user_detail/",
+              // post > post
+              this.getBaseURL.baseURL + "api/accounts/user_detail/",
               {
                 username: this.nm_nickname,
                 email: this.nm_email,
@@ -681,26 +697,42 @@ export default {
                   Authorization: `Token ${res.data.key}`,
                 },
               }
-            ) // post > post
+            )
             .then((res) => {
-              this.onSignup();
-              this.reset(true);
-              this.$router.push("/");
-            }); // post > post > then
-        })
-        .catch((res) => {
-          console.log(res);
-          // let token = res.data.key;
-          console.log("res : " + res.data);
+              // post > post > then
+              axios
+                .post(
+                  // post > post > post
+                  this.getBaseURL.baseURL + "api/accounts/user_order/",
+                  {
+                    location: this.nm_address,
+                  },
+                  {
+                    headers: {
+                      Authorization: "Token " + tmpToken,
+                    },
+                  }
+                ) // post > post > post > thrn
+                .then((res) => {
+                  console.log(res.data);
+                  this.reset(true);
+                  this.$router.push("/");
+                })
+                .catch((res) => {
+                  console.log("user_order error", res);
+                }); // post > post > post > catch
+            })
+            .catch((res) => {
+              console.log("user_detail error", res);
+            }); // post > post > catch
         })
         .catch((err) => {
-          console.log(err);
-        });
+          console.log("signup error", err);
+        }); // post > catch
     },
     biz_signup() {
-      console.log(this.biz_image);
       axios
-        .post(baseURL + "api/account/signup/", {
+        .post(this.getBaseURL.baseURL + "api/account/signup/", {
           username: this.biz_name,
           email: this.biz_email,
           password1: this.biz_password,
@@ -715,26 +747,32 @@ export default {
           formData.append("bizaddress", this.biz_address);
           formData.append("bizimage", this.biz_image);
           axios
-            .post(baseURL + "api/accounts/user_detail/", formData, {
-              headers: {
-                Authorization: `Token ${res.data.key}`,
-              },
-            }) // post > post
+            .post(
+              this.getBaseURL.baseURL + "api/accounts/user_detail/",
+              formData,
+              {
+                headers: {
+                  Authorization: `Token ${res.data.key}`,
+                },
+              }
+            ) // post > post
             .then((res) => {
-              console.log("여기는 올까몰라");
               this.reset(false);
               this.$router.push("/");
             })
             .catch((err) => {
               // err.response
-              console.log("여기는 안왔으면 좋겠는데");
-              console.log(err.response);
               // let token = res.data.key;
-              console.log("res : " + res.data);
+              console.log("error : " + res);
+              // this.$store.dispatch("signUserUp", {
+              //   email: this.nm_email,
+              //   password: this.nm_password,
+              //   username: this.nm_nickname,
+              // });
             });
         })
         .catch((err) => {
-          console.log(err.response);
+          console.log(err);
         });
     },
     reset(nm) {

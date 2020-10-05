@@ -18,7 +18,7 @@
     </div>
     <v-container class="content">
       <div style="width: 80%;">
-        <v-layout class="weather">
+        <!-- <v-layout class="weather">
           <v-btn icon color="green" @click="getWeather">
             <v-icon>mdi-cached</v-icon>
           </v-btn>
@@ -35,7 +35,7 @@
           >
           <v-flex>습도 : {{ locationData.main.humidity }} %</v-flex>
           <v-flex>구름 : {{ locationData.clouds.all + "%" }}</v-flex>
-        </v-layout>
+        </v-layout> -->
         <v-layout>
           <v-flex> 오늘은 뭐먹지? </v-flex>
         </v-layout>
@@ -47,50 +47,31 @@
               :index="index"
             >
               <figure>
-                <img :src="item.src" :alt="item[1]" />
-                <!-- <img src="../assets/image/background.jpg"> -->
-                <figcaption @click="gotoShop(item[1])">
-                  <h2>{{ index + 1 }}위</h2>
+                <!-- <img src= :alt="item[2]" /> -->
+                <v-img src=""></v-img>
+                <figcaption @click="gotoShop(item[2])">
+                  <h2>{{ index + 1 }}위 : {{ item[1] }}</h2>
                 </figcaption>
               </figure>
             </slide>
           </carousel-3d>
         </v-layout>
-      </div>
-      <v-sheet class="mx-auto" max-width="80vw">
-        <v-slide-group v-model="model" class="pa-4" show-arrows>
-          <v-slide-item
-            v-for="n in 15"
-            :key="n"
-            v-slot:default="{ active, toggle }"
+        <v-layout>
+          <v-row
+            style="display: flex; align-items: center; text-align: center; justify-content: center;"
           >
-            <v-btn
-              :color="active ? 'primary' : 'grey lighten-1'"
-              class="ma-4"
-              @click="toggle"
-              >{{ n }}
-              <v-row class="fill-height" align="center" justify="center">
-                <v-scale-transition>
-                  <v-icon
-                    v-if="active"
-                    color="white"
-                    size="48"
-                    v-text="'mdi-close-circle-outline'"
-                  ></v-icon>
-                </v-scale-transition>
+            <div
+              v-for="(item, index) in foodCategory"
+              :key="index"
+              :index="index"
+            >
+              <v-row style="margin: 10px; width: fit-content;">
+                <FoodCard :categoryData="item" />
               </v-row>
-            </v-btn>
-          </v-slide-item>
-        </v-slide-group>
-
-        <v-expand-transition>
-          <v-sheet v-if="model != null" height="40vh" tile>
-            <v-row class="fill-height" align="center" justify="center">
-              <h3 class="title">Selected {{ model }}</h3>
-            </v-row>
-          </v-sheet>
-        </v-expand-transition>
-      </v-sheet>
+            </div>
+          </v-row>
+        </v-layout>
+      </div>
     </v-container>
   </v-main>
 </template>
@@ -100,13 +81,14 @@ import Vue from "vue";
 // import Carousel from "../components/Carousel";
 import { Carousel3d, Slide } from "vue-carousel-3d";
 import axios from "axios";
-import recommendedDate from "../assets/datas/recommend_result_1.json";
 // import ShowList from "../components/ShowList";
 import { mapMutations, mapGetters } from "vuex";
 import { EventBus } from "../utils/EventBus.js";
 import Header from "../components/Header.vue";
+import category from "../assets/category/category.json";
+import FoodCard from "../components/FoodCard.vue";
 
-const baseURL = "http://127.0.0.1:8000/";
+// const baseURL = "http://127.0.0.1:8000/";
 // const baseURL =
 //   "http://ec2-54-180-109-206.ap-northeast-2.compute.amazonaws.com/";
 
@@ -118,6 +100,7 @@ export default {
     Header,
     Carousel3d,
     Slide,
+    FoodCard,
   },
 
   data() {
@@ -141,10 +124,9 @@ export default {
     // this.getCategory();
     axios({
       method: "GET",
-      url: baseURL + "api/main/",
+      url: this.getBaseURL.baseURL + "api/main/",
     })
       .then((response) => {
-        console.log(response.data.data);
         this.recommendedDate = response.data.data;
       })
       .catch((ex) => {
@@ -156,6 +138,11 @@ export default {
     user() {
       return this.$store.getters.user;
     },
+    foodCategory() {
+      return category;
+    },
+
+    ...mapGetters("server", ["getBaseURL"]),
   },
 
   beforeMount() {
@@ -163,12 +150,8 @@ export default {
   },
 
   methods: {
-    test() {
-      console.log(recommendedDate);
-    },
     ...mapMutations(("location", ["setLocation"])),
     getWeather: function() {
-      console.log("weather function called!!");
       axios({
         method: "GET",
         url: `http://api.openweathermap.org/data/2.5/weather?lat=${this.getLocation.lat}&lon=${this.getLocation.lng}&appid=5da983044710640f1d38176a055c7f66`,
@@ -189,7 +172,6 @@ export default {
             this.weatherimg = "rain.png";
           else if (this.locationData.weather[0].main === "snow")
             this.weatherimg = "snow.png";
-          console.log(this.weatherimg);
         })
         .catch(() => {
           // .catch((ex) => {
@@ -198,19 +180,14 @@ export default {
     },
 
     getCategory() {
-      console.log("getCategory!!!");
-
       axios({
         method: "GET",
-        url: baseURL + "api/main/",
+        url: this.getBaseURL.baseURL + "api/main/",
       })
         .then((response) => {
-          console.log(response.data.data);
           this.recommendedDate = response.data.data;
         })
-        .catch((ex) => {
-          console.log(ex);
-        });
+        .catch((ex) => {});
     },
 
     pollData() {

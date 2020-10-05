@@ -45,7 +45,6 @@ export default {
 
       geocoder.addressSearch(this.address, (result, status) => {
         if (status === kakao.maps.services.Status.OK) {
-          console.log("result", result);
           this.$store.commit("location/setLocation", {
             lat: result[0].y,
             lng: result[0].x,
