@@ -546,6 +546,7 @@ export default {
     nm_login() {
       axios
         .post(baseURL + "api/accounts/email_user_or_bizuser/", {
+<<<<<<< HEAD
           email: this.nm_email,
         })
         .then((res) => {
@@ -559,10 +560,25 @@ export default {
                 var token = res.data.key;
                 axios
                 .post(baseURL + "api/account/user_nickname/",{
+=======
+          email: this.nm_email
+        }).then((res)=>{
+          if(res.data.message==1){
+           axios
+          .post(baseURL + "api/account/login/", {
+            email: this.nm_email,
+            password: this.nm_password,
+          })
+          .then((res) => {
+              this.setCookie(res.data.key);
+              axios
+              .post(baseURL + "api/accounts/user_nickname/", null, {
+>>>>>>> c36c6dbc50cf475353d9a35307c778a5b252a84d
                 headers: {
                   Authorization: `Token ${res.data.key}`,
                 }
               })
+<<<<<<< HEAD
                 .then((res)=>{
                   this.setCookie(token, res.data.key);
                   console.log('token ? ',this.$cookies.get('auth-token'))
@@ -579,6 +595,23 @@ export default {
               });
           } else {
             alert("존재하지 않는 회원 정보입니다.");
+=======
+              .then((res)=>{
+                  this.$cookies.set("nickname", res.data.nickname);
+                  this.$router.push("/home");
+              })
+              .catch((err)=>{
+                  console.log(err.response)
+              })
+          })
+          .catch((err) => {
+            console.log(err);
+            alert("로그인 정보를 다시 확인하시지요");
+          }); 
+          }
+          else{
+            alert('존재하지 않는 회원 정보입니다.')
+>>>>>>> c36c6dbc50cf475353d9a35307c778a5b252a84d
           }
         })
         .catch((err) => {
