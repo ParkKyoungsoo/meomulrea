@@ -35,9 +35,13 @@
             </div>
             <div>
               <img src="../assets/image/clock.png" style="width:15px;" alt="" />
+              <<<<<<< HEAD
               {{ this.businessDay }}
               {{ this.startTime }} -
               {{ this.endTime }}
+              =======
+              {{ this.businessDay }} {{ this.startTime }} - {{ this.endTime }}
+              >>>>>>> bc7a67c3ecfa5d40ee45fac519ce0d46b38c9d73
             </div>
             <div>
               <img src="../assets/image/star.png" style="width:15px;" alt="" />
@@ -114,11 +118,18 @@ export default {
     ...mapGetters("server", ["getBaseURL"]),
   },
   methods: {
+
     changeEndTime(time) {
       if (time == "00:00:00") {
         this.endTime = "24:00";
+<<<<<<< HEAD
       } else {
         this.endTime = time.substring(0, 5);
+=======
+      }
+      else {
+        this.endTime = time.substring(0, 5)
+>>>>>>> bc7a67c3ecfa5d40ee45fac519ce0d46b38c9d73
       }
     },
 
@@ -165,6 +176,7 @@ export default {
           // this.imgUrl = require("../assets/image/storelist/" +
           //   this.storeInfo.store_name.replace(/(\s*)/g, "") +
           //   ".jpg");
+          this.imgUrl = require("../assets/image/storelist/default.jpg");
           this.startTime = res.data.start_time.substring(0, 5);
           this.changeEndTime(res.data.end_time);
           this.getBusinessDay(res.data);

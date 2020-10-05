@@ -48,7 +48,13 @@ export default {
   methods: {
     goToShopDetail() {
       // console.log("this.storeData.store_id", this.storeData.store_id);
-      this.$router.push("/storedetail/" + this.storeData.store_id);
+      // this.$router.push("/storedetail/" + this.storeData.store_id);
+      this.$router.push("/storedetail/", {
+        params: {
+          store_id: this.storeData.store_id,
+          store_user_id: this.storeData.user_id,
+        }
+      })
     },
     showShopList: function() {
       axios
