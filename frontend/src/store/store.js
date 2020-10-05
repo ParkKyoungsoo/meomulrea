@@ -3,6 +3,7 @@ import Vuex from "vuex";
 import Location from "./Location";
 import ShopList from "./ShopList";
 import UserInfo from "./UserInfo";
+import Server from "./Server";
 
 import createPersistedState from "vuex-persistedstate";
 
@@ -18,6 +19,7 @@ export const store = new Vuex.Store({
     userInfo: UserInfo,
     auth: AuthModule,
     chat: ChatModule,
+    server: Server,
   },
 
   state: {

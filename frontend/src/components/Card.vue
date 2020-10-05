@@ -6,17 +6,17 @@
     <div class="back">
       <h2>{{ this.storeData.store_name }}</h2>
       <p>별점 : {{ parseInt(this.storeData.average_rating) }}</p>
-      <v-btn @click="goToShopDetail()"
-        >가게보러가기</v-btn>
+      <v-btn @click="goToShopDetail()">가게보러가기</v-btn>
     </div>
   </div>
 </template>
 <script>
 import axios from "axios";
 import { mapGetters } from "vuex";
+
 // const baseURL = "http://127.0.0.1:8000/";
-const baseURL =
-  "http://ec2-54-180-109-206.ap-northeast-2.compute.amazonaws.com/";
+// const baseURL =
+//   "http://ec2-54-180-109-206.ap-northeast-2.compute.amazonaws.com/";
 
 export default {
   props: {
@@ -32,6 +32,10 @@ export default {
     };
   },
   components: {},
+  computed: {
+    ...mapGetters("server", ["getBaseURL"]),
+  },
+
   created: function() {
     // this.imgUrl = require("../assets/image/storelist/" +
     //   this.storeData.store_name.replace(/(\s*)/g, "") +
@@ -49,7 +53,7 @@ export default {
     showShopList: function() {
       axios
         .post(
-          baseURL + "api/stores/store_category/",
+          this.getBaseURL.baseURL + "api/stores/store_category/",
           {
             category: this.$route.params.category,
           },

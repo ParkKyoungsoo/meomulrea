@@ -11,7 +11,7 @@ import Create from "./components/Chat/Create.vue";
 import Chat from "./components/Chat/Chat.vue";
 import ChatList from "./components/Chat/ChatList";
 import Signin from "@/components/User/Signin";
-import test from "@/components/test.vue"
+import test from "@/components/test.vue";
 import HyerinChat from "./pages/HyerinChat.vue";
 
 export default new Router({
@@ -28,7 +28,7 @@ export default new Router({
       component: Login,
     },
     {
-      path: "/storelist/:category",
+      path: "/storelist/:bigcategory",
       name: "storelist",
       component: StoreList,
     },

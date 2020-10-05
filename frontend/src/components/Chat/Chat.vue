@@ -105,7 +105,6 @@ export default {
   },
   watch: {
     "$route.params.id"(newId, oldId) {
-      console.log("newId : ", newId, "oldId : ", oldId);
       this.currentRef.off("child_added", this.onNewMessageAdded);
       this.loadChat();
     },

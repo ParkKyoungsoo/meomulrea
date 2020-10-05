@@ -47,7 +47,6 @@ export default {
         },
         (response) => {
           // error callback
-          console.log(response);
         }
       );
   },

@@ -48,7 +48,6 @@ export default {
   },
   computed: {
     user() {
-      console.log("userInfo", this.$store.getters.user);
       return this.$store.getters.user;
     },
     chats() {
@@ -71,7 +70,6 @@ export default {
             that.loadedChats.unshift(chat);
           });
         });
-        console.log(this.loadedChats);
     },
     loadRecentChatsByLastKey(lastKey) {
       let that = this;

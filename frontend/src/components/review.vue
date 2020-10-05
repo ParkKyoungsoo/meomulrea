@@ -142,9 +142,10 @@
 
 <script>
 import axios from "axios";
+import { mapGetters } from "vuex";
 // const baseURL = "http://127.0.0.1:8000/";
-const baseURL =
-  "http://ec2-54-180-109-206.ap-northeast-2.compute.amazonaws.com/";
+// const baseURL =
+//   "http://ec2-54-180-109-206.ap-northeast-2.compute.amazonaws.com/";
 
 export default {
   data() {
@@ -161,13 +162,17 @@ export default {
     this.getReview();
   },
 
+  computed: {
+    ...mapGetters("server", ["getBaseURL"]),
+  },
+
   methods: {
     getReview() {
       this.flag = 1;
       // this.value = 1;
       axios
         .post(
-          baseURL + "api/reviews/store_review_list/",
+          this.getBaseURL.baseURL + "api/reviews/store_review_list/",
           {
             storeid: this.$route.params.storeid,
           },
@@ -178,7 +183,6 @@ export default {
           }
         )
         .then((res) => {
-          console.log("최신순 리뷰 여기요", res.data);
           this.reviews = res.data;
           this.review_cnt = res.data.length;
         })
@@ -192,7 +196,7 @@ export default {
       this.flag = 2;
       axios
         .post(
-          baseURL + "api/reviews/sort_review_high_score/",
+          this.getBaseURL.baseURL + "api/reviews/sort_review_high_score/",
           {
             storeid: this.$route.params.storeid,
           },
@@ -212,7 +216,7 @@ export default {
       this.flag = 3;
       axios
         .post(
-          baseURL + "api/reviews/sort_review_low_score/",
+          this.getBaseURL.baseURL + "api/reviews/sort_review_low_score/",
           {
             storeid: this.$route.params.storeid,
           },
@@ -257,7 +261,7 @@ export default {
       // this.value=2;
       axios
         .post(
-          baseURL + "api/reviews/create_review/",
+          this.getBaseURL.baseURL + "api/reviews/create_review/",
           {
             storeid: this.$route.params.storeid,
             content: this.myReview,
@@ -270,7 +274,6 @@ export default {
           }
         )
         .then((res) => {
-          console.log("새로운 리뷰" + res.data);
           // console.log(res.data)
           alert("리뷰가 등록되었습니다.");
           if (this.flag == 1) {
@@ -293,7 +296,7 @@ export default {
       if (answer) {
         // true
         axios
-          .delete(baseURL + `api/reviews/${reviewId}/`, {
+          .delete(this.getBaseURL.baseURL + `api/reviews/${reviewId}/`, {
             headers: {
               Authorization: `Token ${this.$cookies.get("auth-token")}`,
             },
@@ -315,11 +318,9 @@ export default {
     },
 
     registerComment(idx) {
-      console.log("idx", idx);
-      console.log("내 유저타입은?");
       axios
         .post(
-          baseURL + `api/reviews/${idx}/create_reply/`,
+          this.getBaseURL.baseURL + `api/reviews/${idx}/create_reply/`,
           {
             content: this.myComment,
           },
