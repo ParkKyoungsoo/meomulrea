@@ -96,7 +96,7 @@
           <!-- <v-row>
               <v-rating :value="review.score" readonly background-color="orange lighten-3" color="orange" dense="true" half-increments="true" small="true"></v-rating>({{ review.score }})<br>
             </v-row> -->
-          <p class="review-excerpt">{{ review.content }}</p>
+          <p class="review-excerpt">{{ review.content }} {{review.id}} </p>
           <v-row justify="center">
             <v-expansion-panels v-show="review.replyset.length==0">
               <!-- v-show="review.replyset.length==0" -->
@@ -112,14 +112,14 @@
                   ></v-textarea>
                   <div class="text-right">
                     <!-- <v-btn @click="msgComment(myComment)" color="gray" style="color:darkgray">등록</v-btn> -->
-                    <v-btn v-show="myComment[index] != 0" @click="registerComment(review.id, myComment[index])" color="orange">등록</v-btn>
+                    <v-btn v-show="myComment[index] != 0" @click="registerComment(index, review.id, myComment[index])" color="orange">등록</v-btn>
                   </div>
                 </v-expansion-panel-content>
               </v-expansion-panel>
             </v-expansion-panels>
           </v-row>
 
-          <v-row class="comment" >
+          <v-row v-if="review.replyset.length>0" class="comment" >
             <div class="chat">
               <div class="chat-history">
                 <div class="message-data">
@@ -166,15 +166,33 @@ export default {
       flag: 1,
       myComment: [],
       usertype: "",
+      clicked:false
     }
   },
-
+  watch: {
+    clicked(){
+      console.log('clicked?')
+      if (this.flag == 1) {
+        console.log('getReview()')
+        this.getReview();
+      } else if (this.flag == 2) {
+        console.log('getReviewHighScore()')
+        this.getReviewHighScore();
+      } else {
+        console.log('getReviewLowScore()')
+        this.getReviewLowScore();
+      }
+      this.clicked='';
+    },
+  },
   created() {
     this.getReview();
+    // console.log(this.flag)
   },
+  
 
   methods: {
-    getReview() {
+    getReview(){
       this.flag = 1;
       // this.value = 1;
       axios.post(baseURL + "api/reviews/store_review_list/", {
@@ -315,7 +333,7 @@ export default {
     },
 
     // 사장님 답글 등록
-    registerComment(idx, content) {
+    registerComment(index, idx, content) {
       axios.post(baseURL + `api/reviews/${idx}/create_reply/`, {
         content: content,
       },
@@ -326,6 +344,7 @@ export default {
       })
       .then(res => {
         this.getReview()
+        this.myComment[idx]='';
       })
       .catch(err => 
       {
@@ -348,17 +367,22 @@ export default {
             },
           })
           .then(res => {
-            alert("답글이 삭제 되었습니다.");
-            if (this.flag == 1) {
-              this.getReview();
-            } else if (this.flag == 2) {
-              this.getReviewHighScore();
-            } else {
-              this.getReviewLowScore();
-            }
+            // if (this.flag == 1) {
+            //   this.getReview();
+            // } else if (this.flag == 2) {
+            //   this.getReviewHighScore();
+            // } else {
+            //   this.getReviewLowScore();
+            // }
+            // this.clicked=true;
+            this.clicked = '클릭클릭클릭'
+            // console.log('clicked ',this.clicked)
           })
           .catch(err => {
-            console.log(err.response)
+            console.log('??????????????????????????')
+            console.log('err', err)
+            console.log('err.response', err.response)
+            console.log('err.response.data',err.response.data)
             alert("답글 삭제 실패!");
             console.log(this.$route.params.storeid)
           });
