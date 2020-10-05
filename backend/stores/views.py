@@ -1,6 +1,7 @@
 import json
 from django.conf import settings
 from django.contrib.auth import get_user_model
+from django.http import HttpResponse, JsonResponse
 from django.shortcuts import render, get_object_or_404
 from rest_framework.response import Response
 from rest_framework.decorators import api_view, permission_classes
@@ -102,3 +103,15 @@ def add_store(request):
     if serializer.is_valid(raise_exception=True):
         serializer.save(user=request.user)
         return Response(serializer.data)
+
+
+@api_view(['GET'])
+def food_category(request):
+    stores = Store.objects.all()
+    bigcategory_list = list()
+    for store in stores:
+        if store.bigcategory in bigcategory_list:
+            continue
+        else:
+            bigcategory_list.append(store.bigcategory)
+    return JsonResponse({"bigcategory_list": bigcategory_list})

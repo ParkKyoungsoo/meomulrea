@@ -5,6 +5,7 @@ class Store(models.Model):
     store_id = models.IntegerField()
     store_name = models.CharField(max_length=50, null=True)
     category = models.CharField(max_length=50, null=True)
+    bigcategory = models.CharField(max_length=50, null=True)
     address = models.CharField(max_length=100, null=True)
     latitude = models.CharField(max_length=50, null=True)
     longitude = models.CharField(max_length=50, null=True)

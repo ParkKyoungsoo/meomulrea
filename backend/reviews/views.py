@@ -6,7 +6,7 @@ from stores.serializers import StoreSerializer
 import json
 from collections import defaultdict
 import re
-from .serializers import WholeReviewSerializer, StoreReviewSerializer, ReviewDetailSerializer, ReviewSerializer
+from .serializers import WholeReviewSerializer, StoreReviewSerializer, ReviewDetailSerializer, ReviewSerializer, ReplySerializer
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
@@ -145,3 +145,22 @@ def sort_review_low_score(request):
     reviews = Review.objects.filter(storeid=request.data['storeid']).order_by('score')
     serializer = ReviewDetailSerializer(reviews, many=True)
     return Response(serializer.data)
+
+
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def remove_reply(request, review_pk, reply_pk):
+    print(request.data)
+    print(request.data.get("storeid"))
+    store = Store.objects.get(store_id=request.data.get("storeid"))
+    # print(store.user_id)
+    review = Review.objects.get(pk=review_pk)
+    replies = review.reply_set.all()
+    reply = replies.get(pk=reply_pk)
+    print(store.user_id)
+    print(request.user.id)
+    if request.user.id == store.user_id:
+        reply.delete()
+        return Response({'message': '답글이 삭제됐습니다.'})
+    else:
+        return Response({'message': '가게의 사장님만 삭제가능합니다.'})
