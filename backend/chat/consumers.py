@@ -1,7 +1,7 @@
 # chat/consumers.py
 import json
 from asgiref.sync import async_to_sync
-from chatroom.views import user_minuscount, user_pluscount
+from chatroom.views import user_minuscount, user_pluscount,delete_chatroom
 from channels.generic.websocket import WebsocketConsumer
 
 
@@ -47,7 +47,10 @@ class ChatConsumer(WebsocketConsumer):
         user_info = room_info[1]
 
         a = user_minuscount(self, store_info, user_info)
-        print(a)
+        if a==0 :
+            delete_chatroom(self, store_info, user_info)
+            self.messagelist[self.room_name] = []
+            print("채팅방이 삭제되었습니다. ")
 
         # Leave room group
         async_to_sync(self.channel_layer.group_discard)(

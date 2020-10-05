@@ -63,3 +63,8 @@ def user_pluscount(request, store_info, user_info):
     chatroom.usercount = cnt
     chatroom.save()
     return chatroom.usercount
+
+def delete_chatroom(request, store_info, user_info):
+    room = makeChatroom.objects.get(store_id = store_info, user=user_info)
+    room.delete()
+    print("delete_chatroom: 방삭제")
