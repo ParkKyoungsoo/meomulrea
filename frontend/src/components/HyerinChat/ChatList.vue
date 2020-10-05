@@ -1,38 +1,13 @@
 <template>
   <v-container v-on:scroll="onScroll" ref="chatlistContainer">
     <v-row no-gutters>
-      <v-col v-for="chat in chatList" :key="chat.room_name" cols="12" sm="4">
-        <v-card class="mx-auto" max-width="344" outlined>
-          <v-list-item three-line>
-            <v-list-item-content>
-              <!-- 채팅방 키값(왜 있는지는 모르겠음) -->
-              <div class="overline mb-4">{{ chat.key }}</div>
-              <!-- 방 제목 -->
-              <v-list-item-title class="headline mb-1">{{
-                chat.room_name
-              }}</v-list-item-title>
-              <!-- v-if 채팅방의 현재 인원수 -->
-              <!-- <v-list-item-subtitle v-if="chat.usercount != null"
-                > 참가인원 : {{ chat.usercount }} 명</v-list-item-subtitle
-              > -->
-              <!-- v-else 채팅방의 인원수가 로드되지 않았을 경우 -->
-              <!-- <v-list-item-subtitle v-else
-                >Loading user count...</v-list-item-subtitle
-              > -->
-            </v-list-item-content>
-          </v-list-item>
-          <v-card-actions>
-            <!-- 카드를 클릭했을 때의 이벤트 -->
-            <v-btn
-              text
-              @click="mvtochatting(chat)"
-              v-if="!chat.isAlreadyJoined && chat.usercount != null"
-              >참여하기</v-btn
-            >
-            <!-- 참여하고 있는 채팅방인 경우 -->
-            <v-btn text disabled v-if="chat.isAlreadyJoined">Joined</v-btn>
-          </v-card-actions>
-        </v-card>
+      <v-col v-for="(chat,index) in chatList" :index="index" :key="chat.room_name" cols="12" sm="4">
+        <div class="chatlist">
+          <img :src="url('../../assets/image/home'+index+'.png')" alt="" />
+          <p class="title">{{chat.room_name}}</p>
+          <div class="overlay"></div>
+          <v-btn @click="mvtochatting(chat)">참가하기</v-btn>
+        </div>
       </v-col>
     </v-row>
   </v-container>
@@ -116,3 +91,76 @@ export default {
   },
 };
 </script>
+
+<style scoped>
+.chatlist {
+  position: relative;
+  margin: 10%;
+  width: 300px;
+  height: 300px;
+}
+
+.overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0);
+  transition: background 0.5s ease;
+}
+
+.container:hover .overlay {
+  display: block;
+  background: rgba(0, 0, 0, .3);
+}
+
+img {
+  position: absolute;
+  width: 500px;
+  height: 300px;
+  left: 0;
+}
+
+.title {
+  position: absolute;
+  width: 500px;
+  left: 0;
+  top: 120px;
+  font-weight: 700;
+  font-size: 30px;
+  text-align: center;
+  text-transform: uppercase;
+  color: white;
+  z-index: 1;
+  transition: top .5s ease;
+}
+
+.container:hover .title {
+  top: 90px;
+}
+
+.button {
+  position: absolute;
+  width: 500px;
+  left:0;
+  top: 180px;
+  text-align: center;
+  opacity: 0;
+  transition: opacity .35s ease;
+}
+
+.button a {
+  width: 200px;
+  padding: 12px 48px;
+  text-align: center;
+  color: white;
+  border: solid 2px white;
+  z-index: 1;
+}
+
+.container:hover .button {
+  opacity: 1;
+}
+
+</style>
