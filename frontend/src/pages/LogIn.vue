@@ -359,7 +359,7 @@ export default {
       }
     },
     nm_password: function() {
-      var temp = ["qwert", "asdfg", "zxcvb"];
+      var temp = ["qwert", "asdfg", "zxcvb","1234"];
       var nm_password = this.nm_password;
       if (this.nm_password.length > 0) {
         for (var t in temp) {
@@ -411,21 +411,6 @@ export default {
         }
         this.error.bizpwdconfirm = "";
       }
-    },
-  },
-
-  computed: {
-    // comparePasswords () {
-    //     return this.password !== this.confirmPassword ? 'Passwords do not match.' : true
-    //   },
-    user() {
-      return this.$store.getters.user;
-    },
-    error() {
-      return this.$store.getters.error;
-    },
-    loading() {
-      return this.$store.getters.loading;
     },
   },
 
@@ -545,7 +530,10 @@ export default {
 
     setCookie(token) {
       this.$cookies.set("auth-token", token);
-      this.isLoggedIn = true;
+    },
+    setCookie(token, nickname){
+      this.$cookies.set("auth-token", token);
+      this.$cookies.set("nickname", nickname);
     },
 
     onSignin() {
@@ -568,14 +556,24 @@ export default {
                 password: this.nm_password,
               })
               .then((res) => {
-                firebase
-                  .auth()
-                  .setPersistence(firebase.auth.Auth.Persistence.SESSION);
-                firebase
-                  .auth()
-                  .signInWithEmailAndPassword(this.nm_email, this.nm_password);
-                this.setCookie(res.data.key);
-                this.$router.push("/home");
+                var token = res.data.key;
+                this.setCookie(token);
+                this.$router.push('/home')
+              //   axios
+              //   .post(baseURL + "api/account/user_nickname/",{
+              //   headers: {
+              //     Authorization: `Token ${res.data.key}`,
+              //   }
+              // })
+              //   .then((res)=>{
+              //     this.setCookie(token, res.data.key);
+              //     console.log('token ? ',this.$cookies.get('auth-token'))
+              //     console.log('nickname ? ',this.$cookies.get('nickname'))
+              //     this.$router.push("/home");
+              //   })
+              //   .catch((err)=>{
+              //     console.log(err.response)
+              //   })
               })
               .catch((err) => {
                 console.log(err);
@@ -662,14 +660,6 @@ export default {
       return false;
     },
 
-    onSignup() {
-      this.$store.dispatch("signUserUp", {
-        email: this.nm_email,
-        password: this.nm_password,
-        username: this.nm_nickname,
-      });
-    },
-
     nm_signup() {
       axios
         .post(baseURL + "api/account/signup/", {
@@ -706,11 +696,6 @@ export default {
           console.log(res);
           // let token = res.data.key;
           console.log("res : " + res.data);
-          this.$store.dispatch("signUserUp", {
-            email: this.nm_email,
-            password: this.nm_password,
-            username: this.nm_nickname,
-          });
         })
         .catch((err) => {
           console.log(err);
@@ -750,19 +735,10 @@ export default {
               console.log(err.response);
               // let token = res.data.key;
               console.log("res : " + res.data);
-              // this.$store.dispatch("signUserUp", {
-              //   email: this.nm_email,
-              //   password: this.nm_password,
-              //   username: this.nm_nickname,
-              // });
             });
         })
         .catch((err) => {
-          console.log("여기일리가 없지 그치");
-          console.log(err);
           console.log(err.response);
-          console.log(err.data);
-          console.log(err.message);
         });
     },
     reset(nm) {

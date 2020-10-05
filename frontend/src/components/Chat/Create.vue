@@ -103,7 +103,6 @@ export default {
               axios
                 .post()
                 .then((res)=>{
-                  console.log(res.data.key)
                   this.$router.push('/hrchat/'+res.data.key)
                 })
                 .cath((err)=>{
@@ -112,13 +111,7 @@ export default {
             })
         .catch((err) => {
           console.log(err.response);
-          // let token = res.data.key;
           console.log("res : " + res.data);
-          this.$store.dispatch("signUserUp", {
-            email: this.nm_email,
-            password: this.nm_password,
-            username: this.nm_nickname,
-          });
         })
     },
     

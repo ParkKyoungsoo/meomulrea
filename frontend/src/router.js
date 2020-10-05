@@ -47,12 +47,6 @@ export default new Router({
       name: "CreateChat",
       component: Create,
     },
-    // {
-    //   path: "/chat/:id",
-    //   name: "Chat",
-    //   component: Chat,
-    //   props: true,
-    // },
     {
       path: "/discover",
       name: "JoinChat",
