@@ -557,23 +557,21 @@ export default {
               })
               .then((res) => {
                 var token = res.data.key;
-                this.setCookie(token);
-                this.$router.push('/home')
-              //   axios
-              //   .post(baseURL + "api/account/user_nickname/",{
-              //   headers: {
-              //     Authorization: `Token ${res.data.key}`,
-              //   }
-              // })
-              //   .then((res)=>{
-              //     this.setCookie(token, res.data.key);
-              //     console.log('token ? ',this.$cookies.get('auth-token'))
-              //     console.log('nickname ? ',this.$cookies.get('nickname'))
-              //     this.$router.push("/home");
-              //   })
-              //   .catch((err)=>{
-              //     console.log(err.response)
-              //   })
+                axios
+                .post(baseURL + "api/account/user_nickname/",{
+                headers: {
+                  Authorization: `Token ${res.data.key}`,
+                }
+              })
+                .then((res)=>{
+                  this.setCookie(token, res.data.key);
+                  console.log('token ? ',this.$cookies.get('auth-token'))
+                  console.log('nickname ? ',this.$cookies.get('nickname'))
+                  this.$router.push("/home");
+                })
+                .catch((err)=>{
+                  console.log(err.response)
+                })
               })
               .catch((err) => {
                 console.log(err);
