@@ -18,18 +18,19 @@ class ReviewSerializer(serializers.ModelSerializer):
         model = Review
         fields = '__all__'
 
-
-class ReviewDetailSerializer(serializers.ModelSerializer):
-    user = UserProfileSerializer()
-    class Meta:
-        model = Review
-        fields = ['id', 'content', 'storeid', 'userid', 'score', 'reg_time', 'created_at', 'user']
-
-
 class ReplySerializer(serializers.ModelSerializer):
     class Meta:
         model = Reply
         fields = '__all__'
+
+class ReviewDetailSerializer(serializers.ModelSerializer):
+    user = UserProfileSerializer()
+    replyset = ReplySerializer(many=True, source='reply_set')
+    class Meta:
+        model = Review
+        fields = ['id', 'content', 'storeid', 'userid', 'score', 'reg_time', 'created_at', 'user', 'replyset']
+
+
 
 
 class ReviewReplySerializer(serializers.ModelSerializer):
