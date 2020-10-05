@@ -88,11 +88,7 @@ import Header from "../components/Header.vue";
 import category from "../assets/category/category.json";
 import FoodCard from "../components/FoodCard.vue";
 
-<<<<<<< HEAD
 // const baseURL = "http://127.0.0.1:8000/";
-=======
-const baseURL = "http://127.0.0.1:8000/";
->>>>>>> 13137fe2bbbcda1fd17cec668902ead08db6eb4a
 // const baseURL =
 //   "http://ec2-54-180-109-206.ap-northeast-2.compute.amazonaws.com/";
 

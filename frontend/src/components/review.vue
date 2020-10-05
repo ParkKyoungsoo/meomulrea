@@ -180,14 +180,9 @@
 
 <script>
 import axios from "axios";
-<<<<<<< HEAD
 import { mapGetters } from "vuex";
 // const this.getBaseURL.baseURL = "http://127.0.0.1:8000/";
 // const this.getBaseURL.baseURL =
-=======
-const baseURL = "http://127.0.0.1:8000/";
-// const baseURL =
->>>>>>> 13137fe2bbbcda1fd17cec668902ead08db6eb4a
 //   "http://ec2-54-180-109-206.ap-northeast-2.compute.amazonaws.com/";
 
 export default {

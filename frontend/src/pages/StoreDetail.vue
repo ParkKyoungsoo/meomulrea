@@ -35,14 +35,11 @@
             </div>
             <div>
               <img src="../assets/image/clock.png" style="width:15px;" alt="" />
-              <<<<<<< HEAD
               {{ this.businessDay }}
               {{ this.startTime }} -
               {{ this.endTime }}
-              =======
-              {{ this.businessDay }} {{ this.startTime }} - {{ this.endTime }}
-              >>>>>>> bc7a67c3ecfa5d40ee45fac519ce0d46b38c9d73
             </div>
+            a
             <div>
               <img src="../assets/image/star.png" style="width:15px;" alt="" />
               {{ this.storeInfo.average_rating }}
