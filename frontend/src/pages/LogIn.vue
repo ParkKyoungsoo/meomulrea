@@ -358,7 +358,7 @@ export default {
       }
     },
     nm_password: function() {
-      var temp = ["qwert", "asdfg", "zxcvb"];
+      var temp = ["qwert", "asdfg", "zxcvb", "1234"];
       var nm_password = this.nm_password;
       if (this.nm_password.length > 0) {
         for (var t in temp) {
@@ -417,15 +417,6 @@ export default {
     // comparePasswords () {
     //     return this.password !== this.confirmPassword ? 'Passwords do not match.' : true
     //   },
-    user() {
-      return this.$store.getters.user;
-    },
-    error() {
-      return this.$store.getters.error;
-    },
-    loading() {
-      return this.$store.getters.loading;
-    },
     ...mapGetters("server", ["getBaseURL"]),
   },
 
@@ -545,7 +536,10 @@ export default {
 
     setCookie(token) {
       this.$cookies.set("auth-token", token);
-      this.isLoggedIn = true;
+    },
+    setCookie(token, nickname) {
+      this.$cookies.set("auth-token", token);
+      this.$cookies.set("nickname", nickname);
     },
 
     onSignin() {
@@ -568,15 +562,24 @@ export default {
                 password: this.nm_password,
               })
               .then((res) => {
-                firebase
-                  .auth()
-                  .setPersistence(firebase.auth.Auth.Persistence.SESSION);
-                firebase
-                  .auth()
-                  .signInWithEmailAndPassword(this.nm_email, this.nm_password);
                 this.setCookie(res.data.key);
-
-                this.$router.push("/home");
+                axios
+                  .post(
+                    this.getBaseURL.baseURL + "api/accounts/user_nickname/",
+                    null,
+                    {
+                      headers: {
+                        Authorization: `Token ${res.data.key}`,
+                      },
+                    }
+                  )
+                  .then((res) => {
+                    this.$cookies.set("nickname", res.data.nickname);
+                    this.$router.push("/home");
+                  })
+                  .catch((err) => {
+                    console.log(err.response);
+                  });
               })
               .catch((err) => {
                 console.log(err);

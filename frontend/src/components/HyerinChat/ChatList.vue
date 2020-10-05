@@ -1,30 +1,35 @@
 <template>
   <v-container v-on:scroll="onScroll" ref="chatlistContainer">
     <v-row no-gutters>
-      <v-col v-for="chat in chats" :key="chat.name" cols="12" sm="4">
+      <v-col v-for="chat in chatList" :key="chat.room_name" cols="12" sm="4">
         <v-card class="mx-auto" max-width="344" outlined>
           <v-list-item three-line>
             <v-list-item-content>
+              <!-- 채팅방 키값(왜 있는지는 모르겠음) -->
               <div class="overline mb-4">{{ chat.key }}</div>
+              <!-- 방 제목 -->
               <v-list-item-title class="headline mb-1">{{
-                chat.name
+                chat.room_name
               }}</v-list-item-title>
-              <v-list-item-subtitle v-if="chat.userCount != null"
-                >{{ chat.userCount }} members have joined this
-                chat.</v-list-item-subtitle
-              >
-              <v-list-item-subtitle v-else
+              <!-- v-if 채팅방의 현재 인원수 -->
+              <!-- <v-list-item-subtitle v-if="chat.usercount != null"
+                > 참가인원 : {{ chat.usercount }} 명</v-list-item-subtitle
+              > -->
+              <!-- v-else 채팅방의 인원수가 로드되지 않았을 경우 -->
+              <!-- <v-list-item-subtitle v-else
                 >Loading user count...</v-list-item-subtitle
-              >
+              > -->
             </v-list-item-content>
           </v-list-item>
           <v-card-actions>
+            <!-- 카드를 클릭했을 때의 이벤트 -->
             <v-btn
               text
-              @click="enterChat(chat)"
-              v-if="!chat.isAlreadyJoined && chat.userCount != null"
-              >Join</v-btn
+              @click="ldj_enterChat(chat)"
+              v-if="!chat.isAlreadyJoined && chat.usercount != null"
+              >참여하기</v-btn
             >
+            <!-- 참여하고 있는 채팅방인 경우 -->
             <v-btn text disabled v-if="chat.isAlreadyJoined">Joined</v-btn>
           </v-card-actions>
         </v-card>
@@ -34,120 +39,67 @@
 </template>
 
 <script>
+import axios from "axios";
+const baseURL = "http://127.0.0.1:8000/";
+
 export default {
+  props:{
+    store_id: []
+  },
   data() {
     return {
-      loadedChats: [],
+      chatList: [],
       loading: false,
     };
   },
   mounted() {
-    this.loadRecentChats();
+      // 여기서 ldj_loadChats 호출
+      this.ldj_loadChats()
   },
-  computed: {
-    user() {
-      console.log("userInfo", this.$store.getters.user);
-      return this.$store.getters.user;
-    },
-    chats() {
-      return this.loadedChats;
-    },
-  },
+  // computed: {
+  //   user() {
+  //     console.log("userInfo", this.$store.getters.user);
+  //     return this.$store.getters.user;
+  //   }
+  // },
   methods: {
-    loadRecentChats(lastKey) {
-      let that = this;
-      firebase
-        .database()
-        .ref("chats")
-        .orderByKey()
-        .limitToLast(20)
-        .once("value", function(snapshot) {
-          snapshot.forEach(function(childSnapshot) {
-            let chat = childSnapshot.val();
-            chat.key = childSnapshot.key;
-            that.getUserCountForChat(chat);
-            that.loadedChats.unshift(chat);
-          });
-        });
+    ldj_loadChats(){
+      // backend 요청
+      // this.chatList = backend에서 전달받은 데이터
+      axios.post(
+        baseURL + "api/chatroom/store_chatroom_list/",
+        {
+          store_id : this.store_id
+        },
+        {
+            headers: {
+              Authorization: `Token ${this.$cookies.get("auth-token")}`,
+            },
+        }
+      )
+      .then((res)=>{
+        console.log(res.data);
+        // this.chats = res.data;
+        if(res.data.message){
+          this.chatList = []
+        }else{
+          this.chatList = res.data
+        }
+        
+      })
     },
-    loadRecentChatsByLastKey(lastKey) {
-      let that = this;
-      that.loading = true;
-      firebase
-        .database()
-        .ref("chats")
-        .orderByKey()
-        .endAt(lastKey)
-        .limitToLast(20)
-        .once("value", function(snapshot) {
-          let tempArray = [];
-          snapshot.forEach(function(item) {
-            if (item.key != lastKey) {
-              let newChat = item.val();
-              newChat.key = item.key;
-              tempArray.push(newChat);
-            }
-          });
-          if (tempArray[0].key === tempArray[1].key) return;
-          tempArray.reverse();
-          tempArray.forEach(function(child) {
-            that.getUserCountForChat(child);
-            that.loadedChats.push(child);
-          });
-          that.loading = false;
-        });
+    ldj_loadChats_On_Scrool(lastKey) {
+      // backend 요청
+      // this.chatList에 Append
     },
-    enterChat(chat) { // 수정해야댐 
-      if (chat.isAlreadyJoined || chat.userCount == null) {
-        return;
-      }
-
-      let chatId = chat.key;
-      let time = new Date().valueOf();
-
-      let updates = {};
-      updates["/chat_members/" + chatId + "/users/" + this.user.id] = {
-        timestamp: time,
-      };
-      updates["users/" + this.user.id + "/chats/" + chatId] = {
-        timestamp: time,
-      };
-
-      let that = this;
-      firebase
-        .database()
-        .ref()
-        .update(updates)
-        .then(() => {
-          this.$router.push("/chat/" + chatId);
-        });
+    ldj_enterChat(chat){
+      const key = chat.store_id +"_" +  chat.user
+      this.$router.push("/hrchat/" + key + '/' +chat.room_name);
     },
     onScroll() {
-      if (
-        window.top.scrollY + window.innerHeight >=
-          document.body.scrollHeight - 100 &&
-        !this.loading
-      ) {
-        this.loadRecentChatsByLastKey(
-          this.loadedChats[this.loadedChats.length - 1].key
-        );
+      if (window.top.scrollY + window.innerHeight >=document.body.scrollHeight - 100 && !this.loading) {
+        this.ldj_loadChats_On_Scrool(this.chatList[this.chatList.length - 1].key);
       }
-    },
-    getUserCountForChat(chat) {
-      let that = this;
-      firebase
-        .database()
-        .ref("chat_members")
-        .child(chat.key)
-        .child("users")
-        .once("value", function(snapshot) {
-          that.$set(chat, "userCount", snapshot.numChildren());
-          snapshot.forEach((user) => {
-            if (user.key == that.user.id) {
-              that.$set(chat, "isAlreadyJoined", true);
-            }
-          });
-        });
     },
   },
   created() {

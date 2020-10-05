@@ -10,8 +10,8 @@
                 chat.name
               }}</v-list-item-title>
               <v-list-item-subtitle v-if="chat.userCount != null"
-                >{{ chat.userCount }} members have joined this
-                chat.</v-list-item-subtitle
+                >참여인원 : {{ chat.userCount }}
+               명 </v-list-item-subtitle
               >
               <v-list-item-subtitle v-else
                 >Loading user count...</v-list-item-subtitle

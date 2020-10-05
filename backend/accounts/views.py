@@ -93,3 +93,12 @@ def user_order(request):
         return Response(serializer.data)
     else:
         return Response({'message': '입력 내용이 올바른지 확인해주세요'})
+
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def user_nickname(request):
+    print("user_nickname 으로 들어왔음 [POST요청]")
+    User = get_user_model()
+    user = User.objects.get(email=request.user)
+    user_nickname = user.username
+    return Response({'nickname':user_nickname})

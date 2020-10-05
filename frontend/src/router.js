@@ -8,7 +8,7 @@ import Content from "./pages/Content.vue";
 import StoreList from "./pages/StoreList.vue";
 import StoreDetail from "./pages/StoreDetail.vue";
 import Create from "./components/Chat/Create.vue";
-import Chat from "./components/Chat/Chat.vue";
+// import Chat from "./components/Chat/Chat.vue";
 import ChatList from "./components/Chat/ChatList";
 import Signin from "@/components/User/Signin";
 import test from "@/components/test.vue";
@@ -37,21 +37,15 @@ export default new Router({
       name: "storedetail",
       component: StoreDetail,
     },
+    // {
+    //   path: "/chat",
+    //   name: "chat",
+    //   component: Chat,
+    // },
     {
-      path: "/chat",
-      name: "chat",
-      component: Chat,
-    },
-    {
-      path: "/create",
+      path: "/create/:storeid",
       name: "CreateChat",
       component: Create,
-    },
-    {
-      path: "/chat/:id",
-      name: "Chat",
-      component: Chat,
-      props: true,
     },
     {
       path: "/discover",
@@ -69,7 +63,7 @@ export default new Router({
       component: test,
     },
     {
-      path: "/hrchat/:roomName",
+      path: "/hrchat/:roomNumber/:roomName",
       name: "HyerinChat",
       component: HyerinChat,
     },

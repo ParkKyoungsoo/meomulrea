@@ -72,7 +72,7 @@
       <v-row>
         <v-col>
           <review v-if="contentTrigger2" />
-          <party v-if="contentTrigger3" />
+          <party v-if="contentTrigger3" :storeInfo="storeInfo" />
         </v-col>
       </v-row>
     </v-container>
@@ -118,18 +118,11 @@ export default {
     ...mapGetters("server", ["getBaseURL"]),
   },
   methods: {
-
     changeEndTime(time) {
       if (time == "00:00:00") {
         this.endTime = "24:00";
-<<<<<<< HEAD
       } else {
         this.endTime = time.substring(0, 5);
-=======
-      }
-      else {
-        this.endTime = time.substring(0, 5)
->>>>>>> bc7a67c3ecfa5d40ee45fac519ce0d46b38c9d73
       }
     },
 
