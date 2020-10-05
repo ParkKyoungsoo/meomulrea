@@ -5,6 +5,7 @@ from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from .models import makeChatroom
+
 # Create your views here.
 
 @api_view(['POST'])
@@ -44,3 +45,21 @@ def store_chatroom_list(request):
             return Response({'message': '채팅방이 삭제되었습니다.'})
         except:
             return Response({'message': '본인이 만든 방이 아닙니다.'})
+
+
+def user_minuscount(request, store_info, user_info):
+    chatroom = makeChatroom.objects.get(store_id=store_info)
+    cnt = chatroom.usercount - 1
+    print("현재 참여자 수 ",cnt)
+    chatroom.usercount = cnt
+    chatroom.save()
+    return chatroom.usercount
+
+def user_pluscount(request, store_info, user_info):
+    chatroom = makeChatroom.objects.get(store_id=store_info)
+    print(chatroom)
+    cnt = chatroom.usercount + 1
+    print("현재 참여자 수 ",cnt)
+    chatroom.usercount = cnt
+    chatroom.save()
+    return chatroom.usercount

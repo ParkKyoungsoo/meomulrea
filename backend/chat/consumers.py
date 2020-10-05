@@ -1,7 +1,9 @@
 # chat/consumers.py
 import json
 from asgiref.sync import async_to_sync
+from chatroom.views import user_minuscount, user_pluscount
 from channels.generic.websocket import WebsocketConsumer
+
 
 class ChatConsumer(WebsocketConsumer):
     messagelist = {}
@@ -17,6 +19,12 @@ class ChatConsumer(WebsocketConsumer):
         )
 
         # chatroom DB테이블에 참여인원수 update
+        room_info = self.room_name
+        room_info = room_info.split("_")
+        store_info = room_info[0]
+        user_info = room_info[1]
+        a = user_pluscount(self, store_info, user_info)
+        print(a)
 
         self.accept() # 연결 수락 
         if self.messagelist.get(self.room_name):
@@ -32,6 +40,14 @@ class ChatConsumer(WebsocketConsumer):
 
         # chatroom DB테이블에서 참여인원수 update -1 
         # 참여인원수 0명이면 delete 해주기 
+        # messagelist= {}
+        room_info = self.room_name
+        room_info = room_info.split("_")
+        store_info = room_info[0]
+        user_info = room_info[1]
+
+        a = user_minuscount(self, store_info, user_info)
+        print(a)
 
         # Leave room group
         async_to_sync(self.channel_layer.group_discard)(

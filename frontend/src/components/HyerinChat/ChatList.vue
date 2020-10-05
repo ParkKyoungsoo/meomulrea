@@ -45,23 +45,7 @@ const baseURL = "http://127.0.0.1:8000/";
 export default {
   data() {
     return {
-      chatList: [
-          {
-              key: "RoomTest01",
-              room_name: "테스트01",
-              usercount: 3
-          },
-          {
-              key: "RoomTest02",
-              room_name: "테스트02",
-              usercount: 1
-          },
-          {
-              key: "RoomTest03",
-              room_name: "테스트03",
-              usercount: 5
-          },
-      ],
+      chatList: [],
       loading: false,
     };
   },

@@ -43,7 +43,7 @@ export default {
             const messageInputDom = document.querySelector('#chat-message-input');
             this.message = messageInputDom.value; // message : 채팅창에 입력한 텍스트 
             // message = 닉네임 + "&&&&" + message
-            this.message = "어피치"+"&&&&"+ this.message
+            this.message = this.$cookies.get('nickname')+"&&&&"+ this.message
             this.chatSocket.send(JSON.stringify({
                 'message': this.message
             }));

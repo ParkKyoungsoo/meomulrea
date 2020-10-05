@@ -561,14 +561,20 @@ export default {
             password: this.nm_password,
           })
           .then((res) => {
-            firebase
-              .auth()
-              .setPersistence(firebase.auth.Auth.Persistence.SESSION);
-            firebase
-              .auth()
-              .signInWithEmailAndPassword(this.nm_email, this.nm_password);
-            this.setCookie(res.data.key);
-            this.$router.push("/home");
+              this.setCookie(res.data.key);
+              axios
+              .post(baseURL + "api/accounts/user_nickname/", null, {
+                headers: {
+                  Authorization: `Token ${res.data.key}`,
+                }
+              })
+              .then((res)=>{
+                  this.$cookies.set("nickname", res.data.nickname);
+                  this.$router.push("/home");
+              })
+              .catch((err)=>{
+                  console.log(err.response)
+              })
           })
           .catch((err) => {
             console.log(err);
