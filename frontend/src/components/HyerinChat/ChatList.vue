@@ -12,13 +12,13 @@
                 chat.room_name
               }}</v-list-item-title>
               <!-- v-if 채팅방의 현재 인원수 -->
-              <v-list-item-subtitle v-if="chat.usercount != null"
+              <!-- <v-list-item-subtitle v-if="chat.usercount != null"
                 > 참가인원 : {{ chat.usercount }} 명</v-list-item-subtitle
-              >
+              > -->
               <!-- v-else 채팅방의 인원수가 로드되지 않았을 경우 -->
-              <v-list-item-subtitle v-else
+              <!-- <v-list-item-subtitle v-else
                 >Loading user count...</v-list-item-subtitle
-              >
+              > -->
             </v-list-item-content>
           </v-list-item>
           <v-card-actions>
