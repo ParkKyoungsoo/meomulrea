@@ -25,7 +25,7 @@
             <!-- 카드를 클릭했을 때의 이벤트 -->
             <v-btn
               text
-              @click="ldj_enterChat(chat)"
+              @click="mvtochatting(chat)"
               v-if="!chat.isAlreadyJoined && chat.usercount != null"
               >참여하기</v-btn
             >
@@ -92,7 +92,7 @@ export default {
       // backend 요청
       // this.chatList에 Append
     },
-    ldj_enterChat(chat){
+    mvtochatting(chat){
       const key = chat.store_id +"_" +  chat.user
       this.$router.push("/hrchat/" + key + '/' +chat.room_name);
     },

@@ -5,7 +5,7 @@
         style="text-decoration: none; color: rgb(233,105,30); display:flex; align-items: center;"
         to="/home"
       >
-        <img style="height:65px; width: 65px;" src="../assets/image/home.png" />
+        <img style="height:65px; width: 65px;" src="../assets/image/home1.png" />
       </router-link>
     </v-toolbar-title>
     <v-spacer />
