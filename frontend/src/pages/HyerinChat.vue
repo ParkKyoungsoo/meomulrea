@@ -110,7 +110,8 @@ export default {
     this.roomName = this.$route.params.roomName; // 채팅방 이름
     this.chatSocket = new WebSocket( // 웹소켓에 연결하는 부분
       "ws://" +
-        "ec2-54-180-109-206.ap-northeast-2.compute.amazonaws.com" +
+        // "ec2-54-180-109-206.ap-northeast-2.compute.amazonaws.com" +
+        "127.0.0.1:8000" +
         "/ws/chat/" +
         this.roomNumber +
         "/"

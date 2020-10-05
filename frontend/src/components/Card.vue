@@ -42,7 +42,6 @@ export default {
     //   ".jpg");
     // console.log(this.imgUrl);
     this.imgUrl = require("../assets/image/storelist/default.jpg");
-    console.log("created!!", this.storeData.store_id);
   },
 
   methods: {

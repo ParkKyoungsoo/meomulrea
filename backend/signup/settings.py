@@ -27,7 +27,8 @@ SECRET_KEY = '&x3o%nc7@5qx(5nt*5y2l$u@m^an5cs1it55_*j*-!tt8p@uyh'
 DEBUG = True
 
 # ALLOWED_HOSTS = []
-ALLOWED_HOSTS = ["ec2-54-180-109-206.ap-northeast-2.compute.amazonaws.com", "127.0.0.1"]
+ALLOWED_HOSTS = [
+    "ec2-54-180-109-206.ap-northeast-2.compute.amazonaws.com", "127.0.0.1"]
 
 
 # Application definition
@@ -53,7 +54,7 @@ INSTALLED_APPS = [
     'chatroom',
 
 
-    
+
     'django_extensions',
 
     'rest_framework',
@@ -188,6 +189,7 @@ CHANNEL_LAYERS = {
     'default': {
         'BACKEND': 'channels_redis.core.RedisChannelLayer',
         'CONFIG': {
+            # "hosts": [('ec2-54-180-109-206.ap-northeast-2.compute.amazonaws.com', 6379)],
             "hosts": [('127.0.0.1', 6379)],
         },
     },

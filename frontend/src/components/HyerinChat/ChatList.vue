@@ -40,11 +40,12 @@
 
 <script>
 import axios from "axios";
-const baseURL = "http://127.0.0.1:8000/";
+import { mapGetters } from "vuex";
+// const baseURL = "http://127.0.0.1:8000/";
 
 export default {
-  props:{
-    store_id: []
+  props: {
+    store_id: [],
   },
   data() {
     return {
@@ -53,52 +54,55 @@ export default {
     };
   },
   mounted() {
-      // 여기서 ldj_loadChats 호출
-      this.ldj_loadChats()
+    // 여기서 ldj_loadChats 호출
+    this.ldj_loadChats();
   },
-  // computed: {
-  //   user() {
-  //     console.log("userInfo", this.$store.getters.user);
-  //     return this.$store.getters.user;
-  //   }
-  // },
+  computed: {
+    ...mapGetters("server", ["getBaseURL"]),
+  },
   methods: {
-    ldj_loadChats(){
+    ldj_loadChats() {
       // backend 요청
       // this.chatList = backend에서 전달받은 데이터
-      axios.post(
-        baseURL + "api/chatroom/store_chatroom_list/",
-        {
-          store_id : this.store_id
-        },
-        {
+      axios
+        .post(
+          this.getBaseURL.baseURL + "api/chatroom/store_chatroom_list/",
+          {
+            store_id: this.store_id,
+          },
+          {
             headers: {
               Authorization: `Token ${this.$cookies.get("auth-token")}`,
             },
-        }
-      )
-      .then((res)=>{
-        console.log(res.data);
-        // this.chats = res.data;
-        if(res.data.message){
-          this.chatList = []
-        }else{
-          this.chatList = res.data
-        }
-        
-      })
+          }
+        )
+        .then((res) => {
+          console.log(res.data);
+          // this.chats = res.data;
+          if (res.data.message) {
+            this.chatList = [];
+          } else {
+            this.chatList = res.data;
+          }
+        });
     },
     ldj_loadChats_On_Scrool(lastKey) {
       // backend 요청
       // this.chatList에 Append
     },
-    ldj_enterChat(chat){
-      const key = chat.store_id +"_" +  chat.user
-      this.$router.push("/hrchat/" + key + '/' +chat.room_name);
+    ldj_enterChat(chat) {
+      const key = chat.store_id + "_" + chat.user;
+      this.$router.push("/hrchat/" + key + "/" + chat.room_name);
     },
     onScroll() {
-      if (window.top.scrollY + window.innerHeight >=document.body.scrollHeight - 100 && !this.loading) {
-        this.ldj_loadChats_On_Scrool(this.chatList[this.chatList.length - 1].key);
+      if (
+        window.top.scrollY + window.innerHeight >=
+          document.body.scrollHeight - 100 &&
+        !this.loading
+      ) {
+        this.ldj_loadChats_On_Scrool(
+          this.chatList[this.chatList.length - 1].key
+        );
       }
     },
   },

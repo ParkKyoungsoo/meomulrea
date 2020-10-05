@@ -104,6 +104,7 @@ export default {
         ) // post > post
         .then((res) => {
           console.log("키는???");
+          console.log(res.data);
           console.log(res.data.key);
           this.$router.push("/hrchat/" + res.data.key + "/" + this.chatName);
         })
