@@ -136,6 +136,7 @@ export default {
       }) // post > post
       .then((res) => {
         this.recommendedDate = res.data.data;
+        console.log(this.recommendedDate);
       })
       .catch((res) => {
         console.log(res);

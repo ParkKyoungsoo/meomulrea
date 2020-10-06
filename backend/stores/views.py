@@ -64,10 +64,19 @@ def store_category(request):
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
 def store_bigcategory(request):
-    stores = Store.objects.filter(
-        bigcategory=request.data['bigcategory'], address__contains=request.data['user_location']).order_by('-average_rating')
-    serializer = StoreSerializer(stores, many=True)
-    return Response(serializer.data)
+    # stores = Store.objects.filter(
+    #     bigcategory=request.data['bigcategory'], address__contains=request.data['user_location']).order_by('-average_rating')
+    # serializer = StoreSerializer(stores, many=True)
+    if request.data['bigcategory'] != 'all':
+        stores = Store.objects.filter(
+            category=request.data['bigcategory'], address__contains=request.data['user_location']).order_by('-average_rating')
+        serializer = StoreSerializer(stores, many=True)
+        return Response(serializer.data)
+    else:
+        stores = Store.objects.filter(
+            address__contains=request.data['user_location']).order_by('-average_rating')
+        serializer = StoreSerializer(stores, many=True)
+        return Response(serializer.data)
 
 
 @api_view(['POST'])
