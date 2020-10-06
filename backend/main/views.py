@@ -9,27 +9,22 @@ import pickle5 as pickle
 # from lightfm import LightFM
 
 from rest_framework.response import Response
-from rest_framework.decorators import api_view
-
-# Create your views here.
-# @api_view(['GET'])
-# def get_stores(request, store_pk):
-#     # stores = Store.objects.all();
-#     store = get_object_or_404(Store, pk=store_pk)
-#     print(type(store))
-#     print(store)
-#     print(store.store_id)
-#     serializer = StoreInfoSerializer(store)
-
-#     return Response(serializer.data)
-#     # return Response({'message': '여기요'})
+from rest_framework.decorators import api_view, permission_classes
+from rest_framework.permissions import IsAuthenticated
+from django.contrib.auth import get_user_model
 
 
-@api_view(['GET'])
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
 def recommend_food(request):
-
-    # user_id = request.user.id
-    user_id = 328775
+    print('들어왔당')
+    print(request.user)
+    print('위에 머임?')
+    User = get_user_model()
+    user = User.objects.get(email=request.user)
+    user_id = user.id
+    print(user_id)
+    # user_id = 148970
 
     embedding_filename = './saved_models/item_embeddings.pickle'
     item_embeddings = pickle.load(open(embedding_filename, 'rb'))
@@ -68,7 +63,7 @@ def recommend_food(request):
         return best_items
 
     user_visited_store = Review.objects.filter(userid=user_id)[0].storeid
-    print(user_id, "가 갔던 가게 ", user_visited_store, " 와 비슷한 가게들")
+    print(user_id,"가 갔던 가게 ",user_visited_store," 와 비슷한 가게들")
     report1 = make_best_items_report(item_embeddings, user_visited_store, 5)
     report1 = report1.to_json(orient="split")
     parsed = json.loads(report1)

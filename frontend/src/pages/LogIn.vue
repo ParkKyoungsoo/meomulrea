@@ -790,7 +790,8 @@ export default {
             .catch((err) => {
               // err.response
               // let token = res.data.key;
-              console.log("error : " + res);
+              console.log("error : " + err);
+              console.log(err.response)
               // this.$store.dispatch("signUserUp", {
               //   email: this.nm_email,
               //   password: this.nm_password,

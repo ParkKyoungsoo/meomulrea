@@ -127,18 +127,19 @@ export default {
     EventBus.$on("addressChange", () => {
       this.getWeather();
     });
-    // this.getCategory();
 
-    axios({
-      method: "GET",
-      url: this.getBaseURL.baseURL + "api/main/",
-    })
-      .then((response) => {
-        this.recommendedDate = response.data.data;
+    axios
+      .post(this.getBaseURL.baseURL + "api/main/", null, {
+        headers: {
+          Authorization: `Token ${this.$cookies.get("auth-token")}`,
+        },
+      }) // post > post
+      .then((res) => {
+        this.recommendedDate = res.data.data;
       })
-      .catch((ex) => {
-        console.log(ex);
-      });
+      .catch((res) => {
+        console.log(res);
+      }); // post > post > then
   },
   computed: {
     ...mapGetters("location", ["getLocation"]),

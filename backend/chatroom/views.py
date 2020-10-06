@@ -6,9 +6,6 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from .models import makeChatroom
 
-# Create your views here.
-
-
 @api_view(['POST'])
 def create_chatroom(request):  # 채팅방 생성
 

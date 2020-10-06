@@ -6,12 +6,12 @@
         <Header />
       </v-col>
       <!-- <v-col style="border: 1px solid black; margin-top: 100px;">
-    <textarea class="ldj" id="chat-log" cols="100" rows="20"></textarea><br>
-    <input class="ldj" id="chat-message-input" type="text" size="100"><br>
-    <input class="ldj" id="chat-message-submit" @click="yhr()" v-on:keyup.enter="yhr()" type="button" value="Send">
-    </v-col> -->
-      <!-- <v-col style="border: 1px solid red;"> -->
-      <!-- <div class="chat">
+        <textarea class="ldj" id="chat-log" cols="100" rows="20"></textarea><br>
+        <input class="ldj" id="chat-message-input" type="text" size="100"><br>
+        <input class="ldj" id="chat-message-submit" @click="yhr()" v-on:keyup.enter="yhr()" type="button" value="Send">
+        </v-col> -->
+        <!-- <v-col style="border: 1px solid red;"> -->
+        <!-- <div class="chat">
         <ul>
             <li><img src="http://maxme-life.ru/tests/img2.jpg">
             <div class="message">메시지1</div>
@@ -31,7 +31,7 @@
             </li>
         </ul>
         <input type="text" placeholder="Написать сообщение" /><button>Отправить</button>
-    </div> -->
+        </div> -->
       <v-col>
         <div class="chat">
           <div style="float: left;">
@@ -44,11 +44,7 @@
           </div>
           <div class="chat_s">
             <div v-for="(chatting, index) in chattings" :key="index">
-              <div
-                v-if="$cookies.get('nickname') === chatting.nickname"
-                style="float:right;"
-              >
-                {{ chatting.nickname }}
+              <div v-if="$cookies.get('nickname') === chatting.nickname" style="float:right;"> {{ chatting.nickname }}
                 <div class="chat_bubble-2">{{ chatting.msg }}</div>
               </div>
               <div v-else>
@@ -58,8 +54,8 @@
                 </div>
               </div>
             </div>
-            <!-- <div class="chat_bubble-1">Hi</div> -->
-            <!-- <div class="chat_bubble-1">How are you?</div>
+                <!-- <div class="chat_bubble-1">Hi</div> -->
+                <!-- <div class="chat_bubble-1">How are you?</div>
                 <div class="chat_bubble-2">Fine. What about you?</div>
                 <div class="chat_bubble-1">I'm great. Wanna meet?</div>
                 <div class="chat_bubble-2">Sure</div>
@@ -154,8 +150,8 @@ export default {
       // messageInputDom.value = '';
       this.message = "";
     },
-  },
-};
+  }
+}
 </script>
 
 <style>
