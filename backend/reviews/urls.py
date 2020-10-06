@@ -14,4 +14,5 @@ urlpatterns = [
     path('sort_review_latest/', views.sort_review_latest),
     path('sort_review_high_score/', views.sort_review_high_score),
     path('sort_review_low_score/', views.sort_review_low_score),
+    path('<int:review_pk>/reply/<int:reply_pk>/', views.remove_reply),
 ]

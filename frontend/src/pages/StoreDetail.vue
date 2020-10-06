@@ -12,16 +12,7 @@
             md="2"
           >
           </v-col>
-          <v-col
-            style="text-align: left;"
-            lg="7"
-            md="7"
-          >
-            <!-- <div><img src="../assets/image/placeholder.png" style="width:15px;" alt=""> {{ this.storeInfo.address }}</div>
-            <div><img src="../assets/image/category.png" style="width:15px;" alt=""> {{ this.storeInfo.category }}</div>
-            <div><img src="../assets/image/money.png" style="width:15px;" alt=""> {{ this.storeInfo.min_price  }}원</div>
-            <div><img src="../assets/image/clock.png" style="width:15px;" alt=""> {{this.businessDay }} {{ this.startTime }} - {{ this.endTime }}</div>
-            <div><img src="../assets/image/star.png" style="width:15px;" alt=""> {{ this.storeInfo.average_rating }}</div> -->
+          <v-col style="text-align: left;" lg="7" md="7">
             <div>
               <img
                 src="../assets/image/placeholder.png"
@@ -36,7 +27,7 @@
                 style="width:15px;"
                 alt=""
               />
-              {{ this.storeInfo.category }}
+              {{ this.storeInfo.bigcategory }}
             </div>
             <div>
               <img src="../assets/image/money.png" style="width:15px;" alt="" />
@@ -44,13 +35,16 @@
             </div>
             <div>
               <img src="../assets/image/clock.png" style="width:15px;" alt="" />
-              {{ this.businessDay }} {{ this.storeInfo.start_time.substring(0,5) }} - {{ this.endTime }}
+              {{ this.businessDay }}
+              {{ this.startTime }} -
+              {{ this.endTime }}
             </div>
+            a
             <div>
-              <img src="../assets/image/star.png" style="width:15px;" alt="">
-               {{ this.storeInfo.average_rating }}</div>
-            <div style="display: flex; justify-content: start;">
+              <img src="../assets/image/star.png" style="width:15px;" alt="" />
+              {{ this.storeInfo.average_rating }}
             </div>
+            <div style="display: flex; justify-content: start;"></div>
           </v-col>
           <v-col lg="3" md="3">
             <KakaoMap :storeData="this.storeInfo" />
@@ -59,19 +53,6 @@
       </v-card>
       <br />
 
-      <!-- <v-card>
-        <v-row>
-          <v-col class="menu" @click="showContent(1)">메뉴</v-col>
-          <v-col class="review" @click="showContent(2)">리뷰</v-col>
-          <v-col class="party" @click="showContent(3)">파티만들기</v-col>
-        </v-row>
-        <v-row>
-          <v-col>
-            <review v-if="contentTrigger2" />
-            <party v-if="contentTrigger3" />
-          </v-col>
-        </v-row>
-      </v-card> -->
       <v-row>
         <v-tabs v-model="tab" fixed-tabs color="orange accent-4">
           <v-tab class="menu" @click="showContent(1)"
@@ -88,7 +69,7 @@
       <v-row>
         <v-col>
           <review v-if="contentTrigger2" />
-          <party v-if="contentTrigger3" :storeInfo="storeInfo"/>
+          <party v-if="contentTrigger3" :storeInfo="storeInfo" />
         </v-col>
       </v-row>
     </v-container>
@@ -101,8 +82,9 @@ import review from "../components/review.vue";
 import party from "../components/party.vue";
 import axios from "axios";
 import KakaoMap from "../components/KakaoMap.vue";
+import { mapGetters } from "vuex";
 
-const baseURL = "http://127.0.0.1:8000/";
+// const baseURL = "http://127.0.0.1:8000/";
 // const baseURL =
 //   "http://ec2-54-180-109-206.ap-northeast-2.compute.amazonaws.com/";
 
@@ -119,6 +101,7 @@ export default {
       contentTrigger1: true,
       contentTrigger2: false,
       contentTrigger3: false,
+      startTime: "",
       endTime: "",
       days: [],
       businessDay: "",
@@ -128,9 +111,16 @@ export default {
   created() {
     this.getStoreDetail();
   },
+  computed: {
+    ...mapGetters("server", ["getBaseURL"]),
+  },
   methods: {
     changeEndTime(time) {
-      if (time == "00:00:00") this.endTime = "24:00";
+      if (time == "00:00:00") {
+        this.endTime = "24:00";
+      } else {
+        this.endTime = time.substring(0, 5);
+      }
     },
 
     getBusinessDay(day) {
@@ -150,7 +140,8 @@ export default {
         if (this.days[d] != 0) this.businessDay += this.days[d] + ",";
       }
       if (this.businessDay == "월,화,수,목,금,") this.businessDay = "평일";
-      else if (this.businessDay == "월,화,수,목,금,토,일,") this.businessDay = "매일";
+      else if (this.businessDay == "월,화,수,목,금,토,일,")
+        this.businessDay = "매일";
       else if (this.businessDay == "토,일,") this.businessDay = "주말";
       else
         this.businessDay = this.businessDay.substring(
@@ -161,24 +152,26 @@ export default {
 
     getStoreDetail() {
       axios
-        .post(baseURL + `api/stores/${this.$route.params.storeid}/`, null, {
-          headers: {
-            Authorization: `Token ${this.$cookies.get("auth-token")}`,
-          },
-        }) // post > post
+        .post(
+          this.getBaseURL.baseURL + `api/stores/${this.$route.params.storeid}/`,
+          null,
+          {
+            headers: {
+              Authorization: `Token ${this.$cookies.get("auth-token")}`,
+            },
+          }
+        ) // post > post
         .then((res) => {
-          console.log("res Data", res.data);
           this.storeInfo = res.data;
           // this.imgUrl = require("../assets/image/storelist/" +
           //   this.storeInfo.store_name.replace(/(\s*)/g, "") +
           //   ".jpg");
           this.imgUrl = require("../assets/image/storelist/default.jpg");
+          this.startTime = res.data.start_time.substring(0, 5);
           this.changeEndTime(res.data.end_time);
           this.getBusinessDay(res.data);
         })
-        .catch((res) => {
-          console.log("user Address error", res);
-        }); // post > post > then
+        .catch((res) => {}); // post > post > then
     },
 
     showContent(num) {

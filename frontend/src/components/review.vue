@@ -9,8 +9,10 @@
       class="review-write"
       style="border: 1px solid silver; margin-bottom:10px; border-radius: 0.4em"
     >
-    
-      <div style="margin:10px">
+      <div
+        style="margin:10px"
+        v-show="!usertype == this.$route.params.store_user_id"
+      >
         <v-rating
           v-model="rating"
           style="text-align:left"
@@ -29,15 +31,28 @@
           color="orange"
         ></v-textarea>
         <div class="text-right">
-          <v-btn v-show="rating == 0 || myReview == 0" @click="msg()" color="gray" style="color:darkgray">등록</v-btn>
-          <v-btn v-show="rating > 0 && myReview != 0" @click="registerReview()" color="orange">등록</v-btn>
+          <v-btn
+            v-show="rating == 0 || myReview == 0"
+            @click="msg()"
+            color="gray"
+            style="color:darkgray"
+            >등록</v-btn
+          >
+          <v-btn
+            v-show="rating > 0 && myReview != 0"
+            @click="registerReview()"
+            color="orange"
+            >등록</v-btn
+          >
         </div>
         <hr />
       </div>
     </div>
     <div class="review-sort" style="display:inline;">
       <v-row>
-        <h2 style="text-align:left; width: fit-content;">리뷰({{ this.review_cnt }}개)</h2>
+        <h2 style="text-align:left; width: fit-content;">
+          리뷰({{ this.review_cnt }}개)
+        </h2>
         <v-spacer></v-spacer>
         <!-- <v-bottom-navigation style="box-shadow:none; width: fit-content; height: fit-content;" :value="value" color="orange" >
           <span><v-btn>최신순</v-btn></span>
@@ -57,7 +72,11 @@
         >
       </v-row>
     </div>
-    <div class="review-origin" v-for="review in reviews" :key="review.id">
+    <div
+      class="review-origin"
+      v-for="(review, index) in reviews"
+      :key="review.id"
+    >
       <div style="border: 1px solid silver; border-radius: 0.4em">
         <article class="review review-1">
           <v-row>
@@ -82,8 +101,8 @@
             <v-spacer></v-spacer>
             <p style="color: lightgray">{{ review.created_at.slice(0, 10) }}</p>
             <p
-              v-show="review.userid == userId"
-              @click="clickedDeleteBtn(review.id)"
+              v-show="review.userid === userId"
+              @click="clickedDeleteReview(review.id)"
               style="cursor:pointer;"
             >
               <img
@@ -96,30 +115,64 @@
           <!-- <v-row>
               <v-rating :value="review.score" readonly background-color="orange lighten-3" color="orange" dense="true" half-increments="true" small="true"></v-rating>({{ review.score }})<br>
             </v-row> -->
-          <p class="review-excerpt">{{ review.content }}</p>
+          <p class="review-excerpt">{{ review.content }} {{ review.id }}</p>
           <v-row justify="center">
-            <v-expansion-panels inset>
+            <v-expansion-panels v-show="review.replyset.length == 0">
+              <!-- v-show="review.replyset.length==0" -->
               <v-expansion-panel>
-                <v-expansion-panel-header>댓글 달기</v-expansion-panel-header>
+                <v-expansion-panel-header>답글 달기</v-expansion-panel-header>
                 <v-expansion-panel-content>
-                  <!-- <div class="message other-message float-right"> -->
                   <v-textarea
                     outlined
+                    v-model="myComment[index]"
                     name="input-7-4"
-                    label="댓글을 남겨보세요." 
-                    v-model="myComment"
+                    label="답글을 남겨보세요."
                     color="orange"
                   ></v-textarea>
                   <div class="text-right">
-                    <v-btn v-show="myComment == 0" @click="msgComment()" color="gray" style="color:darkgray">등록</v-btn>
-                    <v-btn v-show="myComment != 0" @click="registerComment(review.id)" color="orange">등록</v-btn>
+                    <!-- <v-btn @click="msgComment(myComment)" color="gray" style="color:darkgray">등록</v-btn> -->
+                    <v-btn
+                      v-show="myComment[index] != 0"
+                      @click="
+                        registerComment(index, review.id, myComment[index])
+                      "
+                      color="orange"
+                      >등록</v-btn
+                    >
                   </div>
-                  <!-- </div>                 -->
                 </v-expansion-panel-content>
               </v-expansion-panel>
             </v-expansion-panels>
           </v-row>
-          <!-- </h3> -->
+
+          <v-row v-if="review.replyset.length > 0" class="comment">
+            <div class="chat">
+              <div class="chat-history">
+                <div class="message-data"></div>
+                <span class="message-data-name">사장님</span>
+                <span class="message-data-time">{{
+                  review.replyset.slice(-1)[0].created_at.substring(0, 10)
+                }}</span>
+                <div class="message my-message">
+                  <span>{{ review.replyset.slice(-1)[0].content }}</span>
+                  <span>
+                    <img
+                      src="../assets/image/delete.png"
+                      style="width:15px; cursor: pointer"
+                      alt=""
+                      @click="
+                        clickedDeleteComment(
+                          review.id,
+                          review.replyset.slice(-1)[0].id
+                        )
+                      "
+                    />
+                  </span>
+                </div>
+              </div>
+            </div>
+            <!-- <span>{{ review.replyset.slice(-1)[0].created_at.substring(0, 10) }}</span> -->
+          </v-row>
         </article>
       </div>
       <br />
@@ -129,94 +182,128 @@
 
 <script>
 import axios from "axios";
-const baseURL = "http://127.0.0.1:8000/";
-// const baseURL =
+import { mapGetters } from "vuex";
+// const this.getBaseURL.baseURL = "http://127.0.0.1:8000/";
+// const this.getBaseURL.baseURL =
 //   "http://ec2-54-180-109-206.ap-northeast-2.compute.amazonaws.com/";
 
 export default {
   data() {
     return {
+      show: false,
       rating: 0,
       reviews: "",
       review_cnt: 0,
       myReview: "",
       flag: 1,
-      myComment: "",
-    }
+      myComment: [],
+      usertype: "",
+      clicked: false,
+    };
+  },
+  watch: {
+    clicked() {
+      console.log("clicked?");
+      if (this.flag == 1) {
+        console.log("getReview()");
+        this.getReview();
+      } else if (this.flag == 2) {
+        console.log("getReviewHighScore()");
+        this.getReviewHighScore();
+      } else {
+        console.log("getReviewLowScore()");
+        this.getReviewLowScore();
+      }
+      this.clicked = "";
+    },
   },
   created() {
     this.getReview();
+    // console.log(this.flag)
+  },
+
+  computed: {
+    ...mapGetters("server", ["getBaseURL"]),
   },
 
   methods: {
     getReview() {
       this.flag = 1;
       // this.value = 1;
-      axios.post(baseURL + "api/reviews/store_review_list/", {
-        storeid: this.$route.params.storeid
-      },
-      {
-        headers: {
-          Authorization: `Token ${this.$cookies.get('auth-token')}`
-        }
-      })
-      .then(res => {
-        console.log('최신순 리뷰 여기요', res.data)
-        this.reviews = res.data
-        this.review_cnt = res.data.length
-      })
-      .catch(err => {
-        console.log("리뷰 안온다" + err)
-      })
+      axios
+        .post(
+          this.getBaseURL.baseURL + "api/reviews/store_review_list/",
+          {
+            storeid: this.$route.params.storeid,
+          },
+          {
+            headers: {
+              Authorization: `Token ${this.$cookies.get("auth-token")}`,
+            },
+          }
+        )
+        .then((res) => {
+          console.log("최신순 리뷰 여기요", res.data);
+          this.reviews = res.data;
+          this.review_cnt = res.data.length;
+          this.usertype = res.data.user_id;
+        })
+        .catch((err) => {
+          console.log("리뷰 안온다" + err);
+        });
     },
 
     getReviewHighScore() {
       // this.value=3;
       this.flag = 2;
-      axios.post(baseURL + "api/reviews/sort_review_high_score/", 
-      {
-        storeid: this.$route.params.storeid,
-      },
-      {
-        headers: {
-          Authorization: `Token ${this.$cookies.get('auth-token')}`
-        }
-      })
-      .then(res => {
-        this.reviews = res.data;
-        this.review_cnt = res.data.length;
-      })
+      axios
+        .post(
+          this.getBaseURL.baseURL + "api/reviews/sort_review_high_score/",
+          {
+            storeid: this.$route.params.storeid,
+          },
+          {
+            headers: {
+              Authorization: `Token ${this.$cookies.get("auth-token")}`,
+            },
+          }
+        )
+        .then((res) => {
+          this.reviews = res.data;
+          this.review_cnt = res.data.length;
+        });
     },
 
     getReviewLowScore() {
       this.flag = 3;
-      axios.post(baseURL + "api/reviews/sort_review_low_score/",
-      {
-        storeid: this.$route.params.storeid,
-      },
-      {
-        headers: {
-          Authorization: `Token ${this.$cookies.get("auth-token")}`,
-        },
-      })
-      .then(res => {
-        this.reviews = res.data;
-        this.review_cnt = res.data.length;
-      });
+      axios
+        .post(
+          this.getBaseURL.baseURL + "api/reviews/sort_review_low_score/",
+          {
+            storeid: this.$route.params.storeid,
+          },
+          {
+            headers: {
+              Authorization: `Token ${this.$cookies.get("auth-token")}`,
+            },
+          }
+        )
+        .then((res) => {
+          this.reviews = res.data;
+          this.review_cnt = res.data.length;
+        });
     },
 
-    msg () {
+    msg() {
       if (this.myReview.length == 0 && this.rating == 0) {
-        alert("평점과 리뷰를 평가해주세요.")
-        return
-      }
-      else if (this.myReview.length == 0) {
-        alert("최소 한 글자 이상 작성해주세요.")
-        return
-      }
-      else if (this.rating == 0) {
-        alert("평점을 매겨주세요.")
-        return
+        alert("평점과 리뷰를 평가해주세요.");
+        return;
+      } else if (this.myReview.length == 0) {
+        alert("최소 한 글자 이상 작성해주세요.");
+        return;
+      } else if (this.rating == 0) {
+        alert("평점을 매겨주세요.");
+        return;
       }
 
       if (this.flag == 1) {
@@ -229,51 +316,54 @@ export default {
     },
 
     msgComment() {
-      alert("댓글을 남겨주세요.")
+      alert("답글을 남겨주세요.");
     },
 
     registerReview() {
       // this.value=2;
-      axios.post(baseURL + "api/reviews/create_review/", {
-        storeid: this.$route.params.storeid,
-        content: this.myReview,
-        score: this.rating,
-      },
-      {
-        headers: {
-          Authorization: `Token ${this.$cookies.get("auth-token")}`,
-        },
-      })
-      .then(res => {
-        console.log("새로운 리뷰"+res.data)
-        // console.log(res.data)
-        alert("리뷰가 등록되었습니다.");
-        if (this.flag == 1) {
-          this.getReview();
-        } else if (this.flag == 2) {
-          this.getReviewHighScore();
-        } else {
-          this.getReviewLowScore();
-        }
-      })
-      .catch(err => {
-        console.log(err.response)
-      })
-      this.myReview = ""
-      this.rating = 0
+      axios
+        .post(
+          this.getBaseURL.baseURL + "api/reviews/create_review/",
+          {
+            storeid: this.$route.params.storeid,
+            content: this.myReview,
+            score: this.rating,
+          },
+          {
+            headers: {
+              Authorization: `Token ${this.$cookies.get("auth-token")}`,
+            },
+          }
+        )
+        .then((res) => {
+          console.log("새로운 리뷰" + res.data);
+          alert("리뷰가 등록되었습니다.");
+          if (this.flag == 1) {
+            this.getReview();
+          } else if (this.flag == 2) {
+            this.getReviewHighScore();
+          } else {
+            this.getReviewLowScore();
+          }
+        })
+        .catch((err) => {
+          console.log(err.response);
+        });
+      this.myReview = "";
+      this.rating = 0;
     },
 
-    clickedDeleteBtn(reviewId) {
+    clickedDeleteReview(reviewId) {
       var answer = confirm("리뷰를 삭제하시겠습니까?");
       if (answer) {
         // true
         axios
-          .delete(baseURL + `api/reviews/${reviewId}/`, {
+          .delete(this.getBaseURL.baseURL + `api/reviews/${reviewId}/`, {
             headers: {
               Authorization: `Token ${this.$cookies.get("auth-token")}`,
             },
           })
-          .then(res => {
+          .then((res) => {
             alert("리뷰가 삭제 되었습니다.");
             if (this.flag == 1) {
               this.getReview();
@@ -283,27 +373,68 @@ export default {
               this.getReviewLowScore();
             }
           })
-          .catch(err => {
+          .catch((err) => {
             alert("리뷰 삭제 실패!");
           });
       }
     },
 
-    registerComment(idx) {
-      console.log("idx" , idx)
-      console.log("내 유저타입은?")
-      axios.post(baseURL + `api/reviews/${idx}/create_reply/`, {
-        content: this.myComment,
-      },
-      {
-        headers: {
-          Authorization: `Token ${this.$cookies.get("auth-token")}`,
-        },
-      })
-      .then(res => {
-        console.log("사장님 댓글", res.data)
-        // this.myComment = res.data
-      })
+    // 사장님 답글 등록
+    registerComment(index, idx, content) {
+      axios
+        .post(
+          this.getBaseURL.baseURL + `api/reviews/${idx}/create_reply/`,
+          {
+            content: content,
+          },
+          {
+            headers: {
+              Authorization: `Token ${this.$cookies.get("auth-token")}`,
+            },
+          }
+        )
+        .then((res) => {
+          this.getReview();
+          this.myComment[idx] = "";
+        })
+        .catch((err) => {
+          console.log("답글ㄴㄴ", err.response);
+        });
+    },
+
+    clickedDeleteComment(reviewId, commentId) {
+      var answer = confirm("답글을 삭제하시겠습니까?");
+      if (answer) {
+        // true
+        axios
+          .post(
+            this.getBaseURL.baseURL +
+              `api/reviews/${reviewId}/reply/${commentId}/`,
+            {
+              storeid: this.$route.params.storeid,
+            }
+          )
+          .then((res) => {
+            // if (this.flag == 1) {
+            //   this.getReview();
+            // } else if (this.flag == 2) {
+            //   this.getReviewHighScore();
+            // } else {
+            //   this.getReviewLowScore();
+            // }
+            // this.clicked=true;
+            this.clicked = "클릭클릭클릭";
+            // console.log('clicked ',this.clicked)
+          })
+          .catch((err) => {
+            console.log("??????????????????????????");
+            console.log("err", err);
+            console.log("err.response", err.response);
+            console.log("err.response.data", err.response.data);
+            alert("답글 삭제 실패!");
+            console.log(this.$route.params.storeid);
+          });
+      }
     },
   },
 };
@@ -368,4 +499,94 @@ a {
 /* .review a {
   text-decoration: none;
 } */
+
+.chat {
+  width: 1500px;
+  float: left;
+  /* background: #F2F5F8; */
+  border-top-right-radius: 5px;
+  border-bottom-right-radius: 5px;
+  color: #434651;
+}
+
+.chat .chat-about {
+  float: left;
+  padding-left: 10px;
+  margin-top: 6px;
+}
+.chat .chat-with {
+  font-weight: bold;
+  font-size: 16px;
+}
+.chat .chat-history .message-data {
+  margin-bottom: 15px;
+}
+.chat .chat-history .message-data-time {
+  color: #a8aab1;
+  padding-left: 6px;
+}
+.chat .chat-history .message {
+  color: black;
+  padding: 18px 20px;
+  line-height: 26px;
+  font-size: 16px;
+  border-radius: 7px;
+  width: 90%;
+  position: relative;
+}
+.chat .chat-history .message:after {
+  bottom: 100%;
+  left: 7%;
+  border: solid transparent;
+  content: " ";
+  height: 0;
+  width: 0;
+  position: absolute;
+  pointer-events: none;
+  border-bottom-color: #ededed;
+  border-width: 10px;
+  margin-left: -10px;
+}
+.chat .chat-history .my-message {
+  background: #ededed;
+}
+
+/* .chat .chat-message {
+  padding: 30px;
+} */
+.chat .chat-message textarea {
+  width: 100%;
+  border: none;
+  padding: 10px 20px;
+  font: 14px/22px "Lato", Arial, sans-serif;
+  margin-bottom: 10px;
+  border-radius: 5px;
+  resize: none;
+}
+/* .chat .chat-message, .chat .chat-message   {
+  font-size: 16px;
+  color: gray;
+  cursor: pointer;
+} */
+
+.align-left {
+  text-align: left;
+}
+/* 
+.align-right {
+  text-align: right;
+} */
+
+/* .float-right {
+  float: right;
+} */
+
+.clearfix:after {
+  visibility: hidden;
+  display: block;
+  font-size: 0;
+  content: " ";
+  clear: both;
+  height: 0;
+}
 </style>

@@ -7,12 +7,10 @@ import Login from "./pages/LogIn.vue";
 import Content from "./pages/Content.vue";
 import StoreList from "./pages/StoreList.vue";
 import StoreDetail from "./pages/StoreDetail.vue";
-import Create from "./components/HyerinChat/Create.vue";
-import Chat from "./components/Chat/Chat.vue";
-import ChatList from "./components/Chat/ChatList";
 import Signin from "@/components/User/Signin";
-import test from "@/components/test.vue"
+import test from "@/components/test.vue";
 import HyerinChat from "./pages/HyerinChat.vue";
+import Create from "./components/HyerinChat/Create.vue";
 
 export default new Router({
   mode: "history",
@@ -28,7 +26,7 @@ export default new Router({
       component: Login,
     },
     {
-      path: "/storelist/:category",
+      path: "/storelist/:bigcategory",
       name: "storelist",
       component: StoreList,
     },
@@ -38,25 +36,9 @@ export default new Router({
       component: StoreDetail,
     },
     {
-      path: "/chat",
-      name: "chat",
-      component: Chat,
-    },
-    {
       path: "/create/:storeid",
       name: "CreateChat",
       component: Create,
-    },
-    {
-      path: "/chat/:id",
-      name: "Chat",
-      component: Chat,
-      props: true,
-    },
-    {
-      path: "/discover",
-      name: "JoinChat",
-      component: ChatList,
     },
     {
       path: "/loginChat",
@@ -69,7 +51,7 @@ export default new Router({
       component: test,
     },
     {
-      path: "/hrchat/:roomName",
+      path: "/hrchat/:roomNumber/:roomName",
       name: "HyerinChat",
       component: HyerinChat,
     },

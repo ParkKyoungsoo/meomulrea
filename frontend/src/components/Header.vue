@@ -23,7 +23,8 @@
         />
       </v-col>
     </v-toolbar-title>
-    <button @click="findAddress(true)">추가하기</button>
+    <button @click="findAddress()">추가하기</button>
+    <button @click="test()">버어튼</button>
     <v-spacer />
     <v-toolbar-title>
       <div
@@ -52,8 +53,8 @@ import * as firebase from "firebase";
 import axios from "axios";
 
 // const baseURL = "http://127.0.0.1:8000/";
-const baseURL =
-  "http://ec2-54-180-109-206.ap-northeast-2.compute.amazonaws.com/";
+// const baseURL =
+//   "http://ec2-54-180-109-206.ap-northeast-2.compute.amazonaws.com/";
 
 export default {
   data() {
@@ -64,24 +65,19 @@ export default {
       seletedAddress: "",
       isLogined: false,
       newAddress: "",
+      AddrTrigger: false,
     };
   },
   components: {},
   computed: {
     ...mapGetters("location", ["getLocation"]),
     ...mapGetters("userInfo", ["getUserInfo"]),
-  },
-
-  watch: {
-    newAddress: function(newVal, oldVal) {
-      console.lof("watch", newVal);
-    },
+    ...mapGetters("server", ["getBaseURL"]),
   },
 
   created() {
     this.getUserAddress();
-    console.log("Token ", this.$cookies.get("auth-token"));
-    this.select = this.getUserInfo.location;
+    this.select = this.getUserInfo.userAddress;
   },
 
   mounted() {
@@ -89,18 +85,13 @@ export default {
   },
 
   methods: {
-    test() {
-      console.log("test console", this.userInfo[0].location);
-    },
-
     ...mapMutations(("location", ["setLocation"])),
     ...mapMutations(("userInfo", ["setUserInfo"])),
 
     addAddress: function() {
-      console.log("addAddr Func", this.newAddress);
       axios
         .post(
-          baseURL + "api/accounts/user_order/",
+          this.getBaseURL.baseURL + "api/accounts/user_order/",
           {
             location: this.newAddress,
           },
@@ -111,7 +102,7 @@ export default {
           }
         ) // post > post
         .then((res) => {
-          console.log(res.data);
+          // console.log(res.data);
         })
         .catch((res) => {
           console.log(res);
@@ -138,17 +129,22 @@ export default {
           this.$cookies.remove("auth-token");
           this.$router.push("/");
         });
+
+      this.$store.commit("userInfo/setUserInfo", {
+        userAddress: "",
+      });
     },
 
     getUserAddress() {
       axios
-        .post(baseURL + "api/accounts/user_order_list/", null, {
+        .post(this.getBaseURL.baseURL + "api/accounts/user_order_list/", null, {
           headers: {
             Authorization: `Token ${this.$cookies.get("auth-token")}`,
           },
         }) // post > post
         .then((res) => {
           this.userInfo = res.data;
+          this.select = res.data.location;
         })
         .catch((res) => {
           console.log("user Address error", res);
@@ -170,7 +166,6 @@ export default {
 
       geocoder.addressSearch(this.select.location, (result, status) => {
         if (status === kakao.maps.services.Status.OK) {
-          console.log("result", result);
           this.$store.commit("location/setLocation", {
             lat: result[0].y,
             lng: result[0].x,
@@ -179,11 +174,13 @@ export default {
         }
       });
     },
+
     login() {
       this.$router.push("/");
     },
 
     findAddress() {
+      console.log("trigger", this.AddrTrigger);
       new daum.Postcode({
         oncomplete: (data) => {
           var fullAddr = data.address;
@@ -192,20 +189,34 @@ export default {
           if (data.addressType === "R") {
             if (data.bname !== "") {
               extraAddr += data.bname;
-              console.log("bname : " + extraAddr);
             }
             if (data.buildingName !== "") {
               extraAddr +=
                 extraAddr !== "" ? ", " + data.buildingName : data.buildingName;
-              console.log("buildingName : " + extraAddr);
             }
             fullAddr += extraAddr !== "" ? " (" + extraAddr + ")" : "";
-            this.newAddress = fullAddr;
           }
+
+          axios
+            .post(
+              this.getBaseURL.baseURL + "api/accounts/user_order/",
+              {
+                location: fullAddr,
+              },
+              {
+                headers: {
+                  Authorization: `Token ${this.$cookies.get("auth-token")}`,
+                },
+              }
+            ) // post > post
+            .then((res) => {
+              location.reload();
+            })
+            .catch((res) => {
+              console.log(res);
+            }); // post > post > then
         },
-      }).open();
-      console.log("new Address is ", this.newAddress);
-      this.addAddress();
+      }).open({});
     },
   },
 

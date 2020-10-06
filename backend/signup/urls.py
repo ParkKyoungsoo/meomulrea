@@ -23,8 +23,8 @@ from django.views.generic import TemplateView
 from django.conf.urls import include as include2
 
 urlpatterns = [
-    path('chat/', include2('chat.urls')),
-    path('api/chatroom/',include('chatroom.urls')),
+    path('api/chat/', include2('chat.urls')),
+    path('api/chatroom/', include('chatroom.urls')),
     path('admin/', admin.site.urls),
     path('api/accounts/', include('accounts.urls')),
 
