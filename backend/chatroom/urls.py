@@ -6,7 +6,7 @@ app_name = 'chatroom'
 
 urlpatterns = [
 
-    path('createchatroom/',views.create_chatroom, name='makechatroom'),
-    path('store_chatroom_list/', views.store_chatroom_list, name='store_chatroom_list'),
+    path('createchatroom/', views.create_chatroom, name='makechatroom'),
+    path('store_chatroom_list/', views.store_chatroom_list,
+         name='store_chatroom_list'),
 ]
-  

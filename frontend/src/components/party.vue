@@ -1,9 +1,11 @@
 <template>
   <div>
+    <div class="party">
     <v-btn @click='mvtopage()'>
       <v-icon left>mdi-forum</v-icon>
-      <div class="hidden-xs-only">파티만들기</div>
+      파티만들기
     </v-btn>
+    </div>
     <!-- <v-btn text to="/discover">
       <v-icon left>mdi-chat</v-icon>
       <div class="hidden-xs-only">파티찾기</div>
@@ -31,3 +33,10 @@ export default {
   }
 };
 </script>
+<style scoped>
+.party {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+}
+</style>

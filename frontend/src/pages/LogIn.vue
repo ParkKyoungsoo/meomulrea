@@ -166,6 +166,7 @@
               v-model="biz_numb"
               ref="biz_numb"
               label="사업자번호"
+              :counter="12"
             ></v-text-field>
             <v-file-input
               accept="image/*"

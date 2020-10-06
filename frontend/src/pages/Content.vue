@@ -18,24 +18,6 @@
     </div>
     <v-container class="content">
       <div style="width: 80%;">
-        <!-- <v-layout class="weather">
-          <v-btn icon color="green" @click="getWeather">
-            <v-icon>mdi-cached</v-icon>
-          </v-btn>
-          오늘의 날씨(<img
-            style="width:30px; height:30px;"
-            :src="require('../assets/image/' + weatherimg)"
-            :alt="weatherimg"
-          />)
-
-          <v-flex>지역 : {{ this.getLocation.dong }} </v-flex>
-          <v-flex
-            >기온 :
-            {{ parseInt(locationData.main.temp - 273.15) }} &deg;C</v-flex
-          >
-          <v-flex>습도 : {{ locationData.main.humidity }} %</v-flex>
-          <v-flex>구름 : {{ locationData.clouds.all + "%" }}</v-flex>
-        </v-layout> -->
         <v-layout>
           <v-flex> 오늘은 뭐먹지? </v-flex>
         </v-layout>

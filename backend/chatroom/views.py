@@ -8,8 +8,9 @@ from .models import makeChatroom
 
 # Create your views here.
 
+
 @api_view(['POST'])
-def create_chatroom(request): # 채팅방 생성
+def create_chatroom(request):  # 채팅방 생성
 
     serializer = ChatRoomSerializer(data=request.data)
 
@@ -20,13 +21,14 @@ def create_chatroom(request): # 채팅방 생성
     user = User.objects.get(email=request.user)
     user_id = user.id
     print(user_id)
-    key = str(store_id) +"_"+ str(user_id)
+    key = str(store_id) + "_" + str(user_id)
     print(key)
-    
+
     if serializer.is_valid(raise_exception=True):
         serializer.save(user=request.user)
-    
+
     return Response({"key": key})
+
 
 @api_view(['POST', 'DELETE'])
 @permission_classes([IsAuthenticated])
@@ -50,21 +52,23 @@ def store_chatroom_list(request):
 def user_minuscount(request, store_info, user_info):
     chatroom = makeChatroom.objects.get(store_id=store_info)
     cnt = chatroom.usercount - 1
-    print("현재 참여자 수 ",cnt)
+    print("현재 참여자 수 ", cnt)
     chatroom.usercount = cnt
     chatroom.save()
     return chatroom.usercount
+
 
 def user_pluscount(request, store_info, user_info):
     chatroom = makeChatroom.objects.get(store_id=store_info)
     print(chatroom)
     cnt = chatroom.usercount + 1
-    print("현재 참여자 수 ",cnt)
+    print("현재 참여자 수 ", cnt)
     chatroom.usercount = cnt
     chatroom.save()
     return chatroom.usercount
 
+
 def delete_chatroom(request, store_info, user_info):
-    room = makeChatroom.objects.get(store_id = store_info, user=user_info)
+    room = makeChatroom.objects.get(store_id=store_info, user=user_info)
     room.delete()
     print("delete_chatroom: 방삭제")

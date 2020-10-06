@@ -32,16 +32,21 @@
         </ul>
         <input type="text" placeholder="Написать сообщение" /><button>Отправить</button>
     </div> -->
-      <v-col>
+      <!-- <v-col> -->
         <div class="chat">
-          <div style="float: left;">
+          <!-- <div style="float: left;"> -->
             <div class="chat_header">
-              <!-- <img class="chat_avatar" src="http://www.naturaloil.ph/wp-content/uploads/2015/11/John_Doe.jpg"/>채팅방이름 -->
-              <!-- <div class="chat_status">ONLINE</div> -->
-              {{ roomName }}
+              <v-col >
+                <v-row>
+                <h2 style="width: 60%; display:flex; justify-content: flex-end; align-items: center;">{{roomName}}</h2>
+                <div style="width: 40%; display:flex; justify-content: flex-end; align-items: center;" >
+                  <v-btn x-large @click="exit()">나가기</v-btn>
+                </div>
+                </v-row>
+              </v-col>
             </div>
-            <button @click="exit()">나가기</button>
-          </div>
+            
+          <!-- </div> -->
           <div class="chat_s">
             <div v-for="(chatting, index) in chattings" :key="index">
               <div
@@ -58,33 +63,15 @@
                 </div>
               </div>
             </div>
-            <!-- <div class="chat_bubble-1">Hi</div> -->
-            <!-- <div class="chat_bubble-1">How are you?</div>
-                <div class="chat_bubble-2">Fine. What about you?</div>
-                <div class="chat_bubble-1">I'm great. Wanna meet?</div>
-                <div class="chat_bubble-2">Sure</div>
-                <div class="chat_bubble-2">I'll see you soon</div>
-                <div class="chat_bubble-1">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla volutpat augue ac ultrices malesuada. Fusce varius urna id dignissim vestibulum. Integer rutrum, purus sit amet tincidunt molestie, diam dui pulvinar nulla, rhoncus facilisis elit mi sit amet lorem.</div>
-                <div class="chat_bubble-2">Huh?</div>
-                <div class="chat_bubble-1">Just Testing &#x1F609;</div> -->
           </div>
           <div class="chat_input">
-            <input
-              placeholder="메시지를 작성하세요"
-              class="chat_text"
-              v-model="message"
-            />
-            <v-btn
-              class="chat_submit fa fa-send"
-              @click="yhr()"
-              v-on:keyup.enter="yhr()"
-              >전송</v-btn
-            >
+            <input placeholder="메시지를 작성하세요" class="chat_text" v-model="message"/>
+            <v-btn @click="yhr()">전송</v-btn>
             <!-- onkeypress="if(event.keyCode === 13){add()}" -->
             <!-- onclick="add()" -->
           </div>
         </div>
-      </v-col>
+      <!-- </v-col> -->
     </v-main>
   </div>
 </template>
@@ -102,6 +89,7 @@ export default {
       roomNumber: "",
       chatSocket: "",
       message: "",
+      msg:'',
       chattings: [],
     };
   },
@@ -110,7 +98,8 @@ export default {
     this.roomName = this.$route.params.roomName; // 채팅방 이름
     this.chatSocket = new WebSocket( // 웹소켓에 연결하는 부분
       "ws://" +
-        "ec2-54-180-109-206.ap-northeast-2.compute.amazonaws.com" +
+        // "ec2-54-180-109-206.ap-northeast-2.compute.amazonaws.com" +
+        "127.0.0.1:8000" +
         "/ws/chat/" +
         this.roomNumber +
         "/"
@@ -120,8 +109,8 @@ export default {
     // 이벤트 등록. onmessage -> chatSocket에 메세지가 도착했을 때 일어날 이벤트를 여기에 작성.
     this.chatSocket.onmessage = (e) => {
       const data = JSON.parse(e.data);
-      const nickname = data.message.split("&&&&")[0];
-      const msg = data.message.split("&&&&")[1];
+      let nickname = data.message.split("&&&&")[0];
+      let msg = data.message.split("&&&&")[1];
       this.chattings.push({ nickname: nickname, msg: msg });
       // document.querySelector('#chat-log').value += (nickname+" ) "+ msg + '\n');
       console.log(this.chattings);
@@ -139,10 +128,10 @@ export default {
       // const messageInputDom = document.querySelector('#chat-message-input');
       // this.message = messageInputDom.value; // message : 채팅창에 입력한 텍스트
       // message = 닉네임 + "&&&&" + message
-      this.message = this.$cookies.get("nickname") + "&&&&" + this.message;
+      this.msg = this.$cookies.get("nickname") + "&&&&" + this.message;
       this.chatSocket.send(
         JSON.stringify({
-          message: this.message,
+          message: this.msg,
         })
       );
       // messageInputDom.value = '';
@@ -284,7 +273,6 @@ export default {
 .chat {
   width: 80%;
   margin: auto auto;
-  margin-top: 25px;
   height: 100%;
   border: 1px solid black;
   /* box-shadow:0 0 30px -5px grey; */
@@ -311,25 +299,23 @@ export default {
     margin-top:-3px
 } */
 .chat_input {
-  bottom: 0;
   /* width:calc(100% - 8px); */
   width: 100%;
   /* padding:10px 4px 6px; */
-  background: #c8c8c8;
+  margin: 0;
+  padding: 0;
+  border: 2px solid red;
 }
 .chat_text {
-  width: calc(85% - 10px);
-  padding: 10px;
+  width: 90%;
   /* box-sizing:border-box; */
+  padding-top: 5px; padding-bottom: 5px;
   margin: 0 5px 5px;
-  vertical-align: top;
-  font-family: "Montserrat", sans-serif;
+  /* vertical-align: center; */
 }
 .chat_submit {
-  width: calc(15% - 5px);
-  padding: 10px;
+  width: fit-content;
   box-sizing: border-box;
-  margin: 0 5px 5px 0;
   vertical-align: top;
   border: 1px solid teal;
   cursor: pointer;

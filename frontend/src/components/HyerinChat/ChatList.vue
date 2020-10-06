@@ -1,67 +1,88 @@
 <template>
   <v-container v-on:scroll="onScroll" ref="chatlistContainer">
-    <v-row no-gutters>
+    <v-main style="margin: 0; padding: 0;">
+    <v-row style="margin: 0;" no-gutters>
       <v-col v-for="(chat,index) in chatList" :index="index" :key="chat.room_name" cols="12" sm="4">
         <div class="chatlist">
-          <img :src="url('../../assets/image/home'+index+'.png')" alt="" />
-          <p class="title">{{chat.room_name}}</p>
-          <div class="overlay"></div>
-          <v-btn @click="mvtochatting(chat)">참가하기</v-btn>
+          <img :src="chattingIMG[num[index]]" alt=""/>
+          <div class="title">
+            <h1>{{chat.room_name}}</h1>
+            <p>주소주소</p>
+          </div>
+          <v-btn style="width: 80%; color: white;" color="black" @click="mvtochatting(chat)">참가하기</v-btn>
         </div>
       </v-col>
     </v-row>
+    </v-main>
   </v-container>
 </template>
 
 <script>
 import axios from "axios";
-const baseURL = "http://127.0.0.1:8000/";
+import { mapGetters } from "vuex";
+// const baseURL = "http://127.0.0.1:8000/";
 
 export default {
-  props:{
-    store_id: []
+  props: {
+    store_id: [],
   },
   data() {
     return {
       chatList: [],
       loading: false,
+      chattingIMG:[
+        require('../../assets/image/chattingroom/diet.png'), 
+        require('../../assets/image/chattingroom/eat.png'),
+        require('../../assets/image/chattingroom/foodtray.png'),
+        require('../../assets/image/chattingroom/messenger.png'),
+        require('../../assets/image/chattingroom/roomservice.png'),
+        require('../../assets/image/chattingroom/sale.png'),
+        require('../../assets/image/chattingroom/team.png'),
+        require('../../assets/image/chattingroom/tray.png'),
+        ],
+        num: [],
     };
   },
   mounted() {
-      // 여기서 ldj_loadChats 호출
-      this.ldj_loadChats()
+    // 여기서 ldj_loadChats 호출
+    this.ldj_loadChats();
   },
-  // computed: {
-  //   user() {
-  //     console.log("userInfo", this.$store.getters.user);
-  //     return this.$store.getters.user;
-  //   }
-  // },
+  computed: {
+    ...mapGetters("server", ["getBaseURL"]),
+  },
   methods: {
-    ldj_loadChats(){
+    ldj_loadChats() {
       // backend 요청
       // this.chatList = backend에서 전달받은 데이터
-      axios.post(
-        baseURL + "api/chatroom/store_chatroom_list/",
-        {
-          store_id : this.store_id
-        },
-        {
+      axios
+        .post(
+          this.getBaseURL.baseURL + "api/chatroom/store_chatroom_list/",
+          {
+            store_id: this.store_id,
+          },
+          {
             headers: {
               Authorization: `Token ${this.$cookies.get("auth-token")}`,
             },
-        }
-      )
-      .then((res)=>{
-        console.log(res.data);
-        // this.chats = res.data;
-        if(res.data.message){
-          this.chatList = []
-        }else{
-          this.chatList = res.data
-        }
-        
-      })
+          }
+        )
+        .then((res) => {
+          console.log(res.data);
+          // this.chats = res.data;
+          if (res.data.message) {
+            this.chatList = [];
+          } else {
+            this.chatList = res.data;
+            this.rand();
+          }
+        });
+    },
+    rand(){
+      console.log('들어오니')
+      for(var i=0;i<this.chatList.length;i++){
+        this.num.push(Math.floor(Math.random()*8));
+      }
+      console.log('this.num : ', this.num)
     },
     ldj_loadChats_On_Scrool(lastKey) {
       // backend 요청
@@ -72,13 +93,20 @@ export default {
       this.$router.push("/hrchat/" + key + '/' +chat.room_name);
     },
     onScroll() {
-      if (window.top.scrollY + window.innerHeight >=document.body.scrollHeight - 100 && !this.loading) {
-        this.ldj_loadChats_On_Scrool(this.chatList[this.chatList.length - 1].key);
+      if (
+        window.top.scrollY + window.innerHeight >=
+          document.body.scrollHeight - 100 &&
+        !this.loading
+      ) {
+        this.ldj_loadChats_On_Scrool(
+          this.chatList[this.chatList.length - 1].key
+        );
       }
     },
   },
   created() {
     window.addEventListener("scroll", this.onScroll);
+    // this.num = parseInt(Math.random() * 8);
   },
   destroyed() {
     window.removeEventListener("scroll", this.onScroll);
@@ -93,54 +121,56 @@ export default {
 </script>
 
 <style scoped>
+*{
+  font-family: 'Do Hyeon';
+}
 .chatlist {
   position: relative;
-  margin: 10%;
-  width: 300px;
-  height: 300px;
-}
-
-.overlay {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: rgba(0, 0, 0, 0);
-  transition: background 0.5s ease;
-}
-
-.container:hover .overlay {
-  display: block;
-  background: rgba(0, 0, 0, .3);
+  margin: auto auto; 
+  /* margin-top: 50px; */
+  /* width: 300px;
+  height: 300px; */
+  width: fit-content;
+  height: fit-content;
 }
 
 img {
-  position: absolute;
-  width: 500px;
-  height: 300px;
-  left: 0;
+  opacity: 0.5;
+  display: block;
+  /* width: 100%; */
+  /* height: auto; */
+  margin: auto auto;
+  width: 250px;
+  height: 250px;
+  transition: .5s ease;
+  backface-visibility: hidden;
 }
-
+.chatlist:hover img {
+  /* opacity: 0.3; */
+  background-color: black;
+  border-radius: 5%;
+}
 .title {
   position: absolute;
-  width: 500px;
-  left: 0;
-  top: 120px;
-  font-weight: 700;
-  font-size: 30px;
-  text-align: center;
-  text-transform: uppercase;
-  color: white;
+  padding-left: 20%;
+  /* width: 300px; */
+  margin-top: -45%;
+  /* font-weight: 700; */
+  /* font-size: 30px; */
+  /* text-align: center; */
+  /* text-transform: uppercase; */
   z-index: 1;
   transition: top .5s ease;
 }
 
-.container:hover .title {
-  top: 90px;
+.chatlist:hover .title {
+  margin-top: -55%;
+  transition: top .5s ease;
 }
-
-.button {
+/* .chatlist:hover {
+  border-radius: 5%;
+} */
+/* .button {
   position: absolute;
   width: 500px;
   left:0;
@@ -154,13 +184,14 @@ img {
   width: 200px;
   padding: 12px 48px;
   text-align: center;
-  color: white;
-  border: solid 2px white;
+  color: black;
+  border: solid 2px black;
   z-index: 1;
-}
+} */
 
-.container:hover .button {
+/* .chatlist:hover .button {
   opacity: 1;
-}
+} */
+
 
 </style>
