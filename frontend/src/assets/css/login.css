@@ -20,12 +20,14 @@
   display: flex;
   justify-content: flex-end;
   align-items: center;
+  margin-left: 15%;
 }
 
 .cont_center_right {
   display: flex;
   justify-content: flex-start;
   align-items: center;
+  margin-right: 15%;
 }
 
 /* .cont_login {
@@ -33,10 +35,10 @@
   width: 50%;
 } */
 .start {
-  margin: 0;
+  margin-top: 7%;
   min-height: 296.1px;
   height: fit-content;
-  width: 80%;
+  width: 100%;
   background-color: rgba(255, 255, 255, 0.5);
   display: flex;
   align-items: center;

@@ -3,221 +3,212 @@
     <!-- <v-container> -->
     <div class="cont">
       <div class="cont_center_left">
-        <div v-if="nm_page === 0" class="start">
-          <div>
-            <h1>일반회원</h1>
-            <v-btn rounded color="rgb(0,0,0)" dark @click="mvpage(true)"
-              >시작하기</v-btn
-            >
-          </div>
-        </div>
-        <div v-if="nm_page === 1" class="start">
-          <div class="inputform">
+        <div v-if="shownm">
+          <div v-if="nm_page === 0" class="start">
             <div>
-              <button @click="reset(true)">
-                <i class="material-icons">&#xE5C4;</i>
-              </button>
               <h1>일반회원</h1>
+              <v-btn rounded color="rgb(0,0,0)" dark @click="mvpage(true)"
+                >시작하기</v-btn
+              >
             </div>
-            <v-text-field v-model="nm_email" label="이메일"></v-text-field>
-            <v-text-field
-              v-model="nm_password"
-              label="비밀번호"
-              :append-icon="showpassword ? 'mdi-eye' : 'mdi-eye-off'"
-              :type="showpassword ? 'text' : 'password'"
-              @click:append="showpassword = !showpassword"
-            ></v-text-field>
-            <v-btn
-              rounded
-              color="rgb(233, 105, 30)"
-              dark
-              @click="checkLogin()"
-              :loading="loading"
-              >로그인</v-btn
-            >
-            <v-btn rounded color="rgb(0,0,0)" dark @click="mvpage(true)"
-              >회원등록</v-btn
-            >
           </div>
-        </div>
-        <div v-if="nm_page === 2" class="start">
-          <div class="inputform">
-            <div>
-              <button @click="reset(true)">
-                <i class="material-icons">&#xE5C4;</i>
-              </button>
-              <h1>일반회원</h1>
+          <div v-if="nm_page === 1" class="start">
+            <div class="inputform">
+              <div>
+                <button @click="reset(true)">
+                  <i class="material-icons">&#xE5C4;</i>
+                </button>
+                <h1>일반회원</h1>
+              </div>
+              <v-text-field v-model="nm_email" label="이메일"></v-text-field>
+              <v-text-field
+                v-model="nm_password"
+                label="비밀번호"
+                :append-icon="showpassword ? 'mdi-eye' : 'mdi-eye-off'"
+                :type="showpassword ? 'text' : 'password'"
+                @click:append="showpassword = !showpassword"
+              ></v-text-field>
+              <v-btn
+                rounded
+                color="rgb(233, 105, 30)"
+                dark
+                @click="checkLogin()"
+                :loading="loading"
+                >로그인</v-btn
+              >
+              <v-btn rounded color="rgb(0,0,0)" dark @click="mvpage(true)"
+                >회원등록</v-btn
+              >
             </div>
-            <v-text-field
-              v-model="nm_email"
-              :messages="[error.email]"
-              label="이메일"
-              ref="nm_email"
-            ></v-text-field>
-            <v-text-field v-model="nm_name" label="이름"></v-text-field>
-            <v-text-field v-model="nm_nickname" label="닉네임"></v-text-field>
-            <v-text-field
-              v-model="nm_password"
-              :messages="[error.pwd]"
-              label="비밀번호"
-              ref="nm_password"
-              :append-icon="showpassword ? 'mdi-eye' : 'mdi-eye-off'"
-              :type="showpassword ? 'text' : 'password'"
-              @click:append="showpassword = !showpassword"
-            ></v-text-field>
-            <v-text-field
-              v-model="nm_password_confirm"
-              :messages="[error.pwdconfirm]"
-              label="비밀번호 확인"
-              ref="nm_password_confirm"
-              :append-icon="showpasswordConfirm ? 'mdi-eye' : 'mdi-eye-off'"
-              :type="showpasswordConfirm ? 'text' : 'password'"
-              @click:append="showpasswordConfirm = !showpasswordConfirm"
-            ></v-text-field>
-            <v-text-field
-              label="주소"
-              @click="findAddress(true)"
-              readonly="readonly"
-              v-model="nm_address"
-            ></v-text-field>
-            <v-container fluid style="height:fit-content;">
-              <v-layout style="height:fit-content;" row>
-                <v-radio-group v-model="nm_gender" row>
-                  <v-flex xs4>
-                    <label for="nm_gender">성별</label>
-                  </v-flex>
-                  <v-flex xs4>
-                    <v-radio label="FEMALE" value="1"></v-radio>
-                  </v-flex>
-                  <v-flex xs4>
-                    <v-radio label="MALE" value="0"></v-radio>
-                  </v-flex>
-                </v-radio-group>
-              </v-layout>
-            </v-container>
-            <v-text-field
-              label="출생년도"
-              type="number"
-              v-model="nm_birthyear"
-            ></v-text-field>
-            <v-btn rounded color="rgb(0,0,0)" dark @click="checkHandler()"
-              >회원가입</v-btn
-            >
+          </div>
+          <div v-if="nm_page === 2" class="start">
+            <div class="inputform">
+              <div>
+                <button @click="reset(true)">
+                  <i class="material-icons">&#xE5C4;</i>
+                </button>
+                <h1>일반회원</h1>
+              </div>
+              <v-text-field
+                v-model="nm_email"
+                :messages="[error.email]"
+                label="이메일"
+                ref="nm_email"
+              ></v-text-field>
+              <v-text-field v-model="nm_name" label="이름"></v-text-field>
+              <v-text-field v-model="nm_nickname" label="닉네임"></v-text-field>
+              <v-text-field
+                v-model="nm_password"
+                :messages="[error.pwd]"
+                label="비밀번호"
+                ref="nm_password"
+                :append-icon="showpassword ? 'mdi-eye' : 'mdi-eye-off'"
+                :type="showpassword ? 'text' : 'password'"
+                @click:append="showpassword = !showpassword"
+              ></v-text-field>
+              <v-text-field
+                v-model="nm_password_confirm"
+                :messages="[error.pwdconfirm]"
+                label="비밀번호 확인"
+                ref="nm_password_confirm"
+                :append-icon="showpasswordConfirm ? 'mdi-eye' : 'mdi-eye-off'"
+                :type="showpasswordConfirm ? 'text' : 'password'"
+                @click:append="showpasswordConfirm = !showpasswordConfirm"
+              ></v-text-field>
+              <v-text-field
+                label="주소"
+                @click="findAddress(true)"
+                readonly="readonly"
+                v-model="nm_address"
+              ></v-text-field>
+              <v-container fluid style="height:fit-content;">
+                <v-layout style="height:fit-content;" row>
+                  <v-radio-group v-model="nm_gender" row>
+                    <v-flex xs4>
+                      <label for="nm_gender">성별</label>
+                    </v-flex>
+                    <v-flex xs4>
+                      <v-radio label="FEMALE" value="1"></v-radio>
+                    </v-flex>
+                    <v-flex xs4>
+                      <v-radio label="MALE" value="0"></v-radio>
+                    </v-flex>
+                  </v-radio-group>
+                </v-layout>
+              </v-container>
+              <v-text-field
+                label="출생년도"
+                type="number"
+                v-model="nm_birthyear"
+              ></v-text-field>
+              <v-btn rounded color="rgb(0,0,0)" dark @click="checkHandler()"
+                >회원가입</v-btn
+              >
+            </div>
           </div>
         </div>
       </div>
       <div class="cont_center_right">
-        <div v-if="biz_page === 0" class="start">
-          <div>
-            <h1>사업자회원</h1>
-            <v-btn rounded color="rgb(0,0,0)" dark @click="mvpage(false)"
-              >시작하기</v-btn
-            >
-          </div>
-        </div>
-        <div v-if="biz_page === 1" class="start">
-          <div class="inputform">
+        <div v-if="showbiz">
+          <div v-if="biz_page === 0" class="start">
             <div>
-              <button @click="reset(false)">
-                <i class="material-icons">&#xE5C4;</i>
-              </button>
               <h1>사업자회원</h1>
+              <v-btn rounded color="rgb(0,0,0)" dark @click="mvpage(false)"
+                >시작하기</v-btn
+              >
             </div>
-            <v-text-field
-              v-model="biz_email"
-              ref="biz_email"
-              label="사업자이메일"
-            ></v-text-field>
-            <v-text-field
-              v-model="biz_password"
-              ref="biz_password"
-              label="비밀번호"
-              :append-icon="showbizpassword ? 'mdi-eye' : 'mdi-eye-off'"
-              :type="showbizpassword ? 'text' : 'password'"
-              @click:append="showbizpassword = !showbizpassword"
-            ></v-text-field>
-            <v-btn
-              rounded
-              color="rgb(233, 105, 30)"
-              dark
-              @click="checkBizLogin()"
-              >로그인</v-btn
-            >
-            <v-btn rounded color="rgb(0,0,0)" dark @click="mvpage(false)"
-              >사업자등록</v-btn
-            >
           </div>
-        </div>
-        <div v-if="biz_page === 2" class="start">
-          <div class="inputform">
-            <div>
-              <button @click="reset(false)">
-                <i class="material-icons">&#xE5C4;</i>
-              </button>
-              <h1>사업자회원</h1>
+          <div v-if="biz_page === 1" class="start">
+            <div class="inputform">
+              <div>
+                <button @click="reset(false)">
+                  <i class="material-icons">&#xE5C4;</i>
+                </button>
+                <h1>사업자회원</h1>
+              </div>
+              <v-text-field
+                v-model="biz_email"
+                ref="biz_email"
+                label="사업자이메일"
+              ></v-text-field>
+              <v-text-field
+                v-model="biz_password"
+                ref="biz_password"
+                label="비밀번호"
+                :append-icon="showbizpassword ? 'mdi-eye' : 'mdi-eye-off'"
+                :type="showbizpassword ? 'text' : 'password'"
+                @click:append="showbizpassword = !showbizpassword"
+              ></v-text-field>
+              <v-btn
+                rounded
+                color="rgb(233, 105, 30)"
+                dark
+                @click="checkBizLogin()"
+                >로그인</v-btn
+              >
+              <v-btn rounded color="rgb(0,0,0)" dark @click="mvpage(false)"
+                >사업자등록</v-btn
+              >
             </div>
-            <v-text-field
-              v-model="biz_email"
-              :messages="[error.bizemail]"
-              ref="biz_email"
-              label="사업자이메일"
-            ></v-text-field>
-            <v-text-field
-              v-model="biz_numb"
-              ref="biz_numb"
-              label="사업자번호"
-              :counter="12"
-            ></v-text-field>
-            <v-file-input
-              accept="image/*"
-              label="사업자등록사본"
-              v-model="biz_image"
-            ></v-file-input>
-            <!-- <picture-input
-              @change="onChanged"
-              @remove="onRemoved"
-              :width="500"
-              :removable="true"
-              removeButtonClass="ui red button"
-              :height="500"
-              accept="image/jpeg, image/png, image/gif, image/jpg"
-              buttonClass="ui button primary"
-              :customStrings="{
-              upload: '<h1>Upload it!</h1>',
-              drag: 'Drag and drop your image here'}">
-            </picture-input>   -->
-            <v-text-field
-              v-model="biz_name"
-              ref="biz_name"
-              label="업주명"
-            ></v-text-field>
-            <v-text-field
-              v-model="biz_password"
-              ref="biz_password"
-              :messages="[error.bizpwd]"
-              label="비밀번호"
-              :append-icon="showbizpassword ? 'mdi-eye' : 'mdi-eye-off'"
-              :type="showbizpassword ? 'text' : 'password'"
-              @click:append="showbizpassword = !showbizpassword"
-            ></v-text-field>
-            <v-text-field
-              v-model="biz_password_confirm"
-              ref="biz_password_confirm"
-              :messages="[error.bizpwdconfirm]"
-              label="비밀번호 확인"
-              :append-icon="showbizpasswordConfirm ? 'mdi-eye' : 'mdi-eye-off'"
-              :type="showbizpasswordConfirm ? 'text' : 'password'"
-              @click:append="showbizpasswordConfirm = !showbizpasswordConfirm"
-            ></v-text-field>
-            <v-text-field
-              v-model="biz_address"
-              label="사업장주소"
-              readonly="readonly"
-              @click="findAddress(false)"
-            ></v-text-field>
-            <v-btn rounded color="rgb(0,0,0)" dark @click="checkBizHandler()"
-              >회원가입</v-btn
-            >
+          </div>
+          <div v-if="biz_page === 2" class="start">
+            <div class="inputform">
+              <div>
+                <button @click="reset(false)">
+                  <i class="material-icons">&#xE5C4;</i>
+                </button>
+                <h1>사업자회원</h1>
+              </div>
+              <v-text-field
+                v-model="biz_email"
+                :messages="[error.bizemail]"
+                ref="biz_email"
+                label="사업자이메일"
+              ></v-text-field>
+              <v-text-field
+                v-model="biz_numb"
+                ref="biz_numb"
+                label="사업자번호"
+                :counter="12"
+              ></v-text-field>
+              <v-file-input
+                accept="image/*"
+                label="사업자등록사본"
+                v-model="biz_image"
+              ></v-file-input>
+              <v-text-field
+                v-model="biz_name"
+                ref="biz_name"
+                label="업주명"
+              ></v-text-field>
+              <v-text-field
+                v-model="biz_password"
+                ref="biz_password"
+                :messages="[error.bizpwd]"
+                label="비밀번호"
+                :append-icon="showbizpassword ? 'mdi-eye' : 'mdi-eye-off'"
+                :type="showbizpassword ? 'text' : 'password'"
+                @click:append="showbizpassword = !showbizpassword"
+              ></v-text-field>
+              <v-text-field
+                v-model="biz_password_confirm"
+                ref="biz_password_confirm"
+                :messages="[error.bizpwdconfirm]"
+                label="비밀번호 확인"
+                :append-icon="showbizpasswordConfirm ? 'mdi-eye' : 'mdi-eye-off'"
+                :type="showbizpasswordConfirm ? 'text' : 'password'"
+                @click:append="showbizpasswordConfirm = !showbizpasswordConfirm"
+              ></v-text-field>
+              <v-text-field
+                v-model="biz_address"
+                label="사업장주소"
+                readonly="readonly"
+                @click="findAddress(false)"
+              ></v-text-field>
+              <v-btn rounded color="rgb(0,0,0)" dark @click="checkBizHandler()"
+                >회원가입</v-btn
+              >
+            </div>
           </div>
         </div>
       </div>
@@ -234,14 +225,11 @@ import axios from "axios";
 import * as firebase from "firebase";
 import { mapMutations, mapGetters } from "vuex";
 
-// const this.getBaseURL.baseURL = "http://127.0.0.1:8000/";
-// const this.getBaseURL.baseURL =
-//   "http://ec2-54-180-109-206.ap-northeast-2.compute.amazonaws.com/";
-
 export default {
   name: "LogIn",
   data() {
     return {
+      shownm: 'show',
       showpassword: false,
       showpasswordConfirm: false,
       nm_page: 0,
@@ -255,6 +243,7 @@ export default {
       nm_birthyear: 1990,
       nm_check: false,
 
+      showbiz:'show',
       showbizpassword: false,
       showbizpasswordConfirm: false,
       biz_page: 0,
@@ -789,6 +778,8 @@ export default {
         this.nm_birthyear = "1990";
         this.showpassword = false;
         this.showpasswordConfirm = false;
+        if(this.nm_page==0)
+          this.showbiz='show';
       } else {
         this.biz_page -= 1;
         this.biz_email = "";
@@ -798,6 +789,8 @@ export default {
         this.biz_address = "";
         this.showbizpassword = false;
         this.showbizpasswordConfirm = false;
+        if(this.biz_page==0)
+          this.shownm='show';
       }
       this.error = {
         email: "",
@@ -810,6 +803,7 @@ export default {
     },
     mvpage(nm) {
       if (nm) {
+        this.showbiz='';
         this.nm_page += 1;
         this.nm_email = "";
         this.nm_name = "";
@@ -822,6 +816,7 @@ export default {
         this.showpassword = false;
         this.showpasswordConfirm = false;
       } else {
+        this.shownm='';
         this.biz_page += 1;
         this.biz_email = "";
         this.biz_name = "";
