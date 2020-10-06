@@ -11,6 +11,23 @@ import Signin from "@/components/User/Signin";
 import test from "@/components/test.vue";
 import HyerinChat from "./pages/HyerinChat.vue";
 import Create from "./components/HyerinChat/Create.vue";
+// import UserInfo from "./store/UserInfo.js";
+import store from "@/store/store.js";
+import { mapGetters, mapMutations } from "vuex";
+
+const requireAuth = (to, from, next) => {
+  console.log(
+    "access Auth",
+    localStorage.getItem("isLogin"),
+    typeof localStorage.getItem("isLogin")
+  );
+  if (localStorage.getItem("isLogin") === "true") {
+    next();
+  } else {
+    alert("로그인이 필요합니다.");
+    next("/");
+  }
+};
 
 export default new Router({
   mode: "history",
@@ -18,6 +35,7 @@ export default new Router({
     {
       path: "/home",
       name: "Home",
+      beforeEnter: requireAuth,
       component: Content,
     },
     {
@@ -29,31 +47,37 @@ export default new Router({
       path: "/storelist/:bigcategory",
       name: "storelist",
       component: StoreList,
+      beforeEnter: requireAuth,
     },
     {
       path: "/storedetail/:storeid",
       name: "storedetail",
       component: StoreDetail,
+      beforeEnter: requireAuth,
     },
     {
       path: "/create/:storeid",
       name: "CreateChat",
       component: Create,
+      beforeEnter: requireAuth,
     },
     {
       path: "/loginChat",
       name: "Signin",
       component: Signin,
+      beforeEnter: requireAuth,
     },
     {
       path: "/test",
       name: "test",
       component: test,
+      beforeEnter: requireAuth,
     },
     {
       path: "/hrchat/:roomNumber/:roomName",
       name: "HyerinChat",
       component: HyerinChat,
+      beforeEnter: requireAuth,
     },
   ],
 });

@@ -106,13 +106,18 @@ export default {
     };
   },
   created() {
+    var URL = this.getBaseURL.baseURL.substring(
+      5,
+      this.getBaseURL.baseURL.length
+    );
+
     this.roomNumber = this.$route.params.roomNumber; // 채팅방 uid
     this.roomName = this.$route.params.roomName; // 채팅방 이름
     this.chatSocket = new WebSocket( // 웹소켓에 연결하는 부분
       "ws://" +
         // "ec2-54-180-109-206.ap-northeast-2.compute.amazonaws.com" +
-        "127.0.0.1:8000" +
-        "/ws/chat/" +
+        URL +
+        "ws/chat/" +
         this.roomNumber +
         "/"
     ); // ws://127.0.0.1:8000/ws/chat/roomName/

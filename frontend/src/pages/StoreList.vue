@@ -5,7 +5,7 @@
       <v-container>
         <v-row>
           <v-flex>{{ $route.params.bigcategory }}</v-flex>
-          <v-flex>{{ this.getLocation.dong }}</v-flex>
+          <v-flex>{{ dong }}</v-flex>
         </v-row>
 
         <v-row style="display: flex; align-items: center; text-align: center;">
@@ -50,12 +50,40 @@ export default {
   computed: {
     ...mapGetters("location", ["getLocation"]),
     ...mapGetters("server", ["getBaseURL"]),
+    dong() {
+      return this.getLocation.dong;
+    },
   },
 
   created: async function() {
     this.loc = this.getLocation;
     this.category = this.$route.params.bigcategory;
     await this.getStoreInfo();
+  },
+
+  watch: {
+    dong(newCount, oldCount) {
+      console.log("watch!");
+      axios
+        .post(
+          this.getBaseURL.baseURL + "api/stores/store_bigcategory/",
+          {
+            bigcategory: this.category,
+            user_location: newCount,
+          },
+          {
+            headers: {
+              Authorization: `Token ${this.$cookies.get("auth-token")}`,
+            },
+          }
+        ) // post > post
+        .then((res) => {
+          this.storeList = res.data;
+        })
+        .catch((res) => {
+          console.log(res);
+        }); // post > post > then
+    },
   },
 
   methods: {

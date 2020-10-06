@@ -12,11 +12,10 @@
     <v-toolbar-title>
       <v-col>
         <v-select
-          v-model="select"
           @change="changeAddress"
+          v-model="initLocation"
           :items="userInfo"
           item-text="location"
-          return-object
           style="margin:10px; margin-top:25px; width:250px;"
           color="rgb(233,105,30)"
           item-color="none"
@@ -24,7 +23,6 @@
       </v-col>
     </v-toolbar-title>
     <button @click="findAddress()">추가하기</button>
-    <button @click="test()">버어튼</button>
     <v-spacer />
     <v-toolbar-title>
       <div
@@ -59,7 +57,7 @@ import axios from "axios";
 export default {
   data() {
     return {
-      select: [],
+      initLocation: "",
       userInfo: "",
       showAddrModal: false,
       seletedAddress: "",
@@ -77,7 +75,6 @@ export default {
 
   created() {
     this.getUserAddress();
-    this.select = this.getUserInfo.userAddress;
   },
 
   mounted() {
@@ -110,14 +107,10 @@ export default {
     },
 
     changeAddress: function() {
-      // EventBus.$emit("addressChange", this.select.location);
-      // this.$store.commit("location/setLocation", {
-      //   lat: this.lat,
-      //   lng: this.lng,
-      // });
+      console.log("changeAddress", this.initLocation);
       this.searchAddr();
       this.$store.commit("userInfo/setUserInfo", {
-        userAddress: this.select.location,
+        userAddress: this.initLocation,
       });
     },
 
@@ -133,9 +126,13 @@ export default {
       this.$store.commit("userInfo/setUserInfo", {
         userAddress: "",
       });
+      localStorage.setItem("isLogin", false);
+      this.initLocation = "";
     },
 
     getUserAddress() {
+      console.log("getUserAddress !!", this.getUserInfo.userAddress);
+      this.initLocation = this.getUserInfo.userAddress;
       axios
         .post(this.getBaseURL.baseURL + "api/accounts/user_order_list/", null, {
           headers: {
@@ -144,11 +141,11 @@ export default {
         }) // post > post
         .then((res) => {
           this.userInfo = res.data;
-          this.select = res.data.location;
         })
         .catch((res) => {
           console.log("user Address error", res);
         }); // post > post > then
+      this.searchAddr();
     },
 
     addScript() {
@@ -162,9 +159,10 @@ export default {
     },
 
     searchAddr() {
+      console.log("searchAddr called", this.initLocation);
       var geocoder = new kakao.maps.services.Geocoder();
 
-      geocoder.addressSearch(this.select.location, (result, status) => {
+      geocoder.addressSearch(this.initLocation, (result, status) => {
         if (status === kakao.maps.services.Status.OK) {
           this.$store.commit("location/setLocation", {
             lat: result[0].y,
@@ -180,7 +178,6 @@ export default {
     },
 
     findAddress() {
-      console.log("trigger", this.AddrTrigger);
       new daum.Postcode({
         oncomplete: (data) => {
           var fullAddr = data.address;
@@ -219,8 +216,6 @@ export default {
       }).open({});
     },
   },
-
-  watch() {},
 };
 </script>
 <style>

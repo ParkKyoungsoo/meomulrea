@@ -418,10 +418,15 @@ export default {
     //     return this.password !== this.confirmPassword ? 'Passwords do not match.' : true
     //   },
     ...mapGetters("server", ["getBaseURL"]),
+    ...mapGetters("userInfo", ["getIsLogin"]),
   },
 
+  created() {
+    console.log(this.getIsLogin);
+  },
   methods: {
     ...mapMutations(("userInfo", ["setUserInfo"])),
+    ...mapMutations(("userInfo", ["setIsLogin"])),
     bizlen() {
       var temp = this.biz_numb.substring(0, 12);
       this.biz_numb = temp;
@@ -550,6 +555,7 @@ export default {
     },
 
     nm_login() {
+      var tmpToken;
       axios
         .post(this.getBaseURL.baseURL + "api/accounts/email_user_or_bizuser/", {
           email: this.nm_email,
@@ -563,6 +569,7 @@ export default {
               })
               .then((res) => {
                 this.setCookie(res.data.key);
+                tmpToken = res.data.key;
                 axios
                   .post(
                     this.getBaseURL.baseURL + "api/accounts/user_nickname/",
@@ -575,10 +582,30 @@ export default {
                   )
                   .then((res) => {
                     this.$cookies.set("nickname", res.data.nickname);
-                    this.$router.push("/home");
+                    axios
+                      .post(
+                        this.getBaseURL.baseURL + "api/accounts/profile/",
+                        null,
+                        {
+                          headers: {
+                            Authorization: `Token ${tmpToken}`,
+                          },
+                        }
+                      )
+                      .then((res) => {
+                        this.$store.commit("userInfo/setUserInfo", {
+                          userAddress: res.data.address,
+                        });
+                        localStorage.setItem("isLogin", true);
+
+                        this.$router.push("/home");
+                      })
+                      .catch((err) => {
+                        console.log("get profile error", err);
+                      });
                   })
                   .catch((err) => {
-                    console.log(err.response);
+                    console.log("get nickname error", err.response);
                   });
               })
               .catch((err) => {
@@ -808,6 +835,7 @@ export default {
       };
     },
     mvpage(nm) {
+      console.log("checkLocalStorage", localStorage.getItem("isLogin"));
       if (nm) {
         this.nm_page += 1;
         this.nm_email = "";

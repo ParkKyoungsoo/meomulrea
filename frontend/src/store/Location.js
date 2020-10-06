@@ -12,6 +12,7 @@ const getters = {
 
 const mutations = {
   setLocation: function(state, payload) {
+    console.log("setLocation called!!");
     state.lat = payload.lat;
     state.lng = payload.lng;
     state.dong = payload.dong;

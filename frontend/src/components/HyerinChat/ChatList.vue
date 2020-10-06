@@ -112,11 +112,11 @@ export default {
   destroyed() {
     window.removeEventListener("scroll", this.onScroll);
   },
-  watch: {
-    loadedChats: {
-      deep: true,
-      handler() {},
-    },
-  },
+  // watch: {
+  //   loadedChats: {
+  //     deep: true,
+  //     handler() {},
+  //   },
+  // },
 };
 </script>

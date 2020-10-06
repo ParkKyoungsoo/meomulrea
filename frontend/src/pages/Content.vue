@@ -9,15 +9,18 @@
         hide-delimiter-background
         show-arrows-on-hover
       >
-        <v-carousel-item v-for="(slide, i) in recommendedDate" :key="i">
+        <v-carousel-item v-for="(slide, i) in advertise" :key="i">
           <v-sheet>
-            <div>{{ slide }} Slide</div>
+            <img
+              :src="require(`@/assets/adverties/${slide}.png`)"
+              style="width: 1523px; height: 226px;"
+            />
           </v-sheet>
         </v-carousel-item>
       </v-carousel>
     </div>
     <v-container class="content">
-      <div style="width: 80%;">
+      <div>
         <!-- <v-layout class="weather">
           <v-btn icon color="green" @click="getWeather">
             <v-icon>mdi-cached</v-icon>
@@ -39,16 +42,18 @@
         <v-layout>
           <v-flex> 오늘은 뭐먹지? </v-flex>
         </v-layout>
-        <v-layout md="12" xs="12">
-          <carousel-3d :controls-visible="true">
+        <v-layout style="display: flex; justify-content: center;">
+          <carousel-3d
+            v-if="recommendedDate.length > 4"
+            controls-visible="true"
+          >
             <slide
               v-for="(item, index) in recommendedDate"
               :key="index"
               :index="index"
             >
               <figure>
-                <!-- <img src= :alt="item[2]" /> -->
-                <v-img src=""></v-img>
+                <img :src="require(`@/assets/menu/${item[1]}.jpg`)" />
                 <figcaption @click="gotoShop(item[2])">
                   <h2>{{ index + 1 }}위 : {{ item[1] }}</h2>
                 </figcaption>
@@ -78,7 +83,7 @@
 
 <script>
 import Vue from "vue";
-// import Carousel from "../components/Carousel";
+import Carousel from "../components/Carousel";
 import { Carousel3d, Slide } from "vue-carousel-3d";
 import axios from "axios";
 // import ShowList from "../components/ShowList";
@@ -87,12 +92,13 @@ import { EventBus } from "../utils/EventBus.js";
 import Header from "../components/Header.vue";
 import category from "../assets/category/category.json";
 import FoodCard from "../components/FoodCard.vue";
+import coverflow from "vue-coverflow";
 
 // const baseURL = "http://127.0.0.1:8000/";
 // const baseURL =
 //   "http://ec2-54-180-109-206.ap-northeast-2.compute.amazonaws.com/";
 
-Vue.use(Carousel3d);
+// Vue.use(Carousel3d);
 
 export default {
   components: {
@@ -111,9 +117,9 @@ export default {
       locationData: "",
       recommendedDate: [],
       weatherimg: "",
+      advertise: ["1", "2", "3", "4"],
     };
   },
-
   created() {
     this.pollData();
 
@@ -122,6 +128,7 @@ export default {
       this.getWeather();
     });
     // this.getCategory();
+
     axios({
       method: "GET",
       url: this.getBaseURL.baseURL + "api/main/",
@@ -141,7 +148,6 @@ export default {
     foodCategory() {
       return category;
     },
-
     ...mapGetters("server", ["getBaseURL"]),
   },
 
