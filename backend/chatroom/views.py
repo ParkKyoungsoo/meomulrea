@@ -6,8 +6,6 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from .models import makeChatroom
 
-# Create your views here.
-
 @api_view(['POST'])
 def create_chatroom(request): # 채팅방 생성
 
@@ -68,3 +66,4 @@ def delete_chatroom(request, store_info, user_info):
     room = makeChatroom.objects.get(store_id = store_info, user=user_info)
     room.delete()
     print("delete_chatroom: 방삭제")
+

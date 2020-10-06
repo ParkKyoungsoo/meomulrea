@@ -6,8 +6,8 @@ from channels.generic.websocket import WebsocketConsumer
 
 
 class ChatConsumer(WebsocketConsumer):
-    messagelist = {}
-
+    messagelist = {} # { "방키" : [ 메시지1, 메세지2,  ] } 메세지 담을 딕셔너리 
+    memberlist = {}  # { "방키" : [ 참가자1, 참가자2, ] } 참가자 담을 딕셔너리
     def connect(self):
         self.room_name = self.scope['url_route']['kwargs']['room_name']
         self.room_group_name = 'chat_%s' % self.room_name

@@ -1,6 +1,6 @@
 <template>
   <div>
-    <button> 나가기 </button>
+    <button @click="chatroomout"> 나가기 </button>
     <textarea class="ldj" id="chat-log" cols="100" rows="20"></textarea><br>
     <input class="ldj" id="chat-message-input" type="text" size="100"><br>
     <input class="ldj" id="chat-message-submit" @click="yhr()" v-on:keyup.enter="yhr()" type="button" value="Send">
@@ -40,6 +40,10 @@ export default {
         };
     },
     methods: {
+        chatroomout(){
+            location.href = "/home"
+        }
+        ,
         yhr(){
             const messageInputDom = document.querySelector('#chat-message-input');
             this.message = messageInputDom.value; // message : 채팅창에 입력한 텍스트 

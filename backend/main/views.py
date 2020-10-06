@@ -29,6 +29,9 @@ from rest_framework.decorators import api_view
 def recommend_food(request):
     
     # user_id = request.user.id
+    # User = get_user_model()
+    # user = User.objects.get(email=request.user)
+    # user_id = user.id
     user_id = 148970
 
     embedding_filename = './saved_models/item_embeddings.pickle'
@@ -65,7 +68,7 @@ def recommend_food(request):
 
     user_visited_store = Review.objects.filter(userid=user_id)[0].storeid
     print(user_id,"가 갔던 가게 ",user_visited_store," 와 비슷한 가게들")
-    report1 = make_best_items_report(item_embeddings, user_visited_store, 10)
+    report1 = make_best_items_report(item_embeddings, user_visited_store, 5)
     report1 = report1.to_json(orient="split")
     parsed = json.loads(report1)
     return Response(parsed)
