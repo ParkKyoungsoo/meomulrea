@@ -9,7 +9,6 @@
   padding: 0px;
   height: 100%;
   width: 100%;
-  
   /* border: 5px solid black; */
   background-image: url("../image/background.jpg");
   background-size: 100% 120%;
@@ -20,14 +19,16 @@
   display: flex;
   justify-content: flex-end;
   align-items: center;
-  margin-left: 15%;
+  padding-top: 2%;
+  padding-left: 10%;
 }
 
 .cont_center_right {
   display: flex;
   justify-content: flex-start;
   align-items: center;
-  margin-right: 15%;
+  padding-top: 2%;
+  padding-right: 10%;
 }
 
 /* .cont_login {
@@ -35,11 +36,11 @@
   width: 50%;
 } */
 .start {
-  margin-top: 7%;
   min-height: 296.1px;
   height: fit-content;
   width: 100%;
-  background-color: rgba(255, 255, 255, 0.5);
+  background-color: rgba(255, 255, 255, 0.7);
+  border: 5px solid black;
   display: flex;
   align-items: center;
   text-align: center;
@@ -62,7 +63,7 @@
 }
 button {
   width: 80%;
-  margin: 1%;
+  margin: 2%;
 }
 .inputform {
   width: 80%;

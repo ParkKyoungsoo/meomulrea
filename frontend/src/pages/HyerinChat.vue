@@ -1,79 +1,32 @@
 <template>
-  <div>
-    <v-main>
-      <!-- <div> -->
-      <v-col>
-        <Header />
-      </v-col>
-      <!-- <v-col style="border: 1px solid black; margin-top: 100px;">
-    <textarea class="ldj" id="chat-log" cols="100" rows="20"></textarea><br>
-    <input class="ldj" id="chat-message-input" type="text" size="100"><br>
-    <input class="ldj" id="chat-message-submit" @click="yhr()" v-on:keyup.enter="yhr()" type="button" value="Send">
-    </v-col> -->
-      <!-- <v-col style="border: 1px solid red;"> -->
-      <!-- <div class="chat">
-        <ul>
-            <li><img src="http://maxme-life.ru/tests/img2.jpg">
-            <div class="message">메시지1</div>
-            </li>
-            
-            
-            <li><img src="http://maxme-life.ru/tests/img1.jpg">
-            <div class="message">메시지2</div>
-            </li>
-            
-            <li><img src="http://maxme-life.ru/tests/img2.jpg">
-            <div class="message">Хорошо, только при одном условии, ты выполнишь все задание самостоятельно! Ладно?</div>
-            </li>
-            
-            <li><img src="http://maxme-life.ru/tests/img1.jpg">
-            <div class="message">Я постараюсь :)</div>
-            </li>
-        </ul>
-        <input type="text" placeholder="Написать сообщение" /><button>Отправить</button>
-    </div> -->
-      <!-- <v-col> -->
-        <div class="chat">
-          <!-- <div style="float: left;"> -->
-            <div class="chat_header">
-              <v-col >
-                <v-row>
-                <h2 style="width: 60%; display:flex; justify-content: flex-end; align-items: center;">{{roomName}}</h2>
-                <div style="width: 40%; display:flex; justify-content: flex-end; align-items: center;" >
-                  <v-btn x-large @click="exit()">나가기</v-btn>
-                </div>
-                </v-row>
-              </v-col>
+  <v-main>
+    <v-col>
+      <Header />
+    </v-col>
+    <v-col>
+      <div class="menu">
+          <div class="back" @click="exit()"><i class="material-icons">&#xE5C4;</i></div>
+          <div class="name">{{roomName}}</div>
+      </div>
+      <div v-for="(chatting, index) in chattings" :key="index">
+        <ol class="chat">
+          <li v-if="$cookies.get('nickname') === chatting.nickname" class="self">
+            <div class="msg">
+            {{chatting.msg}}
             </div>
-            
-          <!-- </div> -->
-          <div class="chat_s">
-            <div v-for="(chatting, index) in chattings" :key="index">
-              <div
-                v-if="$cookies.get('nickname') === chatting.nickname"
-                style="float:right;"
-              >
-                {{ chatting.nickname }}
-                <div class="chat_bubble-2">{{ chatting.msg }}</div>
-              </div>
-              <div v-else>
-                <div style="float:left; width:60%;">
-                  {{ chatting.nickname }}
-                  <div class="chat_bubble-1">{{ chatting.msg }}</div>
-                </div>
-              </div>
+            <p>{{chatting.nickname}}</p>
+          </li>
+          <li v-else class="other">
+            <p>{{chatting.nickname}}</p>
+            <div class="msg">
+              {{chatting.msg}}
             </div>
-          </div>
-          <div class="chat_input">
-            <input placeholder="메시지를 작성하세요" class="chat_text" v-model="message"/>
-            <v-btn @click="yhr()">전송</v-btn>
-            <!-- onkeypress="if(event.keyCode === 13){add()}" -->
-            <!-- onclick="add()" -->
-          </div>
-        </div>
-      <!-- </v-col> -->
-    </v-main>
-  </div>
+          </li>
+        </ol>
+      </div>
+    </v-col>
+    <input v-on:keyup.enter='yhr()' class="textarea" type="text" v-model="message"/><button @click="yhr()">전송</button>
+  </v-main>
 </template>
 
 <script>
@@ -82,6 +35,11 @@ import { mapGetters } from "vuex";
 export default {
   components: {
     Header,
+  },
+  watch:{
+    message: function(){
+      console.log(this.message)
+    }
   },
   data() {
     return {
@@ -142,218 +100,282 @@ export default {
 </script>
 
 <style>
-/* .ldj {
-    background-color: aliceblue !important;
-    border: black !important;
-}
-.ldj:focus{
-    background-color: aliceblue !important;
-    border: black !important;
+/* ::selection{
+  background: rgba(82,179,217,0.3);
+  color: inherit;
+} */
+/* a{
+  color: rgb(233,105,30);
 } */
 
-/* html{
-  width:100%;
-  height:100%;
-  background:linear-gradient(145deg ,#072732,#215768);
-} */
-
-/* .chat{
-  width: 80%;
-  margin:auto auto;
-}
-
-
-.chat ul{
-  margin:0;
-  padding:0;
-  border-bottom:2px solid #9c9c9c;
-  padding-bottom:15px;
-  margin-bottom:15px;
-}
-
-
-.chat ul li{
-  width:100%;
-  list-style-type:none;
-  margin:5px 0;
-  position:relative;
-  display:inline-block;
-}
-
-.chat ul li img{
-  float:left;
-   border-radius:50px;
-  box-shadow:0 2px 15px rgba(0,0,0,.5);
-}
-.chat ul li .message{
-  margin-left:90px;
-  background:blue;
-  position:relative;
-  min-height:25px;
-  margin-top:35px;
-  padding:10px;
-  width: fit-content;
-  box-sizing:border-box;
-   
-}
-
-
-.chat ul li:nth-child(odd) img{
-  float:right;
-}
-
-.chat ul li:nth-child(odd) .message{
-  float: right;
-  margin-right:90px;
-  margin-left:0;
-  background-color: rgba(233,105,30,0.3);
-}
-
-
-
-.chat ul li:nth-child(even) .message{
-  background:rgba(0,0,0,0.3);
-}
-
-
-
-
-.chat ul li:nth-child(odd) .message:before{
-  content:"";
-  width:0px;
-  height:0px;
-  position:absolute;
-  right:0;
-  top:0;
-  margin-right:-15px;
-  border-top: 15px solid rgba(233,105,30,0.3);
-  border-right:15px solid transparent;
-}
-.chat ul li:nth-child(even) .message:before{
-  content:"";
-  width:0px;
-  height:0px;
-  position:absolute;
-  left:0;
-  top:0;
-  margin-left:-15px;
-  border-top:15px solid rgba(0,0,0,0.3);
-  border-left:15px solid transparent;
-}
-
-
-
-.chat input[type="text"]{
-  width:70%; 
-  margin:0; 
-  border:0;
-  padding:6px;
-  background:#e5ecff;
-  font:italic 12px Trebuchet MS;
-  box-sizing:border-box;
-}
-.chat button{
-  box-sizing:border-box;
-  width:30%;padding:6px;font:12px Trebuchet MS; color:white;
-  background:#84adfc;
-  margin:0;
-  border:0;
-} */
-
-@import "https://fonts.googleapis.com/css?family=Montserrat";
-/* body{
-    width:100%;
-    height:100%;
-    margin:0;
-    padding:0;
-    background:url(http://kriswhitewrites.com/wp-content/uploads/2013/06/landscape-mountains-snow-sky.jpg);
-    background-size:cover;
-    background-position:bottom
-    } */
-.chat {
-  width: 80%;
-  margin: auto auto;
-  height: 100%;
-  border: 1px solid black;
-  /* box-shadow:0 0 30px -5px grey; */
-  /* margin:10vh calc(50vw - 200px); */
-  background: #fafafa;
-  position: relative;
-  /* font-family:'Montserrat',sans-serif */
-}
-.chat_header {
-  padding: 15px;
-  border-bottom: 4px solid teal;
-  background: #f0f0f0;
-  color: teal;
-}
-/* .chat_status{
-    font-size:11px;
-    margin:4px 0 -4px
-    } */
-/* .chat_avatar{
-    border: 1px solid black;
-    float:right;
-    width:fit-content;
-    border-radius:50%;
-    margin-top:-3px
-} */
-.chat_input {
-  /* width:calc(100% - 8px); */
-  width: 100%;
-  /* padding:10px 4px 6px; */
+/* M E N U */
+.menu {
   margin: 0;
-  padding: 0;
-  border: 2px solid red;
+    width: 100%;
+    height: 50px;
+    background: rgb(0,0,0);
+    z-index: 100;
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    display: flex;
 }
-.chat_text {
-  width: 90%;
-  /* box-sizing:border-box; */
-  padding-top: 5px; padding-bottom: 5px;
-  margin: 0 5px 5px;
-  /* vertical-align: center; */
+.back {
+    position: absolute;
+    width: 90px;
+    height: 50px;
+    top: 0px;
+    left: 0px;
+    color: #fff;
+    line-height: 50px;
+    font-size: 30px;
+    padding-left: 10px;
+    cursor: pointer;
 }
-.chat_submit {
-  width: fit-content;
-  box-sizing: border-box;
-  vertical-align: top;
-  border: 1px solid teal;
-  cursor: pointer;
-  color: teal;
-  border-radius: 0 8px 8px 0;
-  transition: all 0.4s;
+.back img {
+    position: absolute;
+    top: 5px;
+    left: 30px;
+    width: 40px;
+    height: 40px;
+    background-color: rgba(255,255,255,0.98);
+    border-radius: 100%;
+    -webkit-border-radius: 100%;
+    -moz-border-radius: 100%;
+    -ms-border-radius: 100%;
+    margin-left: 15px;
+    }
+.back:active {
+    background: rgba(255,255,255,0.2);
 }
-.chat_submit:hover {
-  background: teal;
-  color: #fff;
+.name{
+  font-size: 35px;
+  color: rgb(255,255,255);
+  cursor: default;
+  margin-left: 43%;
 }
-.chat_bubble-1,
-.chat_bubble-2 {
-  padding: 10px;
-  margin: 13px 17px;
-  width: 200px;
-  font-size: 14px;
+.last{
+    position: absolute;
+    top: 30px;
+    left: 115px;
+    font-family: 'Lato';
+    font-size: 11px;
+    font-weight: 400;
+    color: rgba(255,255,255,0.6);
+    cursor: default;
 }
-.chat_bubble-1 {
-  border: 1px solid teal;
-  border-radius: 12px 12px 12px 0;
+
+/* M E S S A G E S */
+
+.chat {
+    list-style: none;
+    background: none;
+    margin: 0;
+    padding: 0 0 50px 0;
+    margin-top: 60px;
+    margin-bottom: 10px;
 }
-.chat_bubble-2 {
-  border: 1px solid grey;
-  border-radius: 12px 12px 0 12px;
-  margin-left: 160px;
+.chat li {
+    padding: 0.5rem;
+    overflow: hidden;
+    display: flex;
 }
-.chat_s {
-  max-height: calc(75vh - 86px - 29px);
-  overflow-y: scroll;
-  padding: 15px 0 0;
+.chat .avatar {
+    width: 40px;
+    height: 40px;
+    position: relative;
+    display: block;
+    z-index: 2;
+    border-radius: 100%;
+    -webkit-border-radius: 100%;
+    -moz-border-radius: 100%;
+    -ms-border-radius: 100%;
+    background-color: rgba(255,255,255,0.9);
 }
+.chat .avatar img {
+    width: 40px;
+    height: 40px;
+    border-radius: 100%;
+    -webkit-border-radius: 100%;
+    -moz-border-radius: 100%;
+    -ms-border-radius: 100%;
+    background-color: rgba(255,255,255,0.9);
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+}
+.chat .day {
+    position: relative;
+    display: block;
+    text-align: center;
+    color: #c0c0c0;
+    height: 20px;
+    text-shadow: 7px 0px 0px #e5e5e5, 6px 0px 0px #e5e5e5, 5px 0px 0px #e5e5e5, 4px 0px 0px #e5e5e5, 3px 0px 0px #e5e5e5, 2px 0px 0px #e5e5e5, 1px 0px 0px #e5e5e5, 1px 0px 0px #e5e5e5, 0px 0px 0px #e5e5e5, -1px 0px 0px #e5e5e5, -2px 0px 0px #e5e5e5, -3px 0px 0px #e5e5e5, -4px 0px 0px #e5e5e5, -5px 0px 0px #e5e5e5, -6px 0px 0px #e5e5e5, -7px 0px 0px #e5e5e5;
+    box-shadow: inset 20px 0px 0px #e5e5e5, inset -20px 0px 0px #e5e5e5, inset 0px -2px 0px #d7d7d7;
+    line-height: 38px;
+    margin-top: 5px;
+    margin-bottom: 20px;
+    cursor: default;
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+}
+
+.other .msg {
+    order: 1;
+    border-top-left-radius: 0px;
+    box-shadow: -1px 2px 0px #D4D4D4;
+}
+.other:before {
+    content: "";
+    position: relative;
+    top: 0px;
+    right: 0px;
+    left: 40px;
+    width: 0px;
+    height: 0px;
+    border: 5px solid #fff;
+    border-left-color: transparent;
+    border-bottom-color: transparent;
+}
+
+.self {
+    justify-content: flex-end;
+    align-items: flex-end;
+}
+.self .msg {
+    order: 1;
+    border-bottom-right-radius: 0px;
+    box-shadow: 1px 2px 0px #D4D4D4;
+}
+.self .avatar {
+    order: 2;
+}
+.self .avatar:after {
+    content: "";
+    position: relative;
+    display: inline-block;
+    bottom: 19px;
+    right: 0px;
+    width: 0px;
+    height: 0px;
+    border: 5px solid #fff;
+    border-right-color: transparent;
+    border-top-color: transparent;
+    box-shadow: 0px 2px 0px #D4D4D4;
+}
+
+.msg {
+    background: white;
+    min-width: 50px;
+    padding: 10px;
+    border-radius: 2px;
+    box-shadow: 0px 2px 0px rgba(0, 0, 0, 0.07);
+}
+.msg p {
+    font-size: 0.8rem;
+    margin: 0 0 0.2rem 0;
+    color: #777;
+}
+.msg img {
+    position: relative;
+    display: block;
+    width: 450px;
+    border-radius: 5px;
+    box-shadow: 0px 0px 3px #eee;
+    transition: all .4s cubic-bezier(0.565, -0.260, 0.255, 1.410);
+    cursor: default;
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+}
+@media screen and (max-width: 800px) {
+    .msg img {
+    width: 300px;
+}
+}
+@media screen and (max-width: 550px) {
+    .msg img {
+    width: 200px;
+}
+}
+
+.msg time {
+    font-size: 0.7rem;
+    color: #ccc;
+    margin-top: 3px;
+    float: right;
+    cursor: default;
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+}
+.msg time:before{
+    content:"\f017";
+    color: #ddd;
+    font-family: FontAwesome;
+    display: inline-block;
+    margin-right: 4px;
+}
+
+@-webikt-keyframes pulse {
+  from { opacity: 0; }
+  to { opacity: 0.5; }
+}
+
 ::-webkit-scrollbar {
-  width: 13px;
+    min-width: 12px;
+    width: 12px;
+    max-width: 12px;
+    min-height: 12px;
+    height: 12px;
+    max-height: 12px;
+    background: #e5e5e5;
+    box-shadow: inset 0px 50px 0px rgba(82,179,217,0.9), inset 0px -52px 0px #fafafa;
 }
+
 ::-webkit-scrollbar-thumb {
-  border-radius: 10px;
-  -webkit-box-shadow: inset 0 0 0 4px #fff;
-  background: rgba(0, 0, 0, 0.2);
+    background: #bbb;
+    border: none;
+    border-radius: 100px;
+    border: solid 3px #e5e5e5;
+    box-shadow: inset 0px 0px 3px #999;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #b0b0b0;
+  box-shadow: inset 0px 0px 3px #888;
+}
+
+::-webkit-scrollbar-thumb:active {
+    background: #aaa;
+  box-shadow: inset 0px 0px 3px #7f7f7f;
+}
+
+::-webkit-scrollbar-button {
+    display: block;
+    height: 26px;
+}
+
+input.textarea {
+    position: fixed;
+    bottom: 0px;
+    left: 0px;
+    right: 0px;
+    width: 90%;
+    height: 50px;
+    margin: 0;
+    z-index: 99;
+    background: #fafafa;
+    border: none;
+    outline: none;
+    padding: 0;
+    color: #000;
+    font-weight: 400;
 }
 </style>
