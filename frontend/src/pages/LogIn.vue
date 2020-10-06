@@ -27,6 +27,7 @@
                 :append-icon="showpassword ? 'mdi-eye' : 'mdi-eye-off'"
                 :type="showpassword ? 'text' : 'password'"
                 @click:append="showpassword = !showpassword"
+                v-on:keyup.enter="checkLogin()"
               ></v-text-field>
               <v-btn
                 rounded
@@ -138,6 +139,7 @@
                 :append-icon="showbizpassword ? 'mdi-eye' : 'mdi-eye-off'"
                 :type="showbizpassword ? 'text' : 'password'"
                 @click:append="showbizpassword = !showbizpassword"
+                v-on:keyup.enter="checkBizLogin()"
               ></v-text-field>
               <v-btn
                 rounded

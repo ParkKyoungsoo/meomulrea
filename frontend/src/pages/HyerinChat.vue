@@ -1,12 +1,10 @@
 <template>
-  <v-main>
-    <v-col>
+  <v-main style="padding: 3.5%;">
       <Header />
-    </v-col>
     <v-col>
       <div class="menu">
-          <div class="back" @click="exit()"><i class="material-icons">&#xE5C4;</i></div>
-          <div class="name">{{roomName}}</div>
+        <div class="back" @click="exit()"><i class="material-icons">&#xE5C4;</i></div>
+        <div class="name">{{roomName}}</div>
       </div>
       <div v-for="(chatting, index) in chattings" :key="index">
         <ol class="chat">
@@ -24,8 +22,8 @@
           </li>
         </ol>
       </div>
-    </v-col>
-    <input v-on:keyup.enter='yhr()' class="textarea" type="text" v-model="message"/><button @click="yhr()">전송</button>
+    <input v-on:keyup.enter='yhr()' class="textarea" type="text" v-model="message"/><v-btn class="submit" @click="yhr()">전송</v-btn>
+  </v-col>
   </v-main>
 </template>
 
@@ -110,19 +108,18 @@ export default {
 
 /* M E N U */
 .menu {
-  margin: 0;
+    margin: 0;
     width: 100%;
     height: 50px;
     background: rgb(0,0,0);
     z-index: 100;
-    -webkit-touch-callout: none;
+    /* -webkit-touch-callout: none;
     -webkit-user-select: none;
     -moz-user-select: none;
-    -ms-user-select: none;
+    -ms-user-select: none; */
     display: flex;
 }
 .back {
-    position: absolute;
     width: 90px;
     height: 50px;
     top: 0px;
@@ -153,7 +150,7 @@ export default {
   font-size: 35px;
   color: rgb(255,255,255);
   cursor: default;
-  margin-left: 43%;
+  margin-left: 35%;
 }
 .last{
     position: absolute;
@@ -206,28 +203,11 @@ export default {
     -moz-user-select: none;
     -ms-user-select: none;
 }
-.chat .day {
-    position: relative;
-    display: block;
-    text-align: center;
-    color: #c0c0c0;
-    height: 20px;
-    text-shadow: 7px 0px 0px #e5e5e5, 6px 0px 0px #e5e5e5, 5px 0px 0px #e5e5e5, 4px 0px 0px #e5e5e5, 3px 0px 0px #e5e5e5, 2px 0px 0px #e5e5e5, 1px 0px 0px #e5e5e5, 1px 0px 0px #e5e5e5, 0px 0px 0px #e5e5e5, -1px 0px 0px #e5e5e5, -2px 0px 0px #e5e5e5, -3px 0px 0px #e5e5e5, -4px 0px 0px #e5e5e5, -5px 0px 0px #e5e5e5, -6px 0px 0px #e5e5e5, -7px 0px 0px #e5e5e5;
-    box-shadow: inset 20px 0px 0px #e5e5e5, inset -20px 0px 0px #e5e5e5, inset 0px -2px 0px #d7d7d7;
-    line-height: 38px;
-    margin-top: 5px;
-    margin-bottom: 20px;
-    cursor: default;
-    -webkit-touch-callout: none;
-    -webkit-user-select: none;
-    -moz-user-select: none;
-    -ms-user-select: none;
-}
-
 .other .msg {
     order: 1;
-    border-top-left-radius: 0px;
-    box-shadow: -1px 2px 0px #D4D4D4;
+    border-top-left-radius: 1%;
+    box-shadow: -1px 2px 0px rgba(0,0,0,0.3);
+    font-family: Jua;
 }
 .other:before {
     content: "";
@@ -249,51 +229,26 @@ export default {
 .self .msg {
     order: 1;
     border-bottom-right-radius: 0px;
-    box-shadow: 1px 2px 0px #D4D4D4;
+    border-radius: 1%;
+    box-shadow: 1px 2px 0px rgba(233,103,30,0.3);
+    font-family: Jua;
 }
-.self .avatar {
-    order: 2;
-}
-.self .avatar:after {
-    content: "";
-    position: relative;
-    display: inline-block;
-    bottom: 19px;
-    right: 0px;
-    width: 0px;
-    height: 0px;
-    border: 5px solid #fff;
-    border-right-color: transparent;
-    border-top-color: transparent;
-    box-shadow: 0px 2px 0px #D4D4D4;
-}
-
 .msg {
     background: white;
     min-width: 50px;
     padding: 10px;
     border-radius: 2px;
     box-shadow: 0px 2px 0px rgba(0, 0, 0, 0.07);
+    font-family: Jua;
 }
 .msg p {
     font-size: 0.8rem;
     margin: 0 0 0.2rem 0;
     color: #777;
+    font-family: Jua;
 }
-.msg img {
-    position: relative;
-    display: block;
-    width: 450px;
-    border-radius: 5px;
-    box-shadow: 0px 0px 3px #eee;
-    transition: all .4s cubic-bezier(0.565, -0.260, 0.255, 1.410);
-    cursor: default;
-    -webkit-touch-callout: none;
-    -webkit-user-select: none;
-    -moz-user-select: none;
-    -ms-user-select: none;
-}
-@media screen and (max-width: 800px) {
+
+/* @media screen and (max-width: 800px) {
     .msg img {
     width: 300px;
 }
@@ -302,33 +257,14 @@ export default {
     .msg img {
     width: 200px;
 }
-}
+} */
 
-.msg time {
-    font-size: 0.7rem;
-    color: #ccc;
-    margin-top: 3px;
-    float: right;
-    cursor: default;
-    -webkit-touch-callout: none;
-    -webkit-user-select: none;
-    -moz-user-select: none;
-    -ms-user-select: none;
-}
-.msg time:before{
-    content:"\f017";
-    color: #ddd;
-    font-family: FontAwesome;
-    display: inline-block;
-    margin-right: 4px;
-}
-
-@-webikt-keyframes pulse {
+/* @-webikt-keyframes pulse {
   from { opacity: 0; }
   to { opacity: 0.5; }
-}
+} */
 
-::-webkit-scrollbar {
+/* ::-webkit-scrollbar {
     min-width: 12px;
     width: 12px;
     max-width: 12px;
@@ -360,22 +296,28 @@ export default {
 ::-webkit-scrollbar-button {
     display: block;
     height: 26px;
-}
+} */
 
 input.textarea {
-    position: fixed;
-    bottom: 0px;
-    left: 0px;
-    right: 0px;
-    width: 90%;
-    height: 50px;
-    margin: 0;
-    z-index: 99;
-    background: #fafafa;
-    border: none;
-    outline: none;
-    padding: 0;
-    color: #000;
-    font-weight: 400;
+  position: fixed;
+  bottom: 0px;
+  left: 5%;
+  right: 0px;
+  width: 88%;
+  height: 50px;
+  margin: 0;
+  z-index: 99;
+  background: rgba(0,0,0,0.3);
+  border: none;
+  outline: none;
+  padding-left: 1%;
+  color: #000;
+  font-weight: 400;
+  font-family: Jua;
+}
+button.submit {
+  position: fixed;
+  bottom: 1%;
+  left: 93%;
 }
 </style>
