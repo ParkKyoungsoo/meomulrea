@@ -8,13 +8,32 @@
           <v-flex>{{ dong }}</v-flex>
         </v-row>
 
-        <v-row style="display: flex; align-items: center; text-align: center;">
+        <v-row
+          v-if="storeList.length > 0"
+          style="display: flex; align-items: center; text-align: center;"
+        >
           <div v-for="(item, index) in storeList" :key="index" :index="index">
             <v-row style="margin: 10px; width: fit-content;">
               <Card v-bind:storeData="item" />
             </v-row>
           </div>
         </v-row>
+        <div v-else style="flex: auto;">
+          <div class="flip">
+            <div
+              class="front"
+              style="display: flex; justify-content: center; align-items: center;"
+            >
+              <h1 class="text-shadow">결과가 없습니다.</h1>
+            </div>
+            <div
+              class="back"
+              style="display: flex; justify-content: center; align-items: center;"
+            >
+              <v-btn to="/home">돌아가기</v-btn>
+            </div>
+          </div>
+        </div>
       </v-container>
     </v-main>
   </v-app>
@@ -63,7 +82,6 @@ export default {
 
   watch: {
     dong(newCount, oldCount) {
-      console.log("watch!");
       axios
         .post(
           this.getBaseURL.baseURL + "api/stores/store_bigcategory/",
@@ -112,7 +130,7 @@ export default {
   },
 };
 </script>
-<style>
+<style lang="scss" scoped src="../assets/css/Card.scss">
 .shopList {
   display: flex;
   justify-content: center;

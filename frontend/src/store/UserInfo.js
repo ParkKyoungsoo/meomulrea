@@ -1,6 +1,7 @@
 const state = {
   userAddress: [],
   isLogin: "",
+  userType: "",
 };
 
 const getters = {
@@ -10,16 +11,21 @@ const getters = {
   getIsLogin: function(state) {
     return state.isLogin;
   },
+  getUserType: function(state) {
+    return state.userType;
+  },
 };
 
 const mutations = {
   setUserInfo: function(state, payload) {
-    console.log("setUserInfo called");
     state.userAddress = payload.userAddress;
   },
   setIsLogin: function(state, payload) {
     state.isLogin = payload.isLogin;
-    console.log("setIsLogin called", state.isLogin);
+  },
+  setUserType: function(state, payload) {
+    console.log("setUserType is called");
+    state.userType = payload.userType;
   },
 };
 

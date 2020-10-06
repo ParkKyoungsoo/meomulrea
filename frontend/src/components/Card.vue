@@ -1,6 +1,9 @@
 <template>
   <div class="flip">
-    <div class="front" :style="{ backgroundImage: `url(` + imgUrl + `)` }">
+    <div
+      class="front"
+      :style="{ backgroundImage: `url(` + imgUrl + `),url(` + second + `)` }"
+    >
       <h1 class="text-shadow">{{ this.storeData.store_name }}</h1>
     </div>
     <div class="back">
@@ -29,6 +32,7 @@ export default {
         category: "",
       },
       storeId: "",
+      second: require("../assets/image/storelist/default.jpg"),
     };
   },
   components: {},
@@ -37,11 +41,11 @@ export default {
   },
 
   created: function() {
-    // this.imgUrl = require("../assets/image/storelist/" +
-    //   this.storeData.store_name.replace(/(\s*)/g, "") +
-    //   ".jpg");
+    this.imgUrl = require("../assets/image/storelist/" +
+      this.storeData.store_name.replace(/(\s*)/g, "") +
+      ".jpg");
     // console.log(this.imgUrl);
-    this.imgUrl = require("../assets/image/storelist/default.jpg");
+    // this.imgUrl = require("../assets/image/storelist/default.jpg");
   },
 
   methods: {
@@ -79,4 +83,4 @@ export default {
 };
 </script>
 
-<style lang="scss" scoped src="../assets/css/Card.scss"></style>>
+<style lang="scss" scoped src="../assets/css/Card.scss"></style>

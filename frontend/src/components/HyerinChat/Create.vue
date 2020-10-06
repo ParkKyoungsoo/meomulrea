@@ -56,31 +56,24 @@ export default {
       new daum.Postcode({
         oncomplete: (data) => {
           var fullAddr = data.address;
-          console.log(data.address);
           var extraAddr = "";
 
           if (data.addressType === "R") {
             if (data.bname !== "") {
               extraAddr += data.bname;
-              console.log("bname : " + extraAddr);
             }
             if (data.buildingName !== "") {
               extraAddr +=
                 extraAddr !== "" ? ", " + data.buildingName : data.buildingName;
-              console.log("buildingName : " + extraAddr);
             }
             fullAddr += extraAddr !== "" ? " (" + extraAddr + ")" : "";
             this.address = fullAddr;
-            console.log("fullADDR : " + fullAddr);
           }
         },
       }).open();
     },
 
     createChat() {
-      console.log(`Token ${this.$cookies.get("auth-token")}`);
-      console.log(this.address);
-      console.log(this.$route.params.storeid);
       if (this.chatName == null || this.chatName === "") {
         alert("채팅방이름을 입력하세요");
         return;
@@ -103,15 +96,12 @@ export default {
           }
         ) // post > post
         .then((res) => {
-          console.log("키는???");
           console.log(res.data);
-          console.log(res.data.key);
           this.$router.push("/hrchat/" + res.data.key + "/" + this.chatName);
         })
         .catch((err) => {
           console.log(err.response);
           // let token = res.data.key;
-          console.log("res : " + res.data);
           this.$store.dispatch("signUserUp", {
             email: this.nm_email,
             password: this.nm_password,

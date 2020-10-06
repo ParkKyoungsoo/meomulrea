@@ -5,14 +5,15 @@
       <h1>{{ this.storeInfo.store_name }}</h1>
       <v-card>
         <v-row>
-          <v-col
-            style="background-size:200px 200px;"
-            :style="{ backgroundImage: `url(` + imgUrl + `)` }"
-            lg="2"
-            md="2"
-          >
+          <v-col justify="center" lg="4" md="4">
+            <div>
+              <img
+                :src="require(`@/assets/image/storelist/default.jpg`)"
+                style="width: 75%;"
+              />
+            </div>
           </v-col>
-          <v-col style="text-align: left;" lg="7" md="7">
+          <v-col style="text-align: left;" lg="5" md="5">
             <div>
               <img
                 src="../assets/image/placeholder.png"
@@ -39,7 +40,6 @@
               {{ this.startTime }} -
               {{ this.endTime }}
             </div>
-            a
             <div>
               <img src="../assets/image/star.png" style="width:15px;" alt="" />
               {{ this.storeInfo.average_rating }}
@@ -55,7 +55,7 @@
 
       <v-row>
         <v-tabs v-model="tab" fixed-tabs color="orange accent-4">
-          <v-tab class="menu" @click="showContent(1)"
+          <v-tab @click="showContent(1)"
             ><img src="../assets/image/menu.png" alt="menu" width="35"
           /></v-tab>
           <v-tab class="review" @click="showContent(2)"
@@ -68,6 +68,13 @@
       </v-row>
       <v-row>
         <v-col>
+          <div
+            v-if="contentTrigger1"
+            style="font-size: 50px; opacity: 0.5; color: rgb(49, 49, 49);"
+          >
+            <br />
+            현재 메뉴를 준비중입니다.
+          </div>
           <review v-if="contentTrigger2" />
           <party v-if="contentTrigger3" :storeInfo="storeInfo" />
         </v-col>

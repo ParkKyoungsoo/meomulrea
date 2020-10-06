@@ -69,7 +69,7 @@ def store_bigcategory(request):
     # serializer = StoreSerializer(stores, many=True)
     if request.data['bigcategory'] != 'all':
         stores = Store.objects.filter(
-            category=request.data['bigcategory'], address__contains=request.data['user_location']).order_by('-average_rating')
+            bigcategory=request.data['bigcategory'], address__contains=request.data['user_location']).order_by('-average_rating')
         serializer = StoreSerializer(stores, many=True)
         return Response(serializer.data)
     else:

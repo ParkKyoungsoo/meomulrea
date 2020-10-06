@@ -203,15 +203,11 @@ export default {
   },
   watch: {
     clicked() {
-      console.log("clicked?");
       if (this.flag == 1) {
-        console.log("getReview()");
         this.getReview();
       } else if (this.flag == 2) {
-        console.log("getReviewHighScore()");
         this.getReviewHighScore();
       } else {
-        console.log("getReviewLowScore()");
         this.getReviewLowScore();
       }
       this.clicked = "";
@@ -243,7 +239,6 @@ export default {
           }
         )
         .then((res) => {
-          console.log("최신순 리뷰 여기요", res.data);
           this.reviews = res.data;
           this.review_cnt = res.data.length;
           this.usertype = res.data.user_id;
@@ -336,7 +331,6 @@ export default {
           }
         )
         .then((res) => {
-          console.log("새로운 리뷰" + res.data);
           alert("리뷰가 등록되었습니다.");
           if (this.flag == 1) {
             this.getReview();
@@ -427,9 +421,6 @@ export default {
             // console.log('clicked ',this.clicked)
           })
           .catch((err) => {
-            console.log("??????????????????????????");
-            console.log("err", err);
-            console.log("err.response", err.response);
             console.log("err.response.data", err.response.data);
             alert("답글 삭제 실패!");
             console.log(this.$route.params.storeid);

@@ -5,7 +5,10 @@
         style="text-decoration: none; color: rgb(233,105,30); display:flex; align-items: center;"
         to="/home"
       >
-        <img style="height:65px; width: 65px;" src="../assets/image/home.png" />
+        <img
+          style="height:65px; width: 65px;"
+          src="../assets/image/home1.png"
+        />
       </router-link>
     </v-toolbar-title>
     <v-spacer />
@@ -58,7 +61,7 @@ export default {
   data() {
     return {
       initLocation: "",
-      userInfo: "",
+      userInfo: [],
       showAddrModal: false,
       seletedAddress: "",
       isLogined: false,
@@ -70,11 +73,13 @@ export default {
   computed: {
     ...mapGetters("location", ["getLocation"]),
     ...mapGetters("userInfo", ["getUserInfo"]),
+    ...mapGetters("userInfo", ["getUserType"]),
     ...mapGetters("server", ["getBaseURL"]),
   },
 
   created() {
     this.getUserAddress();
+    console.log("isAdmin?", this.getUserType);
   },
 
   mounted() {
@@ -107,7 +112,6 @@ export default {
     },
 
     changeAddress: function() {
-      console.log("changeAddress", this.initLocation);
       this.searchAddr();
       this.$store.commit("userInfo/setUserInfo", {
         userAddress: this.initLocation,
@@ -131,7 +135,6 @@ export default {
     },
 
     getUserAddress() {
-      console.log("getUserAddress !!", this.getUserInfo.userAddress);
       this.initLocation = this.getUserInfo.userAddress;
       axios
         .post(this.getBaseURL.baseURL + "api/accounts/user_order_list/", null, {
@@ -159,7 +162,6 @@ export default {
     },
 
     searchAddr() {
-      console.log("searchAddr called", this.initLocation);
       var geocoder = new kakao.maps.services.Geocoder();
 
       geocoder.addressSearch(this.initLocation, (result, status) => {

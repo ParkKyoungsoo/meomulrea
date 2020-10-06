@@ -1,40 +1,30 @@
 <template>
   <v-container v-on:scroll="onScroll" ref="chatlistContainer">
-    <v-row no-gutters>
-      <v-col v-for="chat in chatList" :key="chat.room_name" cols="12" sm="4">
-        <v-card class="mx-auto" max-width="344" outlined>
-          <v-list-item three-line>
-            <v-list-item-content>
-              <!-- 채팅방 키값(왜 있는지는 모르겠음) -->
-              <div class="overline mb-4">{{ chat.key }}</div>
-              <!-- 방 제목 -->
-              <v-list-item-title class="headline mb-1">{{
-                chat.room_name
-              }}</v-list-item-title>
-              <!-- v-if 채팅방의 현재 인원수 -->
-              <!-- <v-list-item-subtitle v-if="chat.usercount != null"
-                > 참가인원 : {{ chat.usercount }} 명</v-list-item-subtitle
-              > -->
-              <!-- v-else 채팅방의 인원수가 로드되지 않았을 경우 -->
-              <!-- <v-list-item-subtitle v-else
-                >Loading user count...</v-list-item-subtitle
-              > -->
-            </v-list-item-content>
-          </v-list-item>
-          <v-card-actions>
-            <!-- 카드를 클릭했을 때의 이벤트 -->
+    <v-main style="margin: 0; padding: 0;">
+      <v-row style="margin: 0;" no-gutters>
+        <v-col
+          v-for="(chat, index) in chatList"
+          :index="index"
+          :key="chat.room_name"
+          cols="12"
+          sm="4"
+        >
+          <div class="chatlist">
+            <img :src="chattingIMG[num[index]]" alt="" />
+            <div class="title">
+              <h1>{{ chat.room_name }}</h1>
+              <p>주소주소</p>
+            </div>
             <v-btn
-              text
-              @click="ldj_enterChat(chat)"
-              v-if="!chat.isAlreadyJoined && chat.usercount != null"
-              >참여하기</v-btn
+              style="width: 80%; color: white;"
+              color="black"
+              @click="mvtochatting(chat)"
+              >참가하기</v-btn
             >
-            <!-- 참여하고 있는 채팅방인 경우 -->
-            <v-btn text disabled v-if="chat.isAlreadyJoined">Joined</v-btn>
-          </v-card-actions>
-        </v-card>
-      </v-col>
-    </v-row>
+          </div>
+        </v-col>
+      </v-row>
+    </v-main>
   </v-container>
 </template>
 
@@ -51,6 +41,17 @@ export default {
     return {
       chatList: [],
       loading: false,
+      chattingIMG: [
+        require("../../assets/image/chattingroom/diet.png"),
+        require("../../assets/image/chattingroom/eat.png"),
+        require("../../assets/image/chattingroom/foodtray.png"),
+        require("../../assets/image/chattingroom/messenger.png"),
+        require("../../assets/image/chattingroom/roomservice.png"),
+        require("../../assets/image/chattingroom/sale.png"),
+        require("../../assets/image/chattingroom/team.png"),
+        require("../../assets/image/chattingroom/tray.png"),
+      ],
+      num: [],
     };
   },
   mounted() {
@@ -77,20 +78,25 @@ export default {
           }
         )
         .then((res) => {
-          console.log(res.data);
           // this.chats = res.data;
           if (res.data.message) {
             this.chatList = [];
           } else {
             this.chatList = res.data;
+            this.rand();
           }
         });
+    },
+    rand() {
+      for (var i = 0; i < this.chatList.length; i++) {
+        this.num.push(Math.floor(Math.random() * 8));
+      }
     },
     ldj_loadChats_On_Scrool(lastKey) {
       // backend 요청
       // this.chatList에 Append
     },
-    ldj_enterChat(chat) {
+    mvtochatting(chat) {
       const key = chat.store_id + "_" + chat.user;
       this.$router.push("/hrchat/" + key + "/" + chat.room_name);
     },
@@ -108,6 +114,7 @@ export default {
   },
   created() {
     window.addEventListener("scroll", this.onScroll);
+    // this.num = parseInt(Math.random() * 8);
   },
   destroyed() {
     window.removeEventListener("scroll", this.onScroll);
@@ -120,3 +127,77 @@ export default {
   // },
 };
 </script>
+
+<style scoped>
+* {
+  font-family: "Do Hyeon";
+}
+.chatlist {
+  position: relative;
+  margin: auto auto;
+  /* margin-top: 50px; */
+  /* width: 300px;
+  height: 300px; */
+  width: fit-content;
+  height: fit-content;
+}
+
+img {
+  opacity: 0.5;
+  display: block;
+  /* width: 100%; */
+  /* height: auto; */
+  margin: auto auto;
+  width: 250px;
+  height: 250px;
+  transition: 0.5s ease;
+  backface-visibility: hidden;
+}
+.chatlist:hover img {
+  /* opacity: 0.3; */
+  background-color: black;
+  border-radius: 5%;
+}
+.title {
+  position: absolute;
+  padding-left: 20%;
+  /* width: 300px; */
+  margin-top: -45%;
+  /* font-weight: 700; */
+  /* font-size: 30px; */
+  /* text-align: center; */
+  /* text-transform: uppercase; */
+  z-index: 1;
+  transition: top 0.5s ease;
+}
+
+.chatlist:hover .title {
+  margin-top: -55%;
+  transition: top 0.5s ease;
+}
+/* .chatlist:hover {
+  border-radius: 5%;
+} */
+/* .button {
+  position: absolute;
+  width: 500px;
+  left:0;
+  top: 180px;
+  text-align: center;
+  opacity: 0;
+  transition: opacity .35s ease;
+}
+
+.button a {
+  width: 200px;
+  padding: 12px 48px;
+  text-align: center;
+  color: black;
+  border: solid 2px black;
+  z-index: 1;
+} */
+
+/* .chatlist:hover .button {
+  opacity: 1;
+} */
+</style>

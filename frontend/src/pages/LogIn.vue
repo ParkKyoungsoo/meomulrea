@@ -27,12 +27,7 @@
               :type="showpassword ? 'text' : 'password'"
               @click:append="showpassword = !showpassword"
             ></v-text-field>
-            <v-btn
-              rounded
-              color="rgb(233, 105, 30)"
-              dark
-              @click="checkLogin()"
-              :loading="loading"
+            <v-btn rounded color="rgb(233, 105, 30)" dark @click="checkLogin()"
               >로그인</v-btn
             >
             <v-btn rounded color="rgb(0,0,0)" dark @click="mvpage(true)"
@@ -421,12 +416,11 @@ export default {
     ...mapGetters("userInfo", ["getIsLogin"]),
   },
 
-  created() {
-    console.log(this.getIsLogin);
-  },
+  created() {},
   methods: {
     ...mapMutations(("userInfo", ["setUserInfo"])),
     ...mapMutations(("userInfo", ["setIsLogin"])),
+    ...mapMutations(("userInfo", ["setUserType"])),
     bizlen() {
       var temp = this.biz_numb.substring(0, 12);
       this.biz_numb = temp;
@@ -647,15 +641,28 @@ export default {
                 password: this.biz_password,
               })
               .then((res) => {
-                // firebase
-                //   .auth()
-                //   .setPersistence(firebase.auth.Auth.Persistence.SESSION);
-                // // .then(()=>{
-                // firebase
-                //   .auth()
-                //   .signInWithEmailAndPassword(this.nm_email, this.nm_password);
-                this.setCookie(res.data.key);
-                this.$router.push("/home");
+                axios
+                  .post(
+                    this.getBaseURL.baseURL + "api/accounts/profile/",
+                    null,
+                    {
+                      headers: {
+                        Authorization: `Token ${tmpToken}`,
+                      },
+                    }
+                  )
+                  .then((res) => {
+                    this.$store.commit("userInfo/setUserType", {
+                      userAddress: res.data.usertype,
+                    });
+
+                    localStorage.setItem("isLogin", true);
+                    this.setCookie(res.data.key);
+                    this.$router.push("/home");
+                  })
+                  .catch((err) => {
+                    console.log("get profile error", err);
+                  });
                 // })
               })
               .catch((err) => {
@@ -791,7 +798,7 @@ export default {
               // err.response
               // let token = res.data.key;
               console.log("error : " + err);
-              console.log(err.response)
+              console.log(err.response);
               // this.$store.dispatch("signUserUp", {
               //   email: this.nm_email,
               //   password: this.nm_password,
@@ -836,8 +843,8 @@ export default {
       };
     },
     mvpage(nm) {
-      console.log("checkLocalStorage", localStorage.getItem("isLogin"));
       if (nm) {
+        this.biz_page = 0;
         this.nm_page += 1;
         this.nm_email = "";
         this.nm_name = "";
@@ -850,6 +857,7 @@ export default {
         this.showpassword = false;
         this.showpasswordConfirm = false;
       } else {
+        this.nm_page = 0;
         this.biz_page += 1;
         this.biz_email = "";
         this.biz_name = "";

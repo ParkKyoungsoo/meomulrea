@@ -1,5 +1,5 @@
 DATABASES = {
-    'default' : {
+    'default': {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'babygoat',
         'USER': 'root',

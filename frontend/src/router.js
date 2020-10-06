@@ -16,11 +16,6 @@ import store from "@/store/store.js";
 import { mapGetters, mapMutations } from "vuex";
 
 const requireAuth = (to, from, next) => {
-  console.log(
-    "access Auth",
-    localStorage.getItem("isLogin"),
-    typeof localStorage.getItem("isLogin")
-  );
   if (localStorage.getItem("isLogin") === "true") {
     next();
   } else {

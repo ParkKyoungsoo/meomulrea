@@ -45,7 +45,7 @@
         <v-layout style="display: flex; justify-content: center;">
           <carousel-3d
             v-if="recommendedDate.length > 4"
-            controls-visible="true"
+            :controlsVisible="true"
           >
             <slide
               v-for="(item, index) in recommendedDate"
@@ -136,7 +136,6 @@ export default {
       }) // post > post
       .then((res) => {
         this.recommendedDate = res.data.data;
-        console.log(this.recommendedDate);
       })
       .catch((res) => {
         console.log(res);

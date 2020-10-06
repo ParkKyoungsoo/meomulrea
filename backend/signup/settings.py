@@ -189,8 +189,8 @@ CHANNEL_LAYERS = {
     'default': {
         'BACKEND': 'channels_redis.core.RedisChannelLayer',
         'CONFIG': {
-            "hosts": [('ec2-54-180-109-206.ap-northeast-2.compute.amazonaws.com', 6379)],
-            # "hosts": [('127.0.0.1', 6379)],
+            # "hosts": [('ec2-54-180-109-206.ap-northeast-2.compute.amazonaws.com', 6379)],
+            "hosts": [('127.0.0.1', 6379)],
         },
     },
 }
