@@ -119,9 +119,8 @@ import category from "../assets/category/category.json";
 import FoodCard from "../components/FoodCard.vue";
 import coverflow from "vue-coverflow";
 
-// const baseURL = "http://127.0.0.1:8000/";
-// const baseURL =
-//   "http://ec2-54-180-109-206.ap-northeast-2.compute.amazonaws.com/";
+const baseURL = "http://127.0.0.1:8000/";
+// const baseURL = "http://ec2-52-79-250-4.ap-northeast-2.compute.amazonaws.com/";
 
 // Vue.use(Carousel3d);
 
@@ -155,7 +154,7 @@ export default {
     });
 
     axios
-      .post(this.getBaseURL.baseURL + "api/main/", null, {
+      .post(baseURL + "api/main/", null, {
         headers: {
           Authorization: `Token ${this.$cookies.get("auth-token")}`,
         },
@@ -221,7 +220,7 @@ export default {
     getCategory() {
       axios({
         method: "GET",
-        url: this.getBaseURL.baseURL + "api/main/",
+        url: baseURL + "api/main/",
       })
         .then((response) => {
           this.recommendedDate = response.data.data;

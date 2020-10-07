@@ -1,5 +1,5 @@
 <template>
-  <v-main>
+  <v-main box>
     <!-- <v-container> -->
     <div class="cont">
       <div class="cont_center_left">
@@ -228,9 +228,8 @@ import axios from "axios";
 import * as firebase from "firebase";
 import { mapMutations, mapGetters } from "vuex";
 
-// const this.getBaseURL.baseURL = "http://127.0.0.1:8000/";
-// const this.getBaseURL.baseURL =
-//   "http://ec2-54-180-109-206.ap-northeast-2.compute.amazonaws.com/";
+const baseURL = "http://127.0.0.1:8000/";
+// const baseURL = "http://ec2-52-79-250-4.ap-northeast-2.compute.amazonaws.com/";
 
 export default {
   name: "LogIn",
@@ -301,7 +300,7 @@ export default {
         this.error.email = "";
         this.nm_nickname = this.nm_email;
         axios
-          .post(this.getBaseURL.baseURL + "api/accounts/user_email/", {
+          .post(baseURL + "api/accounts/user_email/", {
             email: this.nm_email,
           })
           .then((res) => {
@@ -342,7 +341,7 @@ export default {
         }
         this.error.bizemail = "";
         axios
-          .post(this.getBaseURL.baseURL + "api/accounts/user_email/", {
+          .post(baseURL + "api/accounts/user_email/", {
             email: this.biz_email,
           })
           .then((res) => {
@@ -551,13 +550,13 @@ export default {
     nm_login() {
       var tmpToken;
       axios
-        .post(this.getBaseURL.baseURL + "api/accounts/email_user_or_bizuser/", {
+        .post(baseURL + "api/accounts/email_user_or_bizuser/", {
           email: this.nm_email,
         })
         .then((res) => {
           if (res.data.message == 1) {
             axios
-              .post(this.getBaseURL.baseURL + "api/account/login/", {
+              .post(baseURL + "api/account/login/", {
                 email: this.nm_email,
                 password: this.nm_password,
               })
@@ -565,27 +564,19 @@ export default {
                 this.setCookie(res.data.key);
                 tmpToken = res.data.key;
                 axios
-                  .post(
-                    this.getBaseURL.baseURL + "api/accounts/user_nickname/",
-                    null,
-                    {
-                      headers: {
-                        Authorization: `Token ${res.data.key}`,
-                      },
-                    }
-                  )
+                  .post(baseURL + "api/accounts/user_nickname/", null, {
+                    headers: {
+                      Authorization: `Token ${res.data.key}`,
+                    },
+                  })
                   .then((res) => {
                     this.$cookies.set("nickname", res.data.nickname);
                     axios
-                      .post(
-                        this.getBaseURL.baseURL + "api/accounts/profile/",
-                        null,
-                        {
-                          headers: {
-                            Authorization: `Token ${tmpToken}`,
-                          },
-                        }
-                      )
+                      .post(baseURL + "api/accounts/profile/", null, {
+                        headers: {
+                          Authorization: `Token ${tmpToken}`,
+                        },
+                      })
                       .then((res) => {
                         this.$store.commit("userInfo/setUserInfo", {
                           userAddress: res.data.address,
@@ -630,27 +621,23 @@ export default {
     },
     biz_login() {
       axios
-        .post(this.getBaseURL.baseURL + "api/accounts/email_user_or_bizuser/", {
+        .post(baseURL + "api/accounts/email_user_or_bizuser/", {
           email: this.biz_email,
         })
         .then((res) => {
           if (res.data.message == 0) {
             axios
-              .post(this.getBaseURL.baseURL + "api/account/login/", {
+              .post(baseURL + "api/account/login/", {
                 email: this.biz_email,
                 password: this.biz_password,
               })
               .then((res) => {
                 axios
-                  .post(
-                    this.getBaseURL.baseURL + "api/accounts/profile/",
-                    null,
-                    {
-                      headers: {
-                        Authorization: `Token ${tmpToken}`,
-                      },
-                    }
-                  )
+                  .post(baseURL + "api/accounts/profile/", null, {
+                    headers: {
+                      Authorization: `Token ${tmpToken}`,
+                    },
+                  })
                   .then((res) => {
                     this.$store.commit("userInfo/setUserType", {
                       userAddress: res.data.usertype,
@@ -704,7 +691,7 @@ export default {
       var tmpToken = "";
 
       axios
-        .post(this.getBaseURL.baseURL + "api/account/signup/", {
+        .post(baseURL + "api/account/signup/", {
           username: this.nm_nickname,
           email: this.nm_email,
           password1: this.nm_password,
@@ -717,7 +704,7 @@ export default {
           axios
             .post(
               // post > post
-              this.getBaseURL.baseURL + "api/accounts/user_detail/",
+              baseURL + "api/accounts/user_detail/",
               {
                 username: this.nm_nickname,
                 email: this.nm_email,
@@ -737,7 +724,7 @@ export default {
               axios
                 .post(
                   // post > post > post
-                  this.getBaseURL.baseURL + "api/accounts/user_order/",
+                  baseURL + "api/accounts/user_order/",
                   {
                     location: this.nm_address,
                   },
@@ -766,7 +753,7 @@ export default {
     },
     biz_signup() {
       axios
-        .post(this.getBaseURL.baseURL + "api/account/signup/", {
+        .post(baseURL + "api/account/signup/", {
           username: this.biz_name,
           email: this.biz_email,
           password1: this.biz_password,
@@ -781,15 +768,11 @@ export default {
           formData.append("bizaddress", this.biz_address);
           formData.append("bizimage", this.biz_image);
           axios
-            .post(
-              this.getBaseURL.baseURL + "api/accounts/user_detail/",
-              formData,
-              {
-                headers: {
-                  Authorization: `Token ${res.data.key}`,
-                },
-              }
-            ) // post > post
+            .post(baseURL + "api/accounts/user_detail/", formData, {
+              headers: {
+                Authorization: `Token ${res.data.key}`,
+              },
+            }) // post > post
             .then((res) => {
               this.reset(false);
               this.$router.push("/");
@@ -879,4 +862,12 @@ export default {
   },
 };
 </script>
-<style scoped src="../assets/css/login.css"></style>
+<style scoped src="../assets/css/login.css">
+.cont {
+  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none; /* Firefox */
+}
+.cont::-webkit-scrollbar {
+  display: none; /* Chrome, Safari, Opera*/
+}
+</style>

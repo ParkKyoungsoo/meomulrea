@@ -40,15 +40,15 @@
 <script>
 import Header from "../components/Header.vue";
 import { mapGetters } from "vuex";
+
+const baseURL = "http://127.0.0.1:8000/";
+// const baseURL = "http://ec2-52-79-250-4.ap-northeast-2.compute.amazonaws.com/";
+
 export default {
   components: {
     Header,
   },
-  watch: {
-    message: function() {
-      console.log(this.message);
-    },
-  },
+  watch: {},
   data() {
     return {
       roomName: "",
@@ -60,22 +60,18 @@ export default {
     };
   },
   created() {
-    var URL = this.getBaseURL.baseURL.substring(
-      5,
-      this.getBaseURL.baseURL.length
-    );
+    var URL = baseURL.substring(5, baseURL.length);
 
     this.roomNumber = this.$route.params.roomNumber; // 채팅방 uid
     this.roomName = this.$route.params.roomName; // 채팅방 이름
     this.chatSocket = new WebSocket( // 웹소켓에 연결하는 부분
       "ws://" +
-        // "ec2-54-180-109-206.ap-northeast-2.compute.amazonaws.com" +
+        // "ec2-52-79-250-4.ap-northeast-2.compute.amazonaws.com/" +
         URL +
         "ws/chat/" +
         this.roomNumber +
         "/"
     ); // ws://127.0.0.1:8000/ws/chat/roomName/
-    console.log(this.chatSocket);
 
     // 이벤트 등록. onmessage -> chatSocket에 메세지가 도착했을 때 일어날 이벤트를 여기에 작성.
     this.chatSocket.onmessage = (e) => {
@@ -84,7 +80,6 @@ export default {
       let msg = data.message.split("&&&&")[1];
       this.chattings.push({ nickname: nickname, msg: msg });
       // document.querySelector('#chat-log').value += (nickname+" ) "+ msg + '\n');
-      console.log(this.chattings);
     };
     this.chatSocket.onclose = function() {
       console.error("Chat socket closed unexpectedly");

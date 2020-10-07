@@ -18,8 +18,7 @@ import axios from "axios";
 import { mapGetters } from "vuex";
 
 // const baseURL = "http://127.0.0.1:8000/";
-// const baseURL =
-//   "http://ec2-54-180-109-206.ap-northeast-2.compute.amazonaws.com/";
+const baseURL = "http://ec2-52-79-250-4.ap-northeast-2.compute.amazonaws.com/";
 
 export default {
   props: {
@@ -62,7 +61,7 @@ export default {
     showShopList: function() {
       axios
         .post(
-          this.getBaseURL.baseURL + "api/stores/store_category/",
+          baseURL + "api/stores/store_category/",
           {
             category: this.$route.params.category,
           },

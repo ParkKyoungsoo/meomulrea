@@ -54,8 +54,7 @@ import * as firebase from "firebase";
 import axios from "axios";
 
 // const baseURL = "http://127.0.0.1:8000/";
-// const baseURL =
-//   "http://ec2-54-180-109-206.ap-northeast-2.compute.amazonaws.com/";
+const baseURL = "http://ec2-52-79-250-4.ap-northeast-2.compute.amazonaws.com/";
 
 export default {
   data() {
@@ -79,7 +78,7 @@ export default {
 
   created() {
     this.getUserAddress();
-    console.log("isAdmin?", this.getUserType);
+    // console.log("isAdmin?", this.getUserType);
   },
 
   mounted() {
@@ -93,7 +92,7 @@ export default {
     addAddress: function() {
       axios
         .post(
-          this.getBaseURL.baseURL + "api/accounts/user_order/",
+          baseURL + "api/accounts/user_order/",
           {
             location: this.newAddress,
           },
@@ -137,7 +136,7 @@ export default {
     getUserAddress() {
       this.initLocation = this.getUserInfo.userAddress;
       axios
-        .post(this.getBaseURL.baseURL + "api/accounts/user_order_list/", null, {
+        .post(baseURL + "api/accounts/user_order_list/", null, {
           headers: {
             Authorization: `Token ${this.$cookies.get("auth-token")}`,
           },
@@ -198,7 +197,7 @@ export default {
 
           axios
             .post(
-              this.getBaseURL.baseURL + "api/accounts/user_order/",
+              baseURL + "api/accounts/user_order/",
               {
                 location: fullAddr,
               },

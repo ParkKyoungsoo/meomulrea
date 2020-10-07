@@ -47,8 +47,7 @@ import Header from "../components/Header.vue";
 import Card from "../components/Card.vue";
 
 // const baseURL = "http://127.0.0.1:8000/";
-// const baseURL =
-//   "http://ec2-54-180-109-206.ap-northeast-2.compute.amazonaws.com/";
+const baseURL = "http://ec2-52-79-250-4.ap-northeast-2.compute.amazonaws.com/";
 
 export default {
   data() {
@@ -84,7 +83,7 @@ export default {
     dong(newCount, oldCount) {
       axios
         .post(
-          this.getBaseURL.baseURL + "api/stores/store_bigcategory/",
+          baseURL + "api/stores/store_bigcategory/",
           {
             bigcategory: this.category,
             user_location: newCount,
@@ -109,7 +108,7 @@ export default {
     async getStoreInfo() {
       await axios
         .post(
-          this.getBaseURL.baseURL + "api/stores/store_bigcategory/",
+          baseURL + "api/stores/store_bigcategory/",
           {
             bigcategory: this.category,
             user_location: this.getLocation.dong,

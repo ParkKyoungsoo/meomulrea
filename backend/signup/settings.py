@@ -28,7 +28,7 @@ DEBUG = True
 
 # ALLOWED_HOSTS = []
 ALLOWED_HOSTS = [
-    "ec2-54-180-109-206.ap-northeast-2.compute.amazonaws.com", "127.0.0.1"]
+    "ec2-52-79-250-4.ap-northeast-2.compute.amazonaws.com", "127.0.0.1"]
 
 
 # Application definition
@@ -189,7 +189,7 @@ CHANNEL_LAYERS = {
     'default': {
         'BACKEND': 'channels_redis.core.RedisChannelLayer',
         'CONFIG': {
-            # "hosts": [('ec2-54-180-109-206.ap-northeast-2.compute.amazonaws.com', 6379)],
+            # "hosts": [('ec2-52-79-250-4.ap-northeast-2.compute.amazonaws.com', 6379)],
             "hosts": [('127.0.0.1', 6379)],
         },
     },

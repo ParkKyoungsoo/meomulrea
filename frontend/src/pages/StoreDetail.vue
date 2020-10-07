@@ -92,8 +92,7 @@ import KakaoMap from "../components/KakaoMap.vue";
 import { mapGetters } from "vuex";
 
 // const baseURL = "http://127.0.0.1:8000/";
-// const baseURL =
-//   "http://ec2-54-180-109-206.ap-northeast-2.compute.amazonaws.com/";
+const baseURL = "http://ec2-52-79-250-4.ap-northeast-2.compute.amazonaws.com/";
 
 export default {
   components: {
@@ -159,15 +158,11 @@ export default {
 
     getStoreDetail() {
       axios
-        .post(
-          this.getBaseURL.baseURL + `api/stores/${this.$route.params.storeid}/`,
-          null,
-          {
-            headers: {
-              Authorization: `Token ${this.$cookies.get("auth-token")}`,
-            },
-          }
-        ) // post > post
+        .post(baseURL + `api/stores/${this.$route.params.storeid}/`, null, {
+          headers: {
+            Authorization: `Token ${this.$cookies.get("auth-token")}`,
+          },
+        }) // post > post
         .then((res) => {
           this.storeInfo = res.data;
           // this.imgUrl = require("../assets/image/storelist/" +
