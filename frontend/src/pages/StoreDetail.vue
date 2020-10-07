@@ -92,7 +92,7 @@ import KakaoMap from "../components/KakaoMap.vue";
 import { mapGetters } from "vuex";
 
 // const baseURL = "http://127.0.0.1:8000/";
-const baseURL = "http://ec2-52-79-250-4.ap-northeast-2.compute.amazonaws.com/";
+const baseURL = "http://ec2-52-79-239-80.ap-northeast-2.compute.amazonaws.com/";
 
 export default {
   components: {

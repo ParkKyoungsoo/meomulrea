@@ -226,11 +226,10 @@
 <script>
 import axios from "axios";
 import * as firebase from "firebase";
-import { mapMutations, mapGetters } from "vuex";
+import { mapMutations, mapGetters, mapState } from "vuex";
 
-const baseURL = "http://127.0.0.1:8000/";
-// const baseURL = "http://ec2-52-79-250-4.ap-northeast-2.compute.amazonaws.com/";
-
+// const baseURL = "http://127.0.0.1:8000/";
+const baseURL = "http://ec2-52-79-239-80.ap-northeast-2.compute.amazonaws.com/";
 export default {
   name: "LogIn",
   data() {
@@ -413,9 +412,13 @@ export default {
     //   },
     ...mapGetters("server", ["getBaseURL"]),
     ...mapGetters("userInfo", ["getIsLogin"]),
+    ...mapState("server", ["baseURL"]),
   },
 
-  created() {},
+  created() {
+    console.log(this.getBaseURL); // 예상은 아마존 서버가 찍혀야되는데
+  },
+
   methods: {
     ...mapMutations(("userInfo", ["setUserInfo"])),
     ...mapMutations(("userInfo", ["setIsLogin"])),
