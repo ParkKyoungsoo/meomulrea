@@ -5,25 +5,27 @@
         style="text-decoration: none; color: rgb(233,105,30); display:flex; align-items: center;"
         to="/home"
       >
-        <img style="height:65px; width: 65px;" src="../assets/image/home.png" />
+        <img
+          style="height:65px; width: 65px;"
+          src="../assets/image/home1.png"
+        />
       </router-link>
     </v-toolbar-title>
     <v-spacer />
     <v-toolbar-title>
       <v-col>
         <v-select
-          v-model="select"
           @change="changeAddress"
+          v-model="initLocation"
           :items="userInfo"
           item-text="location"
-          return-object
           style="margin:10px; margin-top:25px; width:250px;"
           color="rgb(233,105,30)"
           item-color="none"
         />
       </v-col>
     </v-toolbar-title>
-    <button @click="findAddress(true)">추가하기</button>
+    <button @click="findAddress()">추가하기</button>
     <v-spacer />
     <v-toolbar-title>
       <div
@@ -52,36 +54,31 @@ import * as firebase from "firebase";
 import axios from "axios";
 
 // const baseURL = "http://127.0.0.1:8000/";
-const baseURL =
-  "http://ec2-54-180-109-206.ap-northeast-2.compute.amazonaws.com/";
+const baseURL = "http://ec2-52-79-239-80.ap-northeast-2.compute.amazonaws.com/";
 
 export default {
   data() {
     return {
-      select: [],
-      userInfo: "",
+      initLocation: "",
+      userInfo: [],
       showAddrModal: false,
       seletedAddress: "",
       isLogined: false,
       newAddress: "",
+      AddrTrigger: false,
     };
   },
   components: {},
   computed: {
     ...mapGetters("location", ["getLocation"]),
     ...mapGetters("userInfo", ["getUserInfo"]),
-  },
-
-  watch: {
-    newAddress: function(newVal, oldVal) {
-      console.lof("watch", newVal);
-    },
+    ...mapGetters("userInfo", ["getUserType"]),
+    ...mapGetters("server", ["getBaseURL"]),
   },
 
   created() {
     this.getUserAddress();
-    console.log("Token ", this.$cookies.get("auth-token"));
-    this.select = this.getUserInfo.location;
+    // console.log("isAdmin?", this.getUserType);
   },
 
   mounted() {
@@ -89,15 +86,10 @@ export default {
   },
 
   methods: {
-    test() {
-      console.log("test console", this.userInfo[0].location);
-    },
-
     ...mapMutations(("location", ["setLocation"])),
     ...mapMutations(("userInfo", ["setUserInfo"])),
 
     addAddress: function() {
-      console.log("addAddr Func", this.newAddress);
       axios
         .post(
           baseURL + "api/accounts/user_order/",
@@ -111,7 +103,7 @@ export default {
           }
         ) // post > post
         .then((res) => {
-          console.log(res.data);
+          // console.log(res.data);
         })
         .catch((res) => {
           console.log(res);
@@ -119,14 +111,9 @@ export default {
     },
 
     changeAddress: function() {
-      // EventBus.$emit("addressChange", this.select.location);
-      // this.$store.commit("location/setLocation", {
-      //   lat: this.lat,
-      //   lng: this.lng,
-      // });
       this.searchAddr();
       this.$store.commit("userInfo/setUserInfo", {
-        userAddress: this.select.location,
+        userAddress: this.initLocation,
       });
     },
 
@@ -138,9 +125,16 @@ export default {
           this.$cookies.remove("auth-token");
           this.$router.push("/");
         });
+
+      this.$store.commit("userInfo/setUserInfo", {
+        userAddress: "",
+      });
+      localStorage.setItem("isLogin", false);
+      this.initLocation = "";
     },
 
     getUserAddress() {
+      this.initLocation = this.getUserInfo.userAddress;
       axios
         .post(baseURL + "api/accounts/user_order_list/", null, {
           headers: {
@@ -153,6 +147,7 @@ export default {
         .catch((res) => {
           console.log("user Address error", res);
         }); // post > post > then
+      this.searchAddr();
     },
 
     addScript() {
@@ -168,9 +163,8 @@ export default {
     searchAddr() {
       var geocoder = new kakao.maps.services.Geocoder();
 
-      geocoder.addressSearch(this.select.location, (result, status) => {
+      geocoder.addressSearch(this.initLocation, (result, status) => {
         if (status === kakao.maps.services.Status.OK) {
-          console.log("result", result);
           this.$store.commit("location/setLocation", {
             lat: result[0].y,
             lng: result[0].x,
@@ -179,6 +173,7 @@ export default {
         }
       });
     },
+
     login() {
       this.$router.push("/");
     },
@@ -192,24 +187,36 @@ export default {
           if (data.addressType === "R") {
             if (data.bname !== "") {
               extraAddr += data.bname;
-              console.log("bname : " + extraAddr);
             }
             if (data.buildingName !== "") {
               extraAddr +=
                 extraAddr !== "" ? ", " + data.buildingName : data.buildingName;
-              console.log("buildingName : " + extraAddr);
             }
             fullAddr += extraAddr !== "" ? " (" + extraAddr + ")" : "";
-            this.newAddress = fullAddr;
           }
+
+          axios
+            .post(
+              baseURL + "api/accounts/user_order/",
+              {
+                location: fullAddr,
+              },
+              {
+                headers: {
+                  Authorization: `Token ${this.$cookies.get("auth-token")}`,
+                },
+              }
+            ) // post > post
+            .then((res) => {
+              location.reload();
+            })
+            .catch((res) => {
+              console.log(res);
+            }); // post > post > then
         },
-      }).open();
-      console.log("new Address is ", this.newAddress);
-      this.addAddress();
+      }).open({});
     },
   },
-
-  watch() {},
 };
 </script>
 <style>

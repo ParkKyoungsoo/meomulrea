@@ -4,40 +4,36 @@
     <v-main>
       <v-container>
         <v-row>
-          <v-flex>{{ $route.params.category }}</v-flex>
-          <v-flex>{{ this.getLocation.dong }}</v-flex>
+          <v-flex>{{ $route.params.bigcategory }}</v-flex>
+          <v-flex>{{ dong }}</v-flex>
         </v-row>
 
-        <v-row style="display: flex; align-items: center; text-align: center;">
+        <v-row
+          v-if="storeList.length > 0"
+          style="display: flex; align-items: center; text-align: center;"
+        >
           <div v-for="(item, index) in storeList" :key="index" :index="index">
             <v-row style="margin: 10px; width: fit-content;">
-              <Card :storeData="item" />
+              <Card v-bind:storeData="item" />
             </v-row>
           </div>
-          <!-- <v-col>
-                <v-row justify="center">
-                  <div>{{ item.store_name }}</div>
-                </v-row>
-                <v-row justify="center">
-                  <v-list-item-avatar tile size="200" color="grey" />
-                </v-row>
-              </v-col> -->
-
-          <!-- <v-card-actions>
-                <v-btn
-                  depressed
-                  color="primary"
-                  @click="goToShopDetail(item.store_id)"
-                  >가게 보러가기</v-btn
-                >
-              </v-card-actions> -->
-          <!-- </v-card> -->
-          <!-- </v-col> -->
-          <!-- <v-col> -->
         </v-row>
-        <!-- <v-row> -->
-        <!-- </v-col> -->
-        <!-- </v-row> -->
+        <div v-else style="flex: auto;">
+          <div class="flip">
+            <div
+              class="front"
+              style="display: flex; justify-content: center; align-items: center;"
+            >
+              <h1 class="text-shadow">결과가 없습니다.</h1>
+            </div>
+            <div
+              class="back"
+              style="display: flex; justify-content: center; align-items: center;"
+            >
+              <v-btn to="/home">돌아가기</v-btn>
+            </div>
+          </div>
+        </div>
       </v-container>
     </v-main>
   </v-app>
@@ -50,9 +46,8 @@ import { mapGetters } from "vuex";
 import Header from "../components/Header.vue";
 import Card from "../components/Card.vue";
 
-// const baseURL = "http://127.0.0.1:8000/api/";
-const baseURL =
-  "http://ec2-54-180-109-206.ap-northeast-2.compute.amazonaws.com/";
+// const baseURL = "http://127.0.0.1:8000/";
+const baseURL = "http://ec2-52-79-239-80.ap-northeast-2.compute.amazonaws.com/";
 
 export default {
   data() {
@@ -72,26 +67,50 @@ export default {
 
   computed: {
     ...mapGetters("location", ["getLocation"]),
+    ...mapGetters("server", ["getBaseURL"]),
+    dong() {
+      return this.getLocation.dong;
+    },
   },
 
-  created: function() {
+  created: async function() {
     this.loc = this.getLocation;
-    this.category = this.$route.params.category;
-    this.getStoreInfo();
+    this.category = this.$route.params.bigcategory;
+    await this.getStoreInfo();
+  },
+
+  watch: {
+    dong(newCount, oldCount) {
+      axios
+        .post(
+          baseURL + "api/stores/store_bigcategory/",
+          {
+            bigcategory: this.category,
+            user_location: newCount,
+          },
+          {
+            headers: {
+              Authorization: `Token ${this.$cookies.get("auth-token")}`,
+            },
+          }
+        ) // post > post
+        .then((res) => {
+          this.storeList = res.data;
+        })
+        .catch((res) => {
+          console.log(res);
+        }); // post > post > then
+    },
   },
 
   methods: {
-    test() {
-      console.log("this.shopList", this.storeList);
-      console.log("this.shopList", this.storeList[0]);
-    },
-    getStoreInfo() {
-      console.log(this.$cookies.get("auth-token"));
-      axios
+    test() {},
+    async getStoreInfo() {
+      await axios
         .post(
-          baseURL + "api/stores/store_list/",
+          baseURL + "api/stores/store_bigcategory/",
           {
-            category: this.category,
+            bigcategory: this.category,
             user_location: this.getLocation.dong,
           },
           {
@@ -107,37 +126,10 @@ export default {
           console.log(res);
         }); // post > post > then
     },
-
-    goToShopDetail: function(shopId) {
-      this.$router.push("/storedetail/" + shopId);
-    },
-    test: function() {
-      console.log("loc", this.loc);
-    },
-    showShopList: function() {
-      axios
-        .post(
-          baseURL + "stores/store_category/",
-          {
-            category: this.$route.params.category,
-          },
-          {
-            headers: {
-              Authorization: `Token ${this.$cookies.get("auth-token")}`,
-            },
-          }
-        ) // post > post
-        .then((res) => {
-          this.userInfo = res.data;
-        })
-        .catch((res) => {
-          console.log("user Address error", res);
-        });
-    },
   },
 };
 </script>
-<style>
+<style lang="scss" scoped src="../assets/css/Card.scss">
 .shopList {
   display: flex;
   justify-content: center;

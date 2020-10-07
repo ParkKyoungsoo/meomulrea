@@ -26,7 +26,6 @@ export default {
 
   watch: {
     storeData: function(newVal, oldVal) {
-      console.log("Prop changed: ", newVal, " | was: ", oldVal);
       this.lat = newVal.latitude;
       this.lng = newVal.longitude;
       this.initMap();
@@ -41,7 +40,6 @@ export default {
     ...mapMutations(("shopList", ["setShopList"])),
 
     initMap() {
-      console.log("initMap", this.lat, this.lng);
       var container = document.getElementById("map");
       var options = {
         center: new kakao.maps.LatLng(this.lat, this.lng),

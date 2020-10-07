@@ -1,6 +1,9 @@
 <template>
   <div class="flip">
-    <div class="front" :style="{ backgroundImage: `url(` + imgUrl + `)` }">
+    <div
+      class="front"
+      :style="{ backgroundImage: `url(` + imgUrl + `),url(` + second + `)` }"
+    >
       <h1 class="text-shadow">{{ this.storeData.store_name }}</h1>
     </div>
     <div class="back">
@@ -13,9 +16,9 @@
 <script>
 import axios from "axios";
 import { mapGetters } from "vuex";
-// const baseURL = "http://j3b304.p.ssafy.io/";
-const baseURL =
-  "http://ec2-54-180-109-206.ap-northeast-2.compute.amazonaws.com/";
+
+// const baseURL = "http://127.0.0.1:8000/";
+const baseURL = "http://ec2-52-79-239-80.ap-northeast-2.compute.amazonaws.com/";
 
 export default {
   props: {
@@ -28,22 +31,32 @@ export default {
         category: "",
       },
       storeId: "",
+      second: require("../assets/image/storelist/default.jpg"),
     };
   },
   components: {},
+  computed: {
+    ...mapGetters("server", ["getBaseURL"]),
+  },
+
   created: function() {
-    // this.imgUrl = require("../assets/image/storelist/" +
-    //   this.storeData.store_name.replace(/(\s*)/g, "") +
-    //   ".jpg");
+    this.imgUrl = require("../assets/image/storelist/" +
+      this.storeData.store_name.replace(/(\s*)/g, "") +
+      ".jpg");
     // console.log(this.imgUrl);
-    this.imgUrl = require("../assets/image/storelist/default.jpg");
-    console.log("created!!", this.storeData.store_id);
+    // this.imgUrl = require("../assets/image/storelist/default.jpg");
   },
 
   methods: {
     goToShopDetail() {
       // console.log("this.storeData.store_id", this.storeData.store_id);
       this.$router.push("/storedetail/" + this.storeData.store_id);
+      // this.$router.push("/storedetail/", {
+      //   params: {
+      //     store_id: this.storeData.store_id,
+      //     store_user_id: this.storeData.user_id,
+      //   },
+      // });
     },
     showShopList: function() {
       axios
@@ -69,4 +82,4 @@ export default {
 };
 </script>
 
-<style lang="scss" scoped src="../assets/css/Card.scss"></style>>
+<style lang="scss" scoped src="../assets/css/Card.scss"></style>

@@ -5,18 +5,15 @@
       <h1>{{ this.storeInfo.store_name }}</h1>
       <v-card>
         <v-row>
-          <v-col
-            style="background-size:200px 200px;"
-            :style="{ backgroundImage: `url(` + imgUrl + `)` }"
-            lg="2"
-            md="2"
-          >
+          <v-col justify="center" lg="4" md="4">
+            <div>
+              <img
+                :src="require(`@/assets/image/storelist/default.jpg`)"
+                style="width: 75%;"
+              />
+            </div>
           </v-col>
-          <v-col
-            style="background-color: rgb(132, 245, 132); text-align: left;"
-            lg="7"
-            md="7"
-          >
+          <v-col style="text-align: left;" lg="5" md="5">
             <div>
               <img
                 src="../assets/image/placeholder.png"
@@ -31,7 +28,7 @@
                 style="width:15px;"
                 alt=""
               />
-              {{ this.storeInfo.category }}
+              {{ this.storeInfo.bigcategory }}
             </div>
             <div>
               <img src="../assets/image/money.png" style="width:15px;" alt="" />
@@ -39,19 +36,15 @@
             </div>
             <div>
               <img src="../assets/image/clock.png" style="width:15px;" alt="" />
-              {{ this.businessDay }} {{ this.startTime }} - {{ this.endTime }}
+              {{ this.businessDay }}
+              {{ this.startTime }} -
+              {{ this.endTime }}
             </div>
-            <div>평점 : {{ this.storeInfo.average_rating }}</div>
-            <div style="display: flex; justify-content: start;">
-              <!-- 영업일 : {{ this.businessDay }} -->
-              <!-- <div>{{ this.storeInfo.mon == 0 ? "월" : null }}</div>
-              <div>{{ this.storeInfo.tue == 0 ? "화" : null }}</div>
-              <div>{{ this.storeInfo.wen == 0 ? "수" : null }}</div>
-              <div>{{ this.storeInfo.thu == 0 ? "목" : null }}</div>
-              <div>{{ this.storeInfo.fri == 0 ? "금" : null }}</div>
-              <div>{{ this.storeInfo.sat == 0 ? "토" : null }}</div>
-              <div>{{ this.storeInfo.sun == 0 ? "일" : null }}</div> -->
+            <div>
+              <img src="../assets/image/star.png" style="width:15px;" alt="" />
+              {{ this.storeInfo.average_rating }}
             </div>
+            <div style="display: flex; justify-content: start;"></div>
           </v-col>
           <v-col lg="3" md="3">
             <KakaoMap :storeData="this.storeInfo" />
@@ -60,22 +53,9 @@
       </v-card>
       <br />
 
-      <!-- <v-card>
-        <v-row>
-          <v-col class="menu" @click="showContent(1)">메뉴</v-col>
-          <v-col class="review" @click="showContent(2)">리뷰</v-col>
-          <v-col class="party" @click="showContent(3)">파티만들기</v-col>
-        </v-row>
-        <v-row>
-          <v-col>
-            <review v-if="contentTrigger2" />
-            <party v-if="contentTrigger3" />
-          </v-col>
-        </v-row>
-      </v-card> -->
       <v-row>
         <v-tabs v-model="tab" fixed-tabs color="orange accent-4">
-          <v-tab class="menu" @click="showContent(1)"
+          <v-tab @click="showContent(1)"
             ><img src="../assets/image/menu.png" alt="menu" width="35"
           /></v-tab>
           <v-tab class="review" @click="showContent(2)"
@@ -88,8 +68,15 @@
       </v-row>
       <v-row>
         <v-col>
+          <div
+            v-if="contentTrigger1"
+            style="font-size: 50px; opacity: 0.5; color: rgb(49, 49, 49);"
+          >
+            <br />
+            현재 메뉴를 준비중입니다.
+          </div>
           <review v-if="contentTrigger2" />
-          <party v-if="contentTrigger3" />
+          <party v-if="contentTrigger3" :storeInfo="storeInfo" />
         </v-col>
       </v-row>
     </v-container>
@@ -102,10 +89,10 @@ import review from "../components/review.vue";
 import party from "../components/party.vue";
 import axios from "axios";
 import KakaoMap from "../components/KakaoMap.vue";
+import { mapGetters } from "vuex";
 
 // const baseURL = "http://127.0.0.1:8000/";
-const baseURL =
-  "http://ec2-54-180-109-206.ap-northeast-2.compute.amazonaws.com/";
+const baseURL = "http://ec2-52-79-239-80.ap-northeast-2.compute.amazonaws.com/";
 
 export default {
   components: {
@@ -130,51 +117,16 @@ export default {
   created() {
     this.getStoreDetail();
   },
+  computed: {
+    ...mapGetters("server", ["getBaseURL"]),
+  },
   methods: {
-    changeStartTime(time) {
-      // P0DT0H~
-      if (time[5] == "H") {
-        // P0DT0H0M~
-        if (time[7] == "M") {
-          this.startTime =
-            "0" + time.substring(4, 5) + ":" + time.substring(6, 7) + "0";
-        }
-        // P0DT0H00M~
-        else {
-          this.startTime = time.substring(4, 5) + ":" + time.substring(6, 8);
-        }
-      }
-      // P0DT00H~
-      else {
-        // P0DT00H0M~
-        if (time[8] == "M") {
-          this.startTime =
-            time.substring(4, 6) + ":" + time.substring(7, 8) + "0";
-        }
-        // P0DT00H00M~
-        else {
-          this.startTime = time.substring(4, 6) + ":" + time.substring(7, 9);
-        }
-      }
-    },
-
     changeEndTime(time) {
-      if (time[5] == "H") {
-        if (time[7] == "M") {
-          this.endTime =
-            "0" + time.substring(4, 5) + ":" + time.substring(6, 7) + "0";
-        } else {
-          this.endTime = time.substring(4, 5) + ":" + time.substring(6, 8);
-        }
+      if (time == "00:00:00") {
+        this.endTime = "24:00";
       } else {
-        if (time[8] == "M") {
-          this.endTime =
-            time.substring(4, 6) + ":" + time.substring(7, 8) + "0";
-        } else {
-          this.endTime = time.substring(4, 6) + ":" + time.substring(7, 9);
-        }
+        this.endTime = time.substring(0, 5);
       }
-      if (this.endTime == "00:00") this.endTime = "24:00";
     },
 
     getBusinessDay(day) {
@@ -187,14 +139,16 @@ export default {
       if (day.sat == 1 ? this.days.push("토") : this.days.push(0));
       if (day.sun == 1 ? this.days.push("일") : this.days.push(0));
 
-      if (!this.days.includes(0)) {
-        this.businessDay = "매일";
-      }
+      // if (!this.days.includes(0)) {
+      //   this.businessDay = "매일";
+      // }
       for (var d in this.days) {
         if (this.days[d] != 0) this.businessDay += this.days[d] + ",";
       }
-      if (this.businessDay == "월,화,수,목,금") this.businessDay = "평일";
-      else if (this.businessDay == "토,일") this.businessDay = "주말";
+      if (this.businessDay == "월,화,수,목,금,") this.businessDay = "평일";
+      else if (this.businessDay == "월,화,수,목,금,토,일,")
+        this.businessDay = "매일";
+      else if (this.businessDay == "토,일,") this.businessDay = "주말";
       else
         this.businessDay = this.businessDay.substring(
           0,
@@ -210,18 +164,16 @@ export default {
           },
         }) // post > post
         .then((res) => {
-          console.log("res Data", res.data);
           this.storeInfo = res.data;
           // this.imgUrl = require("../assets/image/storelist/" +
           //   this.storeInfo.store_name.replace(/(\s*)/g, "") +
           //   ".jpg");
-          this.changeStartTime(res.data.start_time);
+          this.imgUrl = require("../assets/image/storelist/default.jpg");
+          this.startTime = res.data.start_time.substring(0, 5);
           this.changeEndTime(res.data.end_time);
           this.getBusinessDay(res.data);
         })
-        .catch((res) => {
-          console.log("user Address error", res);
-        }); // post > post > then
+        .catch((res) => {}); // post > post > then
     },
 
     showContent(num) {

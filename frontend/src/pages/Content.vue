@@ -9,16 +9,19 @@
         hide-delimiter-background
         show-arrows-on-hover
       >
-        <v-carousel-item v-for="(slide, i) in recommendedDate" :key="i">
+        <v-carousel-item v-for="(slide, i) in advertise" :key="i">
           <v-sheet>
-            <div>{{ slide }} Slide</div>
+            <img
+              :src="require(`@/assets/adverties/${slide}.png`)"
+              style="width: 1523px; height: 226px;"
+            />
           </v-sheet>
         </v-carousel-item>
       </v-carousel>
     </div>
     <v-container class="content">
-      <div style="width: 80%;">
-        <v-layout class="weather">
+      <div>
+        <!-- <v-layout class="weather">
           <v-btn icon color="green" @click="getWeather">
             <v-icon>mdi-cached</v-icon>
           </v-btn>
@@ -35,26 +38,68 @@
           >
           <v-flex>습도 : {{ locationData.main.humidity }} %</v-flex>
           <v-flex>구름 : {{ locationData.clouds.all + "%" }}</v-flex>
-        </v-layout>
+        </v-layout> -->
         <v-layout>
-          <v-flex> 오늘은 뭐먹지? </v-flex>
+          <v-flex>
+            오늘은 뭐먹지?
+            <v-icon
+              large
+              color="green darken-2"
+              @mouseover="trueTrigger()"
+              @mouseout="falseTrigger"
+            >
+              mdi-help-circle-outline
+            </v-icon>
+          </v-flex>
         </v-layout>
-        <v-layout md="12" xs="12">
-          <carousel-3d :controls-visible="true">
+        <v-layout style="display: flex; justify-content: center;">
+          <div
+            v-if="trigger"
+            style="text-align: center; position: absolute; z-index: 1;"
+          >
+            <br />
+            <div class="arrow_box" style="width: 50vw;">
+              LightFM알고리즘을 활용한 협업필터링 추천시스템을 적용하여,
+              사용자가 주문했던 내역을 기반으로 주문했던 음식카테고리와 유사한
+              음식카테고리를 추천합니다.
+            </div>
+          </div>
+        </v-layout>
+        <v-layout
+          style="display: flex; justify-content: center; position: relative; z-index: 0"
+        >
+          <carousel-3d
+            v-if="recommendedDate.length > 4"
+            :controlsVisible="true"
+          >
             <slide
               v-for="(item, index) in recommendedDate"
               :key="index"
               :index="index"
             >
               <figure>
-                <img :src="item.src" :alt="item[1]" />
-                <!-- <img src="../assets/image/background.jpg"> -->
-                <figcaption @click="gotoShop(item[1])">
-                  <h2>{{ index + 1 }}위</h2>
+                <img :src="require(`@/assets/menu/${item[1]}.jpg`)" />
+                <figcaption @click="gotoShop(item[2])">
+                  <h2>{{ index + 1 }}위 : {{ item[1] }}</h2>
                 </figcaption>
               </figure>
             </slide>
           </carousel-3d>
+        </v-layout>
+        <v-layout>
+          <v-row
+            style="display: flex; align-items: center; text-align: center; justify-content: center;"
+          >
+            <div
+              v-for="(item, index) in foodCategory"
+              :key="index"
+              :index="index"
+            >
+              <v-row style="margin: 10px; width: fit-content;">
+                <FoodCard :categoryData="item" />
+              </v-row>
+            </div>
+          </v-row>
         </v-layout>
       </div>
     </v-container>
@@ -63,20 +108,21 @@
 
 <script>
 import Vue from "vue";
-// import Carousel from "../components/Carousel";
+import Carousel from "../components/Carousel";
 import { Carousel3d, Slide } from "vue-carousel-3d";
 import axios from "axios";
-import recommendedDate from "../assets/datas/recommend_result_1.json";
 // import ShowList from "../components/ShowList";
 import { mapMutations, mapGetters } from "vuex";
 import { EventBus } from "../utils/EventBus.js";
 import Header from "../components/Header.vue";
+import category from "../assets/category/category.json";
+import FoodCard from "../components/FoodCard.vue";
+import coverflow from "vue-coverflow";
 
-// const baseURL = "http://127.0.0.1:8000/api/";
-const baseURL =
-  "http://ec2-54-180-109-206.ap-northeast-2.compute.amazonaws.com/";
+// const baseURL = "http://127.0.0.1:8000/";
+const baseURL = "http://ec2-52-79-239-80.ap-northeast-2.compute.amazonaws.com/";
 
-Vue.use(Carousel3d);
+// Vue.use(Carousel3d);
 
 export default {
   components: {
@@ -84,6 +130,7 @@ export default {
     Header,
     Carousel3d,
     Slide,
+    FoodCard,
   },
 
   data() {
@@ -94,9 +141,10 @@ export default {
       locationData: "",
       recommendedDate: [],
       weatherimg: "",
+      advertise: ["1", "2", "3", "4"],
+      trigger: false,
     };
   },
-
   created() {
     this.pollData();
 
@@ -104,24 +152,29 @@ export default {
     EventBus.$on("addressChange", () => {
       this.getWeather();
     });
-    // this.getCategory();
-    axios({
-      method: "GET",
-      url: baseURL + "api/main/",
-    })
-      .then((response) => {
-        console.log(response.data.data);
-        this.recommendedDate = response.data.data;
+
+    axios
+      .post(baseURL + "api/main/", null, {
+        headers: {
+          Authorization: `Token ${this.$cookies.get("auth-token")}`,
+        },
+      }) // post > post
+      .then((res) => {
+        this.recommendedDate = res.data.data;
       })
-      .catch((ex) => {
-        console.log(ex);
-      });
+      .catch((res) => {
+        console.log(res);
+      }); // post > post > then
   },
   computed: {
     ...mapGetters("location", ["getLocation"]),
     user() {
       return this.$store.getters.user;
     },
+    foodCategory() {
+      return category;
+    },
+    ...mapGetters("server", ["getBaseURL"]),
   },
 
   beforeMount() {
@@ -129,12 +182,14 @@ export default {
   },
 
   methods: {
-    test() {
-      console.log(recommendedDate);
+    trueTrigger() {
+      this.trigger = true;
+    },
+    falseTrigger() {
+      this.trigger = false;
     },
     ...mapMutations(("location", ["setLocation"])),
     getWeather: function() {
-      console.log("weather function called!!");
       axios({
         method: "GET",
         url: `http://api.openweathermap.org/data/2.5/weather?lat=${this.getLocation.lat}&lon=${this.getLocation.lng}&appid=5da983044710640f1d38176a055c7f66`,
@@ -155,7 +210,6 @@ export default {
             this.weatherimg = "rain.png";
           else if (this.locationData.weather[0].main === "snow")
             this.weatherimg = "snow.png";
-          console.log(this.weatherimg);
         })
         .catch(() => {
           // .catch((ex) => {
@@ -164,19 +218,14 @@ export default {
     },
 
     getCategory() {
-      console.log("getCategory!!!");
-
       axios({
         method: "GET",
         url: baseURL + "api/main/",
       })
         .then((response) => {
-          console.log(response.data.data);
           this.recommendedDate = response.data.data;
         })
-        .catch((ex) => {
-          console.log(ex);
-        });
+        .catch((ex) => {});
     },
 
     pollData() {
@@ -268,5 +317,34 @@ figure figcaption {
   padding: 10px;
   background-color: black;
   opacity: 0.5;
+}
+.arrow_box {
+  position: relative;
+  background: #88b7d5;
+  border: 4px solid #c2e1f5;
+}
+.arrow_box:after,
+.arrow_box:before {
+  bottom: 100%;
+  left: 50%;
+  border: solid transparent;
+  content: "";
+  height: 0;
+  width: 0;
+  position: absolute;
+  pointer-events: none;
+}
+
+.arrow_box:after {
+  border-color: rgba(136, 183, 213, 0);
+  border-bottom-color: #88b7d5;
+  border-width: 30px;
+  margin-left: -30px;
+}
+.arrow_box:before {
+  border-color: rgba(194, 225, 245, 0);
+  border-bottom-color: #c2e1f5;
+  border-width: 36px;
+  margin-left: -36px;
 }
 </style>

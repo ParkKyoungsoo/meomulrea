@@ -7,11 +7,22 @@ import Login from "./pages/LogIn.vue";
 import Content from "./pages/Content.vue";
 import StoreList from "./pages/StoreList.vue";
 import StoreDetail from "./pages/StoreDetail.vue";
-import Create from "./components/Chat/Create.vue";
-import Chat from "./components/Chat/Chat.vue";
-import ChatList from "./components/Chat/ChatList";
 import Signin from "@/components/User/Signin";
-import test from "@/components/test.vue"
+import test from "@/components/test.vue";
+import HyerinChat from "./pages/HyerinChat.vue";
+import Create from "./components/HyerinChat/Create.vue";
+// import UserInfo from "./store/UserInfo.js";
+import store from "@/store/store.js";
+import { mapGetters, mapMutations } from "vuex";
+
+const requireAuth = (to, from, next) => {
+  if (localStorage.getItem("isLogin") === "true") {
+    next();
+  } else {
+    alert("로그인이 필요합니다.");
+    next("/");
+  }
+};
 
 export default new Router({
   mode: "history",
@@ -19,6 +30,7 @@ export default new Router({
     {
       path: "/home",
       name: "Home",
+      beforeEnter: requireAuth,
       component: Content,
     },
     {
@@ -27,45 +39,40 @@ export default new Router({
       component: Login,
     },
     {
-      path: "/storelist/:category",
+      path: "/storelist/:bigcategory",
       name: "storelist",
       component: StoreList,
+      beforeEnter: requireAuth,
     },
     {
       path: "/storedetail/:storeid",
       name: "storedetail",
       component: StoreDetail,
+      beforeEnter: requireAuth,
     },
     {
-      path: "/chat",
-      name: "chat",
-      component: Chat,
-    },
-    {
-      path: "/create",
+      path: "/create/:storeid",
       name: "CreateChat",
       component: Create,
-    },
-    {
-      path: "/chat/:id",
-      name: "Chat",
-      component: Chat,
-      props: true,
-    },
-    {
-      path: "/discover",
-      name: "JoinChat",
-      component: ChatList,
+      beforeEnter: requireAuth,
     },
     {
       path: "/loginChat",
       name: "Signin",
       component: Signin,
+      beforeEnter: requireAuth,
     },
     {
       path: "/test",
       name: "test",
       component: test,
+      beforeEnter: requireAuth,
+    },
+    {
+      path: "/hrchat/:roomNumber/:roomName",
+      name: "HyerinChat",
+      component: HyerinChat,
+      beforeEnter: requireAuth,
     },
   ],
 });

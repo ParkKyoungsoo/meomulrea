@@ -32,6 +32,16 @@ def user_email(request):
 # res.data.message로 프론트에서 받으면 된다.
 
 
+@api_view(['POST'])
+def email_user_or_bizuser(request):
+    User = get_user_model()
+    user = User.objects.get(email=request.data.get('email'))
+    if user.usertype == 1:
+        return Response({'message': 1})
+    else:
+        return Response({'message': 0})
+
+
 # user 모델 추가사항들 저장
 # 프론트는 headers에 Token 값 담아서 보내야함
 @api_view(['POST'])
@@ -47,19 +57,20 @@ def user_detail(request):
 # user 프로필 가져오기 or 수정
 @api_view(['POST', 'PUT'])
 @permission_classes([IsAuthenticated])
-def profile(request, user_id):
+def profile(request):
     if request.method == 'POST':
         serializer = UserProfileSerializer(request.user)
         return Response(serializer.data)
     elif request.method == 'PUT':
-        serializer = UserProfileUpdateSerializer(data=request.data, instance=request.user)
+        serializer = UserProfileUpdateSerializer(
+            data=request.data, instance=request.user)
         if serializer.is_valid(raise_exception=True):
             serializer.save()
             return Response(serializer.data)
         else:
             return Response({'message': '입력한 내용이 올바른지 확인해주세요'})
 
-from django.http import HttpResponse, JsonResponse
+
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
 def user_order_list(request):
@@ -83,3 +94,13 @@ def user_order(request):
         return Response(serializer.data)
     else:
         return Response({'message': '입력 내용이 올바른지 확인해주세요'})
+
+
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def user_nickname(request):
+    print("user_nickname 으로 들어왔음 [POST요청]")
+    User = get_user_model()
+    user = User.objects.get(email=request.user)
+    user_nickname = user.username
+    return Response({'nickname': user_nickname})

@@ -1,5 +1,5 @@
 <template>
-  <v-main>
+  <v-main box>
     <!-- <v-container> -->
     <div class="cont">
       <div class="cont_center_left">
@@ -27,12 +27,7 @@
               :type="showpassword ? 'text' : 'password'"
               @click:append="showpassword = !showpassword"
             ></v-text-field>
-            <v-btn
-              rounded
-              color="rgb(233, 105, 30)"
-              dark
-              @click="checkLogin()"
-              :loading="loading"
+            <v-btn rounded color="rgb(233, 105, 30)" dark @click="checkLogin()"
               >로그인</v-btn
             >
             <v-btn rounded color="rgb(0,0,0)" dark @click="mvpage(true)"
@@ -167,7 +162,24 @@
               ref="biz_numb"
               label="사업자번호"
             ></v-text-field>
-            <v-file-input accept="image/*" label="사업자등록사본" v-model="biz_image"></v-file-input>
+            <v-file-input
+              accept="image/*"
+              label="사업자등록사본"
+              v-model="biz_image"
+            ></v-file-input>
+            <!-- <picture-input
+              @change="onChanged"
+              @remove="onRemoved"
+              :width="500"
+              :removable="true"
+              removeButtonClass="ui red button"
+              :height="500"
+              accept="image/jpeg, image/png, image/gif, image/jpg"
+              buttonClass="ui button primary"
+              :customStrings="{
+              upload: '<h1>Upload it!</h1>',
+              drag: 'Drag and drop your image here'}">
+            </picture-input>   -->
             <v-text-field
               v-model="biz_name"
               ref="biz_name"
@@ -214,11 +226,10 @@
 <script>
 import axios from "axios";
 import * as firebase from "firebase";
+import { mapMutations, mapGetters, mapState } from "vuex";
 
-// const baseURL = "http://127.0.0.1:8000/api/";
-const baseURL =
-  "http://ec2-54-180-109-206.ap-northeast-2.compute.amazonaws.com/";
-
+// const baseURL = "http://127.0.0.1:8000/";
+const baseURL = "http://ec2-52-79-239-80.ap-northeast-2.compute.amazonaws.com/";
 export default {
   name: "LogIn",
   data() {
@@ -236,22 +247,22 @@ export default {
       nm_birthyear: 1990,
       nm_check: false,
 
-      showbizpassword:false,
-      showbizpasswordConfirm:false,
+      showbizpassword: false,
+      showbizpasswordConfirm: false,
       biz_page: 0,
-      biz_numb:"",
+      biz_numb: "",
       biz_email: "",
       biz_name: "",
       biz_password: "",
       biz_password_confirm: "",
       biz_address: "",
-      biz_image:"",
+      biz_image: "",
 
       error: {
         email: "",
         pwd: "",
         pwdconfirm: "",
-        biznumb:"",
+        biznumb: "",
         bizemail: "",
         bizpwd: "",
         bizpwdconfirm: "",
@@ -277,38 +288,37 @@ export default {
         for (var i = 0; i < domain.length; i++) {
           if (this.nm_email.includes(domain[i])) {
             this.nm_check = true;
-           break;
+            break;
           }
-          this.nm_check= false;
+          this.nm_check = false;
         }
-        if(!this.nm_check){
+        if (!this.nm_check) {
           this.error.email = this.rules[0].message;
           return;
         }
-        this.error.email = '';
-      this.nm_nickname = this.nm_email;
-      axios
-        .post(baseURL + "api/accounts/user_email/", {
-          email: this.nm_email,
-        })
-        .then((res) => {
-          console.log(res.data.message);
-          if (res.data.message === "이미 존재하는 이메일입니다.") {
-            this.error.email = "이미 존재하는 이메일입니다.";
-          }
-        });
+        this.error.email = "";
+        this.nm_nickname = this.nm_email;
+        axios
+          .post(baseURL + "api/accounts/user_email/", {
+            email: this.nm_email,
+          })
+          .then((res) => {
+            if (res.data.message === "이미 존재하는 이메일입니다.") {
+              this.error.email = "이미 존재하는 이메일입니다.";
+            }
+          });
       }
     },
     biz_numb: function() {
       if (this.biz_numb.length > 0) {
-        if(this.biz_numb.length > 12){
+        if (this.biz_numb.length > 12) {
           this.bizlen();
           return;
         }
         if (this.biz_numb.length == 3 || this.biz_numb.length == 6)
           this.biz_numb += "-";
         if (!this.checkBizNumb()) {
-          this.error.biznumb = '존재하지 않는 사업자번호입니다.';
+          this.error.biznumb = "존재하지 않는 사업자번호입니다.";
           return;
         }
         this.error.biznumb = "";
@@ -320,29 +330,28 @@ export default {
         for (var i = 0; i < domain.length; i++) {
           if (this.biz_email.includes(domain[i])) {
             this.biz_check = true;
-           break;
+            break;
           }
-          this.biz_check= false;
+          this.biz_check = false;
         }
-        if(!this.biz_check){
+        if (!this.biz_check) {
           this.error.bizemail = this.rules[0].message;
           return;
         }
-        this.error.bizemail = '';
-      axios
-        .post(baseURL + "api/accounts/user_email/", {
-          email: this.biz_email,
-        })
-        .then((res) => {
-          console.log(res.data.message);
-          if (res.data.message === "이미 존재하는 이메일입니다.") {
-            this.error.bizemail = "이미 존재하는 이메일입니다.";
-          }
-        });
+        this.error.bizemail = "";
+        axios
+          .post(baseURL + "api/accounts/user_email/", {
+            email: this.biz_email,
+          })
+          .then((res) => {
+            if (res.data.message === "이미 존재하는 이메일입니다.") {
+              this.error.bizemail = "이미 존재하는 이메일입니다.";
+            }
+          });
       }
     },
     nm_password: function() {
-      var temp = ["qwert", "asdfg", "zxcvb"];
+      var temp = ["qwert", "asdfg", "zxcvb", "1234"];
       var nm_password = this.nm_password;
       if (this.nm_password.length > 0) {
         for (var t in temp) {
@@ -401,20 +410,21 @@ export default {
     // comparePasswords () {
     //     return this.password !== this.confirmPassword ? 'Passwords do not match.' : true
     //   },
-    user() {
-      return this.$store.getters.user;
-    },
-    error() {
-      return this.$store.getters.error;
-    },
-    loading() {
-      return this.$store.getters.loading;
-    },
+    ...mapGetters("server", ["getBaseURL"]),
+    ...mapGetters("userInfo", ["getIsLogin"]),
+    ...mapState("server", ["baseURL"]),
+  },
+
+  created() {
+    console.log(this.getBaseURL); // 예상은 아마존 서버가 찍혀야되는데
   },
 
   methods: {
-    bizlen(){
-      var temp = this.biz_numb.substring(0,12);
+    ...mapMutations(("userInfo", ["setUserInfo"])),
+    ...mapMutations(("userInfo", ["setIsLogin"])),
+    ...mapMutations(("userInfo", ["setUserType"])),
+    bizlen() {
+      var temp = this.biz_numb.substring(0, 12);
       this.biz_numb = temp;
       return this.biz_numb;
     },
@@ -474,14 +484,12 @@ export default {
         this.$refs.biz_password_confirm.focus());
       if (!err) {
         alert(msg);
-      } else if (
-        !this.checkBizNumb()){
-          alert('사업자번호가 올바르지 않습니다.')
-      }  else if(
-        !this.error.email &&
-        !this.error.password &&
-        !this.error.passwordConfirm
-      ) {
+      } else if (!this.checkBizNumb()) {
+        alert("사업자번호가 올바르지 않습니다.");
+      } else if (!this.checkBizNumb()) {
+        alert("사업자번호가 올바르지 않습니다.");
+      }
+      if (err) {
         this.biz_signup();
       }
     },
@@ -497,31 +505,31 @@ export default {
         ((msg = "비밀번호를 입력해주세요!"),
         (err = false),
         this.$refs.nm_password.focus());
-      if(err) {
+      if (err) {
         this.nm_login();
       }
     },
+
     findAddress(check) {
       new daum.Postcode({
         oncomplete: (data) => {
           var fullAddr = data.address;
-          console.log(data.address);
           var extraAddr = "";
 
           if (data.addressType === "R") {
             if (data.bname !== "") {
               extraAddr += data.bname;
-              console.log("bname : " + extraAddr);
             }
             if (data.buildingName !== "") {
               extraAddr +=
                 extraAddr !== "" ? ", " + data.buildingName : data.buildingName;
-              console.log("buildingName : " + extraAddr);
             }
             fullAddr += extraAddr !== "" ? " (" + extraAddr + ")" : "";
             if (check) this.nm_address = fullAddr;
             else this.biz_address = fullAddr;
-            console.log("fullADDR : " + fullAddr);
+          } else {
+            if (check) this.nm_address = fullAddr;
+            else this.biz_address = fullAddr;
           }
         },
       }).open();
@@ -529,7 +537,10 @@ export default {
 
     setCookie(token) {
       this.$cookies.set("auth-token", token);
-      this.isLoggedIn = true;
+    },
+    setCookie(token, nickname) {
+      this.$cookies.set("auth-token", token);
+      this.$cookies.set("nickname", nickname);
     },
 
     onSignin() {
@@ -540,27 +551,62 @@ export default {
     },
 
     nm_login() {
-        axios
-          .post(baseURL + "api/account/login/", {
-            email: this.nm_email,
-            password: this.nm_password,
-          })
-          .then((res) => {
-            firebase
-              .auth()
-              .setPersistence(firebase.auth.Auth.Persistence.SESSION);
-            // .then(()=>{
-            firebase
-              .auth()
-              .signInWithEmailAndPassword(this.nm_email, this.nm_password);
-            this.setCookie(res.data.key);
-            this.$router.push("/home");
-            // })
-          })
-          .catch((err) => {
-            console.log(err);
-            alert("로그인 정보를 다시 확인하시지요");
-          });
+      var tmpToken;
+      axios
+        .post(baseURL + "api/accounts/email_user_or_bizuser/", {
+          email: this.nm_email,
+        })
+        .then((res) => {
+          if (res.data.message == 1) {
+            axios
+              .post(baseURL + "api/account/login/", {
+                email: this.nm_email,
+                password: this.nm_password,
+              })
+              .then((res) => {
+                this.setCookie(res.data.key);
+                tmpToken = res.data.key;
+                axios
+                  .post(baseURL + "api/accounts/user_nickname/", null, {
+                    headers: {
+                      Authorization: `Token ${res.data.key}`,
+                    },
+                  })
+                  .then((res) => {
+                    this.$cookies.set("nickname", res.data.nickname);
+                    axios
+                      .post(baseURL + "api/accounts/profile/", null, {
+                        headers: {
+                          Authorization: `Token ${tmpToken}`,
+                        },
+                      })
+                      .then((res) => {
+                        this.$store.commit("userInfo/setUserInfo", {
+                          userAddress: res.data.address,
+                        });
+                        localStorage.setItem("isLogin", true);
+
+                        this.$router.push("/home");
+                      })
+                      .catch((err) => {
+                        console.log("get profile error", err);
+                      });
+                  })
+                  .catch((err) => {
+                    console.log("get nickname error", err.response);
+                  });
+              })
+              .catch((err) => {
+                console.log(err);
+                alert("로그인 정보를 다시 확인하시지요");
+              });
+          } else {
+            alert("존재하지 않는 회원 정보입니다.");
+          }
+        })
+        .catch((err) => {
+          console.log(err);
+        });
     },
     checkBizLogin() {
       let err = true;
@@ -577,27 +623,48 @@ export default {
       if (err) this.biz_login();
     },
     biz_login() {
-      console.log("biz_login호출");
       axios
-          .post(baseURL + "api/account/login/", {
-            email: this.biz_email,
-            password: this.biz_password,
-          })
-          .then((res) => {
-            // firebase
-            //   .auth()
-            //   .setPersistence(firebase.auth.Auth.Persistence.SESSION);
-            // // .then(()=>{
-            // firebase
-            //   .auth()
-            //   .signInWithEmailAndPassword(this.nm_email, this.nm_password);
-            this.setCookie(res.data.key);
-            this.$router.push("/home");
-            // })
-          })
-          .catch((err) => {
-            alert('아이디 또는 비밀번호를 확인해주세요.')
-          });
+        .post(baseURL + "api/accounts/email_user_or_bizuser/", {
+          email: this.biz_email,
+        })
+        .then((res) => {
+          if (res.data.message == 0) {
+            axios
+              .post(baseURL + "api/account/login/", {
+                email: this.biz_email,
+                password: this.biz_password,
+              })
+              .then((res) => {
+                axios
+                  .post(baseURL + "api/accounts/profile/", null, {
+                    headers: {
+                      Authorization: `Token ${tmpToken}`,
+                    },
+                  })
+                  .then((res) => {
+                    this.$store.commit("userInfo/setUserType", {
+                      userAddress: res.data.usertype,
+                    });
+
+                    localStorage.setItem("isLogin", true);
+                    this.setCookie(res.data.key);
+                    this.$router.push("/home");
+                  })
+                  .catch((err) => {
+                    console.log("get profile error", err);
+                  });
+                // })
+              })
+              .catch((err) => {
+                alert("아이디 또는 비밀번호를 확인해주세요.");
+              });
+          } else {
+            alert("존재하지 않는 회원 정보입니다.");
+          }
+        })
+        .catch((err) => {
+          console.log(err);
+        });
     },
 
     checkBizNumb() {
@@ -623,15 +690,9 @@ export default {
       return false;
     },
 
-    onSignup() {
-      this.$store.dispatch("signUserUp", {
-        email: this.nm_email,
-        password: this.nm_password,
-        username: this.nm_nickname,
-      });
-    },
-
     nm_signup() {
+      var tmpToken = "";
+
       axios
         .post(baseURL + "api/account/signup/", {
           username: this.nm_nickname,
@@ -640,8 +701,12 @@ export default {
           password2: this.nm_password_confirm,
         })
         .then((res) => {
+          // post > then
+          tmpToken = res.data.key;
+
           axios
             .post(
+              // post > post
               baseURL + "api/accounts/user_detail/",
               {
                 username: this.nm_nickname,
@@ -656,29 +721,40 @@ export default {
                   Authorization: `Token ${res.data.key}`,
                 },
               }
-            ) // post > post
+            )
             .then((res) => {
-              this.onSignup();
-              this.reset(true);
-              this.$router.push("/")
-            }); // post > post > then
-        })
-        .catch((res) => {
-          console.log(res);
-          // let token = res.data.key;
-          console.log("res : " + res.data);
-          this.$store.dispatch("signUserUp", {
-            email: this.nm_email,
-            password: this.nm_password,
-            username: this.nm_nickname,
-          });
+              // post > post > then
+              axios
+                .post(
+                  // post > post > post
+                  baseURL + "api/accounts/user_order/",
+                  {
+                    location: this.nm_address,
+                  },
+                  {
+                    headers: {
+                      Authorization: "Token " + tmpToken,
+                    },
+                  }
+                ) // post > post > post > thrn
+                .then((res) => {
+                  console.log(res.data);
+                  this.reset(true);
+                  this.$router.push("/");
+                })
+                .catch((res) => {
+                  console.log("user_order error", res);
+                }); // post > post > post > catch
+            })
+            .catch((res) => {
+              console.log("user_detail error", res);
+            }); // post > post > catch
         })
         .catch((err) => {
-          console.log(err);
-        });
+          console.log("signup error", err);
+        }); // post > catch
     },
     biz_signup() {
-      console.log("biz_signup()");
       axios
         .post(baseURL + "api/account/signup/", {
           username: this.biz_name,
@@ -687,37 +763,34 @@ export default {
           password2: this.biz_password_confirm,
         })
         .then((res) => {
+          const formData = new FormData();
+          formData.append("email", this.biz_email);
+          formData.append("username", this.biz_name);
+          formData.append("usertype", 0);
+          formData.append("bizname", this.biz_name);
+          formData.append("bizaddress", this.biz_address);
+          formData.append("bizimage", this.biz_image);
           axios
-            .post(
-              baseURL + "api/accounts/user_detail/",
-              {
-                usertype: 0,
-                biznumber: this.biz_numb,
-                bizname: this.biz_name,
-                bizaddress: this.biz_address,
-                bizimage: this.biz_image
+            .post(baseURL + "api/accounts/user_detail/", formData, {
+              headers: {
+                Authorization: `Token ${res.data.key}`,
               },
-              {
-                headers: {
-                  Authorization: `Token ${res.data.key}`,
-                },
-              }
-            ) // post > post
+            }) // post > post
             .then((res) => {
-              this.onSignup();
-              this.reset(true);
-              this.$router.push("/")
-            }); // post > post > then
-        })
-        .catch((res) => {
-          console.log(res);
-          // let token = res.data.key;
-          console.log("res : " + res.data);
-          this.$store.dispatch("signUserUp", {
-            email: this.nm_email,
-            password: this.nm_password,
-            username: this.nm_nickname,
-          });
+              this.reset(false);
+              this.$router.push("/");
+            })
+            .catch((err) => {
+              // err.response
+              // let token = res.data.key;
+              console.log("error : " + err);
+              console.log(err.response);
+              // this.$store.dispatch("signUserUp", {
+              //   email: this.nm_email,
+              //   password: this.nm_password,
+              //   username: this.nm_nickname,
+              // });
+            });
         })
         .catch((err) => {
           console.log(err);
@@ -734,8 +807,8 @@ export default {
         this.nm_address = "";
         this.nm_gender = "";
         this.nm_birthyear = "1990";
-        this.showpassword=false;
-        this.showpasswordConfirm=false;
+        this.showpassword = false;
+        this.showpasswordConfirm = false;
       } else {
         this.biz_page -= 1;
         this.biz_email = "";
@@ -743,10 +816,10 @@ export default {
         this.biz_password = "";
         this.biz_password_confirm = "";
         this.biz_address = "";
-        this.showbizpassword=false;
-        this.showbizpasswordConfirm=false;
+        this.showbizpassword = false;
+        this.showbizpasswordConfirm = false;
       }
-      this.error= {
+      this.error = {
         email: "",
         pwd: "",
         pwdconfirm: "",
@@ -757,6 +830,7 @@ export default {
     },
     mvpage(nm) {
       if (nm) {
+        this.biz_page = 0;
         this.nm_page += 1;
         this.nm_email = "";
         this.nm_name = "";
@@ -766,19 +840,20 @@ export default {
         this.nm_address = "";
         this.nm_gender = "";
         this.nm_birthyear = "1990";
-        this.showpassword=false;
-        this.showpasswordConfirm=false;
+        this.showpassword = false;
+        this.showpasswordConfirm = false;
       } else {
+        this.nm_page = 0;
         this.biz_page += 1;
         this.biz_email = "";
         this.biz_name = "";
         this.biz_password = "";
         this.biz_password_confirm = "";
         this.biz_address = "";
-        this.showbizpassword=false;
-        this.showbizpasswordConfirm=false;
+        this.showbizpassword = false;
+        this.showbizpasswordConfirm = false;
       }
-      this.error= {
+      this.error = {
         email: "",
         pwd: "",
         pwdconfirm: "",
@@ -790,4 +865,12 @@ export default {
   },
 };
 </script>
-<style scoped src="../assets/css/login.css"></style>
+<style scoped src="../assets/css/login.css">
+.cont {
+  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none; /* Firefox */
+}
+.cont::-webkit-scrollbar {
+  display: none; /* Chrome, Safari, Opera*/
+}
+</style>

@@ -24,12 +24,8 @@ const ChatModule = {
         .child(chatID)
         .child("messages")
         .push(message)
-        .then((data) => {
-          console.log(data);
-        })
-        .catch((error) => {
-          console.log(error);
-        });
+        .then((data) => {})
+        .catch((error) => {});
     },
     loadUserChats(context) {
       let user = context.getters.user;
