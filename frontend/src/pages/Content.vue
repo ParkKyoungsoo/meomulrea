@@ -40,9 +40,34 @@
           <v-flex>구름 : {{ locationData.clouds.all + "%" }}</v-flex>
         </v-layout> -->
         <v-layout>
-          <v-flex> 오늘은 뭐먹지? </v-flex>
+          <v-flex>
+            오늘은 뭐먹지?
+            <v-icon
+              large
+              color="green darken-2"
+              @mouseover="trueTrigger()"
+              @mouseout="falseTrigger"
+            >
+              mdi-help-circle-outline
+            </v-icon>
+          </v-flex>
         </v-layout>
         <v-layout style="display: flex; justify-content: center;">
+          <div
+            v-if="trigger"
+            style="text-align: center; position: absolute; z-index: 1;"
+          >
+            <br />
+            <div class="arrow_box" style="width: 50vw;">
+              LightFM알고리즘을 활용한 협업필터링 추천시스템을 적용하여,
+              사용자가 주문했던 내역을 기반으로 주문했던 음식카테고리와 유사한
+              음식카테고리를 추천합니다.
+            </div>
+          </div>
+        </v-layout>
+        <v-layout
+          style="display: flex; justify-content: center; position: relative; z-index: 0"
+        >
           <carousel-3d
             v-if="recommendedDate.length > 4"
             :controlsVisible="true"
@@ -118,6 +143,7 @@ export default {
       recommendedDate: [],
       weatherimg: "",
       advertise: ["1", "2", "3", "4"],
+      trigger: false,
     };
   },
   created() {
@@ -157,6 +183,12 @@ export default {
   },
 
   methods: {
+    trueTrigger() {
+      this.trigger = true;
+    },
+    falseTrigger() {
+      this.trigger = false;
+    },
     ...mapMutations(("location", ["setLocation"])),
     getWeather: function() {
       axios({
@@ -286,5 +318,34 @@ figure figcaption {
   padding: 10px;
   background-color: black;
   opacity: 0.5;
+}
+.arrow_box {
+  position: relative;
+  background: #88b7d5;
+  border: 4px solid #c2e1f5;
+}
+.arrow_box:after,
+.arrow_box:before {
+  bottom: 100%;
+  left: 50%;
+  border: solid transparent;
+  content: "";
+  height: 0;
+  width: 0;
+  position: absolute;
+  pointer-events: none;
+}
+
+.arrow_box:after {
+  border-color: rgba(136, 183, 213, 0);
+  border-bottom-color: #88b7d5;
+  border-width: 30px;
+  margin-left: -30px;
+}
+.arrow_box:before {
+  border-color: rgba(194, 225, 245, 0);
+  border-bottom-color: #c2e1f5;
+  border-width: 36px;
+  margin-left: -36px;
 }
 </style>
