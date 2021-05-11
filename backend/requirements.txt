@@ -57,7 +57,7 @@ django-cors-headers==3.5.0
 django-extensions==3.0.8
 django-rest-auth==0.9.5
 django-webpack-loader==0.7.0
-djangorestframework==3.11.1
+djangorestframework==3.11.2
 dnspython==1.16.0
 docutils==0.16
 entrypoints==0.3
